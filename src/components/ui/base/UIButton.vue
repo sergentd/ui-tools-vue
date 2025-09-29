@@ -21,18 +21,20 @@
       :name="icon"
       :size="iconSize"
       class="btn-icon"
-      :class="{ 'btn-icon-only': !$slots.default }"
+      :class="{ 'btn-icon-only': !slots.default }"
     />
 
-    <span v-if="$slots.default && !loading" class="btn-content">
+    <span v-if="slots.default && !loading" class="btn-content">
       <slot />
     </span>
   </component>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import IconSystem from '../IconSystem.vue'
+import { computed, useSlots } from 'vue'
+import IconSystem from '@/components/ui/IconSystem.vue'
+
+const slots = useSlots()
 
 const props = defineProps({
   // Appearance
@@ -121,7 +123,7 @@ const buttonClasses = computed(() => [
   `ui-button--${props.size}`,
   {
     'ui-button--block': props.block,
-    'ui-button--icon-only': props.iconOnly || (props.icon && !props.$slots.default),
+    'ui-button--icon-only': props.iconOnly || (props.icon && !slots.default),
     'ui-button--loading': props.loading,
     'ui-button--disabled': props.disabled
   }

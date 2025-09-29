@@ -278,9 +278,9 @@ const fieldClasses = computed(() => [
   }
 ])
 
-const wrapperClasses = computed(() => [
+const wrapperClasses = computed(() => ({
   'select__wrapper--has-icon': props.iconLeading
-])
+}))
 
 const selectClasses = computed(() => [
   'select__field',

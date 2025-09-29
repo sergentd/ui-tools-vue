@@ -244,11 +244,11 @@ const fieldClasses = computed(() => [
   }
 ])
 
-const wrapperClasses = computed(() => [
+const wrapperClasses = computed(() => ({
   'input__wrapper--has-icons': hasIcons.value,
   'input__wrapper--leading': props.iconLeading,
   'input__wrapper--trailing': props.iconTrailing || props.type === 'password' || props.clearable
-])
+}))
 
 const inputClasses = computed(() => [
   'input__field',

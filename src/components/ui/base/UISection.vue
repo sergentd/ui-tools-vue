@@ -56,7 +56,7 @@
 
 <script setup>
 import { computed, ref } from 'vue'
-import IconSystem from '../IconSystem.vue'
+import IconSystem from '@/components/ui/IconSystem.vue'
 import UIButton from './UIButton.vue'
 
 const props = defineProps({
