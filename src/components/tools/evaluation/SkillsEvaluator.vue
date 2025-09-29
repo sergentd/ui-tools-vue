@@ -1,196 +1,487 @@
 <template>
-  <div class="skills-evaluator-tool">
+  <div class="min-h-screen bg-primary space-y-12">
+    <!-- Tool Header -->
     <ToolHeader
       title="Évaluateur de Compétences"
-      description="Visualisez et exportez vos compétences de développeur sous forme de rapport PDF professionnel."
-      icon="📊"
+      description="Visualisez et exportez vos compétences de développeur sous forme de rapport PDF professionnel"
+      icon="skills-evaluator"
       category="evaluation"
-      status="Migré vers Vue"
       :show-badges="true"
     />
 
-    <div class="container mx-auto px-4 py-8">
-      <header class="text-center mb-12 animate-fade-in">
-        <div class="relative mb-6">
-          <h1 class="text-4xl md:text-5xl font-bold text-[#3D3B30] mb-4 relative">
-            Mes Compétences
-            <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-[#A59469] to-[#8C7A4B] rounded-full"></div>
-          </h1>
-        </div>
-        <p class="text-lg text-[#3D3B30]/70 mb-8 max-w-2xl mx-auto">
-          Une évaluation dynamique et interactive de mes compétences techniques,
-          avec export PDF professionnel pour portfolios et CV.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <button
-            @click="exportToPDF"
-            :disabled="isExporting"
-            class="bg-gradient-to-r from-[#A59469] to-[#8C7A4B] hover:from-[#8C7A4B] hover:to-[#73643C] disabled:from-[#D9CDB8] disabled:to-[#D9CDB8] disabled:cursor-not-allowed text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 flex items-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-105 hover:-translate-y-1 disabled:transform-none disabled:hover:scale-100 group"
-          >
-            <span v-if="isExporting" class="flex items-center gap-2">
-              <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4z"></path>
-              </svg>
-              Génération du PDF...
-            </span>
-            <span v-else class="flex items-center gap-2">
-              <svg class="w-5 h-5 group-hover:scale-110 transition-transform duration-200" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M4 3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H4zm0 12V5h12v10H4z"/>
-              </svg>
-              Exporter en PDF
-            </span>
-          </button>
-          <div class="text-sm text-[#3D3B30]/50 flex items-center gap-2">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-            </svg>
-            Cliquez sur les compétences pour plus de détails
-          </div>
-        </div>
-      </header>
+    <!-- Main Content -->
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-      <!-- Section de la Légende des Niveaux -->
-      <section id="skills-legend" class="max-w-4xl mx-auto mb-12 p-6 bg-white rounded-xl shadow-md border border-[#EFEBE4]">
-        <h3 class="text-xl font-bold text-[#3D3B30] mb-5 text-center md:text-left">Légende des Niveaux</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-y-4 gap-x-6 text-sm">
-          <div class="flex items-center space-x-3">
-            <span class="flex-shrink-0 w-5 h-5 rounded-full bg-red-800"></span>
-            <div><p class="font-semibold text-[#3D3B30]">0: Inconnu</p></div>
-          </div>
-          <div class="flex items-center space-x-3">
-            <span class="flex-shrink-0 w-5 h-5 rounded-full bg-red-500"></span>
-            <div><p class="font-semibold text-[#3D3B30]">1-3: Novice</p></div>
-          </div>
-          <div class="flex items-center space-x-3">
-            <span class="flex-shrink-0 w-5 h-5 rounded-full bg-[#A59469]"></span>
-            <div><p class="font-semibold text-[#3D3B30]">4-6: Compétent</p></div>
-          </div>
-          <div class="flex items-center space-x-3">
-            <span class="flex-shrink-0 w-5 h-5 rounded-full bg-green-500"></span>
-            <div><p class="font-semibold text-[#3D3B30]">7-8: Avancé</p></div>
-          </div>
-          <div class="flex items-center space-x-3">
-            <span class="flex-shrink-0 w-5 h-5 rounded-full bg-green-700"></span>
-            <div><p class="font-semibold text-[#3D3B30]">9-10: Expert</p></div>
-          </div>
-        </div>
-      </section>
+        <!-- Left Sidebar (1/3) - Legend & Actions -->
+        <div class="lg:col-span-1 space-y-6">
 
-      <!-- Conteneur des compétences -->
-      <main id="skills-container" class="max-w-4xl mx-auto space-y-8">
-        <div
-          v-for="(category, categoryIndex) in skillsData"
-          :key="category.category"
-          class="skill-category-box bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden p-6 md:p-8 border border-[#EFEBE4] transition-all duration-500 hover:border-[#A59469] hover:transform hover:scale-[1.02] hover:-translate-y-2 group"
-          :style="{ animationDelay: `${categoryIndex * 100}ms` }"
-        >
-          <h2 class="text-2xl font-bold text-[#3D3B30] border-b border-[#EFEBE4] pb-4 mb-6 flex items-center">
-            <span class="w-1 h-6 bg-[#A59469] rounded-full mr-3"></span>
-            {{ category.category }}
-          </h2>
-          <div class="space-y-5">
-            <div
-              v-for="(skill, skillIndex) in category.skills"
-              :key="skill.name"
-              class="skill-row grid grid-cols-12 items-center gap-4 py-3 px-3 rounded-lg transition-all duration-300 hover:bg-gradient-to-r hover:from-[#F8F7F4] hover:to-[#F8F7F4]/30 hover:shadow-md cursor-pointer group"
-              :style="{ animationDelay: `${(categoryIndex * 100) + (skillIndex * 50)}ms` }"
-            >
-              <span class="skill-name col-span-4 md:col-span-3 font-medium text-[#3D3B30] transition-all duration-200 group-hover:text-[#A59469] group-hover:font-semibold">
-                {{ skill.name }}
-              </span>
-              <div class="col-span-7 md:col-span-8 h-4 relative skill-bar-container">
-                <div class="w-full h-full bg-[#EFEBE4] rounded-full absolute top-0 left-0"></div>
-                <div
-                  class="skill-bar-level h-4 rounded-full absolute top-0 left-0 transition-all duration-800 shadow-sm overflow-hidden"
-                  :class="getSkillColorClass(skill.level)"
-                  :style="{ width: `${skill.level * 10}%` }"
+          <!-- Skills Legend -->
+          <UISection title="Légende des Niveaux" variant="glass" collapsible>
+            <template #actions>
+              <div class="flex items-center gap-2">
+                <button
+                  v-if="activeFilters.size > 0"
+                  @click="clearAllFilters"
+                  class="text-xs text-electric hover:text-electric-light transition-colors"
                 >
-                  <div class="skill-bar-stripes absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  Effacer filtres
+                </button>
+                <div class="text-xs text-tertiary">
+                  {{ activeFilters.size > 0 ? `${activeFilters.size} filtre(s)` : 'Cliquez pour filtrer' }}
                 </div>
               </div>
-              <span class="skill-level-text col-span-1 text-right text-sm font-bold text-[#3D3B30]/70 transition-all duration-200 group-hover:text-[#A59469] group-hover:scale-110">
-                {{ skill.level }}/10
-              </span>
+            </template>
+
+            <div class="space-y-2">
+              <button
+                v-for="level in skillLevels"
+                :key="level.id"
+                @click="toggleLevelFilter(level.range)"
+                class="w-full flex items-center justify-between px-3 py-2 rounded-lg transition-default"
+                :class="activeFilters.has(level.range)
+                  ? 'glass-accent border border-electric shadow-sm'
+                  : 'glass-light border border-primary/20 hover:glass-hover hover:border-primary/40'"
+              >
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-3 h-3 rounded-full flex-shrink-0"
+                    :style="{ backgroundColor: level.color }"
+                  ></div>
+                  <div class="text-sm">
+                    <span class="font-medium text-primary">{{ level.range }}</span>
+                    <span class="text-tertiary ml-2">{{ level.label }}</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="text-xs text-tertiary font-mono">
+                    {{ getSkillCountByLevel(level.range) }}
+                  </div>
+                  <div v-if="activeFilters.has(level.range)" class="text-electric">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                  </div>
+                </div>
+              </button>
             </div>
+          </UISection>
+
+          <!-- Actions -->
+          <UISection title="Actions" variant="glass">
+            <div class="space-y-4">
+              <!-- Main Actions -->
+              <div class="space-y-2">
+                <UIButton
+                  @click="exportToPDF"
+                  :loading="isExporting"
+                  variant="primary"
+                  icon="clipboard"
+                  size="sm"
+                  :disabled="isExporting"
+                  block
+                >
+                  {{ isExporting ? 'Génération...' : 'Exporter PDF' }}
+                </UIButton>
+              </div>
+
+              <!-- Management Actions -->
+              <div class="space-y-2 pt-2 border-t border-primary/20">
+                <UIButton
+                  @click="showAddSkillModal = true"
+                  variant="ghost"
+                  icon="plus"
+                  size="sm"
+                  block
+                >
+                  Ajouter Compétence
+                </UIButton>
+                <UIButton
+                  @click="showAddCategoryModal = true"
+                  variant="ghost"
+                  icon="plus"
+                  size="sm"
+                  block
+                >
+                  Nouvelle Catégorie
+                </UIButton>
+              </div>
+
+              <!-- Info Text -->
+              <div class="text-xs text-tertiary pt-3 border-t border-primary/20">
+                💡 Cliquez sur les compétences pour ajuster les niveaux. Les modifications ne sont pas sauvegardées entre les sessions.
+              </div>
+            </div>
+          </UISection>
+
+        </div>
+
+        <!-- Right Content (2/3) - Skills Categories -->
+        <div class="lg:col-span-2 space-y-6">
+          <UISection
+            v-for="(category, categoryIndex) in filteredSkillsData"
+            :key="category.category"
+            :title="category.category"
+            variant="glass"
+            collapsible
+            :class="`animate-slide-up`"
+            :style="{ animationDelay: `${categoryIndex * 150}ms` }"
+          >
+            <template #actions v-if="activeFilters.size > 0">
+              <div class="text-xs text-tertiary">
+                {{ category.skills.length }} compétence(s)
+              </div>
+            </template>
+
+            <div v-if="category.skills.length === 0 && activeFilters.size > 0" class="text-center py-8">
+              <div class="text-tertiary text-sm">
+                Aucune compétence ne correspond aux filtres sélectionnés dans cette catégorie
+              </div>
+            </div>
+
+            <div v-else class="space-y-4">
+              <div
+                v-for="(skill, skillIndex) in category.skills"
+                :key="skill.name"
+                class="group p-4 rounded-lg transition-default cursor-pointer"
+                :class="editingSkill === skill.id ? 'glass-accent border border-electric' : 'glass-light hover:glass-hover'"
+                @click="toggleSkillEdit(skill.id)"
+                :style="{ animationDelay: `${(categoryIndex * 100) + (skillIndex * 50)}ms` }"
+              >
+                <!-- Skill Header -->
+                <div class="flex items-center justify-between mb-3">
+                  <h4 class="font-medium text-primary group-hover:text-electric transition-colors">
+                    {{ skill.name }}
+                  </h4>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-mono text-secondary">{{ skill.level }}/10</span>
+                    <div
+                      class="w-3 h-3 rounded-full"
+                      :style="{ backgroundColor: getSkillColor(skill.level) }"
+                    ></div>
+                  </div>
+                </div>
+
+                <!-- Skill Bar -->
+                <div class="relative">
+                  <div class="w-full h-3 bg-glass-light rounded-full overflow-hidden">
+                    <div
+                      class="h-full rounded-full transition-all duration-500 relative overflow-hidden"
+                      :style="{
+                        width: `${skill.level * 10}%`,
+                        backgroundColor: getSkillColor(skill.level)
+                      }"
+                    >
+                      <!-- Animated stripes on hover -->
+                      <div class="absolute inset-0 opacity-0 group-hover:opacity-30 skill-stripes transition-opacity duration-300"></div>
+                    </div>
+                  </div>
+
+                  <!-- Level adjustment when editing -->
+                  <div v-if="editingSkill === skill.id" class="mt-3">
+                    <input
+                      type="range"
+                      :value="skill.level"
+                      @input="updateSkillLevel(skill.id, parseInt($event.target.value))"
+                      min="0"
+                      max="10"
+                      class="w-full slider"
+                    />
+                    <div class="flex justify-between text-xs text-tertiary mt-1">
+                      <span>0 - Inconnu</span>
+                      <span>5 - Compétent</span>
+                      <span>10 - Expert</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </UISection>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Add Skill Modal -->
+    <div v-if="showAddSkillModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" @click.self="showAddSkillModal = false">
+      <div class="glass-modal p-6 rounded-xl max-w-md w-full mx-4" @click.stop>
+        <h3 class="text-lg font-medium text-primary mb-4">Ajouter une Compétence</h3>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-secondary mb-2">Nom de la compétence</label>
+            <input
+              v-model="newSkill.name"
+              type="text"
+              placeholder="ex: React Native"
+              class="w-full px-3 py-2 glass-light rounded-lg border border-primary/20 text-primary placeholder-tertiary focus:border-electric focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-secondary mb-2">Catégorie</label>
+            <select
+              v-model="newSkill.category"
+              class="w-full px-3 py-2 glass-light rounded-lg border border-primary/20 text-primary focus:border-electric focus:outline-none"
+            >
+              <option v-for="category in skillsData" :key="category.category" :value="category.category">
+                {{ category.category }}
+              </option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-secondary mb-2">Niveau initial: {{ newSkill.level }}/10</label>
+            <input
+              v-model="newSkill.level"
+              type="range"
+              min="0"
+              max="10"
+              class="w-full slider"
+            />
           </div>
         </div>
-      </main>
+
+        <div class="flex gap-3 mt-6">
+          <UIButton @click="addSkill" variant="primary" size="sm" class="flex-1">Ajouter</UIButton>
+          <UIButton @click="showAddSkillModal = false" variant="secondary" size="sm" class="flex-1">Annuler</UIButton>
+        </div>
+      </div>
     </div>
+
+    <!-- Add Category Modal -->
+    <div v-if="showAddCategoryModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" @click.self="showAddCategoryModal = false">
+      <div class="glass-modal p-6 rounded-xl max-w-md w-full mx-4" @click.stop>
+        <h3 class="text-lg font-medium text-primary mb-4">Nouvelle Catégorie</h3>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-secondary mb-2">Nom de la catégorie</label>
+            <input
+              v-model="newCategoryName"
+              type="text"
+              placeholder="ex: Outils de Design"
+              class="w-full px-3 py-2 glass-light rounded-lg border border-primary/20 text-primary placeholder-tertiary focus:border-electric focus:outline-none"
+            />
+          </div>
+        </div>
+
+        <div class="flex gap-3 mt-6">
+          <UIButton @click="addCategory" variant="primary" size="sm" class="flex-1">Créer</UIButton>
+          <UIButton @click="showAddCategoryModal = false" variant="secondary" size="sm" class="flex-1">Annuler</UIButton>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-16 border-t border-primary glass-light">
+      <div class="container mx-auto py-6 px-4 text-center text-tertiary">
+        <p>&copy; 2025 - Évaluateur de compétences interactif. Créez votre profil professionnel.</p>
+      </div>
+    </footer>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, reactive, computed } from 'vue'
+import { UISection, UIButton } from '@/components/ui'
 import ToolHeader from '@/components/ui/ToolHeader.vue'
 
-// State for PDF export
+// State
 const isExporting = ref(false)
+const editingSkill = ref(null)
+const showAddSkillModal = ref(false)
+const showAddCategoryModal = ref(false)
+const newCategoryName = ref('')
+const activeFilters = ref(new Set()) // Track active level filters
 
-// Skills data
-const skillsData = [
+// New skill form
+const newSkill = reactive({
+  name: '',
+  category: 'Développement Frontend',
+  level: 5
+})
+
+// Skill levels configuration
+const skillLevels = [
+  { id: 0, range: '0', label: 'Inconnu', color: '#7F1D1D' },
+  { id: 1, range: '1-3', label: 'Novice', color: '#DC2626' },
+  { id: 2, range: '4-6', label: 'Compétent', color: '#00D4FF' },
+  { id: 3, range: '7-8', label: 'Avancé', color: '#22C55E' },
+  { id: 4, range: '9-10', label: 'Expert', color: '#15803D' }
+]
+
+// Skills data using our electric blue theme
+const skillsData = reactive([
   {
     category: "Développement Frontend",
     skills: [
-      { name: "HTML5", level: 8 },
-      { name: "CSS & Pré-processeurs (Sass)", level: 8 },
-      { name: "JavaScript (ES6+)", level: 8 },
-      { name: "TypeScript", level: 5 },
-      { name: "Vue.js (Composition API)", level: 7 },
-      { name: "React", level: 0 },
-      { name: "Svelte / SvelteKit", level: 3 },
-      { name: "Pinia (Vue)", level: 3 },
-      { name: "Tailwind CSS", level: 8 },
-      { name: "Bibliothèques de Composants (ex: Vuetify)", level: 1 },
-      { name: "Tests Unitaires (Jest / Vitest)", level: 1 },
-      { name: "REST APIs & Fetch/Axios", level: 10 },
-      { name: "Accessibilité (WCAG)", level: 5 },
-      { name: "Performance Web (Core Web Vitals)", level: 5 },
-      { name: "WEBDEV 2025", level: 2 },
+      { id: 1, name: "HTML5", level: 8 },
+      { id: 2, name: "CSS & Pré-processeurs (Sass)", level: 8 },
+      { id: 3, name: "JavaScript (ES6+)", level: 8 },
+      { id: 4, name: "TypeScript", level: 5 },
+      { id: 5, name: "Vue.js (Composition API)", level: 7 },
+      { id: 6, name: "React", level: 0 },
+      { id: 7, name: "Svelte / SvelteKit", level: 3 },
+      { id: 8, name: "Pinia (Vue)", level: 3 },
+      { id: 9, name: "Tailwind CSS", level: 8 },
+      { id: 10, name: "Bibliothèques de Composants", level: 1 },
+      { id: 11, name: "Tests Unitaires (Jest / Vitest)", level: 1 },
+      { id: 12, name: "REST APIs & Fetch/Axios", level: 10 },
+      { id: 13, name: "Accessibilité (WCAG)", level: 5 },
+      { id: 14, name: "Performance Web", level: 5 },
+      { id: 15, name: "WEBDEV 2025", level: 2 }
     ]
   },
   {
     category: "Développement Backend",
     skills: [
-      { name: "Node.js", level: 7 },
-      { name: "Python", level: 9 },
-      { name: "Django (Python)", level: 3 },
-      { name: "Flask (Python)", level: 7 },
-      { name: "SQL (PostgreSQL, MySQL)", level: 6 },
-      { name: "Redis", level: 5 },
-      { name: "Conception d'API REST", level: 7 },
-      { name: "JWT / OAuth", level: 1 },
-      { name: "Docker & Docker Compose", level: 6 },
-      { name: "SQLAlchemy", level: 5 },
-      { name: "Entity Framework", level: 4 },
-      { name: "WINDEV 2025", level: 2 },
+      { id: 16, name: "Node.js", level: 7 },
+      { id: 17, name: "Python", level: 9 },
+      { id: 18, name: "Django (Python)", level: 3 },
+      { id: 19, name: "Flask (Python)", level: 7 },
+      { id: 20, name: "SQL (PostgreSQL, MySQL)", level: 6 },
+      { id: 21, name: "Redis", level: 5 },
+      { id: 22, name: "Conception d'API REST", level: 7 },
+      { id: 23, name: "JWT / OAuth", level: 1 },
+      { id: 24, name: "Docker & Docker Compose", level: 6 },
+      { id: 25, name: "SQLAlchemy", level: 5 },
+      { id: 26, name: "Entity Framework", level: 4 },
+      { id: 27, name: "WINDEV 2025", level: 2 }
     ]
   },
   {
     category: "Outils & DevOps",
     skills: [
-      { name: "Git & GitHub/GitLab", level: 9 },
-      { name: "PCSOFT GDS", level: 3 },
-      { name: "CI/CD (GitHub Actions / GitLab CI)", level: 1 },
-      { name: "Outils de Build (Vite)", level: 5 },
-      { name: "Méthodologies Agile / Scrum", level: 7 },
-      { name: "Jira / Trello", level: 5 },
+      { id: 28, name: "Git & GitHub/GitLab", level: 9 },
+      { id: 29, name: "PCSOFT GDS", level: 3 },
+      { id: 30, name: "CI/CD (GitHub Actions)", level: 1 },
+      { id: 31, name: "Outils de Build (Vite)", level: 5 },
+      { id: 32, name: "Méthodologies Agile / Scrum", level: 7 },
+      { id: 33, name: "Jira / Trello", level: 5 }
     ]
   }
-]
+])
 
-// Get skill color class based on level
-const getSkillColorClass = (level) => {
-  if (level === 0) return 'bg-red-800'
-  if (level >= 1 && level <= 3) return 'bg-red-500'
-  if (level >= 4 && level <= 6) return 'bg-[#A59469]'
-  if (level >= 7 && level <= 8) return 'bg-green-500'
-  if (level >= 9 && level <= 10) return 'bg-green-700'
-  return 'bg-slate-400'
+// Computed properties
+const filteredSkillsData = computed(() => {
+  if (activeFilters.value.size === 0) {
+    return skillsData
+  }
+
+  return skillsData.map(category => ({
+    ...category,
+    skills: category.skills.filter(skill => {
+      return Array.from(activeFilters.value).some(range => {
+        if (range === '0') return skill.level === 0
+        if (range === '1-3') return skill.level >= 1 && skill.level <= 3
+        if (range === '4-6') return skill.level >= 4 && skill.level <= 6
+        if (range === '7-8') return skill.level >= 7 && skill.level <= 8
+        if (range === '9-10') return skill.level >= 9 && skill.level <= 10
+        return false
+      })
+    })
+  })).filter(category => category.skills.length > 0 || activeFilters.value.size === 0)
+})
+
+// Methods
+const getSkillColor = (level) => {
+  if (level === 0) return '#7F1D1D'
+  if (level >= 1 && level <= 3) return '#DC2626'
+  if (level >= 4 && level <= 6) return '#00D4FF'
+  if (level >= 7 && level <= 8) return '#22C55E'
+  if (level >= 9 && level <= 10) return '#15803D'
+  return '#64748B'
+}
+
+const getSkillCountByLevel = (range) => {
+  const allSkills = skillsData.flatMap(category => category.skills)
+
+  if (range === '0') {
+    return allSkills.filter(skill => skill.level === 0).length
+  } else if (range === '1-3') {
+    return allSkills.filter(skill => skill.level >= 1 && skill.level <= 3).length
+  } else if (range === '4-6') {
+    return allSkills.filter(skill => skill.level >= 4 && skill.level <= 6).length
+  } else if (range === '7-8') {
+    return allSkills.filter(skill => skill.level >= 7 && skill.level <= 8).length
+  } else if (range === '9-10') {
+    return allSkills.filter(skill => skill.level >= 9 && skill.level <= 10).length
+  }
+
+  return 0
+}
+
+const toggleSkillEdit = (skillId) => {
+  editingSkill.value = editingSkill.value === skillId ? null : skillId
+}
+
+const toggleLevelFilter = (range) => {
+  if (activeFilters.value.has(range)) {
+    activeFilters.value.delete(range)
+  } else {
+    activeFilters.value.add(range)
+  }
+  // Trigger reactivity
+  activeFilters.value = new Set(activeFilters.value)
+}
+
+const clearAllFilters = () => {
+  activeFilters.value = new Set()
+}
+
+const updateSkillLevel = (skillId, newLevel) => {
+  // Find and update skill level across all categories
+  for (const category of skillsData) {
+    const skill = category.skills.find(s => s.id === skillId)
+    if (skill) {
+      skill.level = newLevel
+      break
+    }
+  }
 }
 
 
-// PDF Export functionality
+const addSkill = () => {
+  if (!newSkill.name.trim()) return
+
+  // Find the category to add to
+  const category = skillsData.find(cat => cat.category === newSkill.category)
+  if (category) {
+    // Generate new ID
+    const maxId = Math.max(...skillsData.flatMap(cat => cat.skills.map(skill => skill.id)))
+
+    category.skills.push({
+      id: maxId + 1,
+      name: newSkill.name.trim(),
+      level: newSkill.level
+    })
+  }
+
+  // Reset form and close modal
+  newSkill.name = ''
+  newSkill.level = 5
+  showAddSkillModal.value = false
+}
+
+const addCategory = () => {
+  if (!newCategoryName.value.trim()) return
+
+  // Check if category already exists
+  const exists = skillsData.some(cat => cat.category.toLowerCase() === newCategoryName.value.trim().toLowerCase())
+  if (exists) return
+
+  // Add new category
+  skillsData.push({
+    category: newCategoryName.value.trim(),
+    skills: []
+  })
+
+  // Reset form and close modal
+  newCategoryName.value = ''
+  showAddCategoryModal.value = false
+}
+
 const exportToPDF = async () => {
   try {
     isExporting.value = true
@@ -203,90 +494,181 @@ const exportToPDF = async () => {
 
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
 
-    const legendBox = document.getElementById('skills-legend')
-    const categoryBoxes = document.querySelectorAll('.skill-category-box')
-    const originalBg = document.body.style.backgroundColor
-    document.body.style.backgroundColor = 'white'
-
-    // Utility function to capture an element using clone strategy
-    const captureElement = async (element) => {
-      const clone = element.cloneNode(true)
-      clone.style.position = 'absolute'
-      clone.style.left = '-9999px'
-      clone.style.width = element.offsetWidth + 'px'
-      clone.classList.remove('shadow-md')
-      document.body.appendChild(clone)
-
-      const canvas = await html2canvas.default(clone, {
-        scale: 1,
-        useCORS: true,
-        windowWidth: clone.scrollWidth,
-        windowHeight: clone.scrollHeight
-      })
-
-      document.body.removeChild(clone)
-      return canvas
+    // Colors for PDF
+    const colors = {
+      primary: [0, 212, 255],      // Electric blue
+      text: [55, 65, 81],          // Dark gray
+      textLight: [107, 114, 128],  // Light gray
+      background: [248, 250, 252]  // Very light gray
     }
 
-    // Utility function to add image to PDF centered
-    const addImageToPdf = (canvas, pdfInstance) => {
-      const imgData = canvas.toDataURL('image/jpeg', 0.9)
-      const pdfWidth = pdfInstance.internal.pageSize.getWidth()
-      const pdfHeight = pdfInstance.internal.pageSize.getHeight()
-      const canvasRatio = canvas.width / canvas.height
+    // Header
+    pdf.setFillColor(...colors.primary)
+    pdf.rect(0, 0, 210, 30, 'F')
 
-      let imgWidth = pdfWidth - 20 // 10mm margin on each side
-      let imgHeight = imgWidth / canvasRatio
+    pdf.setTextColor(255, 255, 255)
+    pdf.setFontSize(24)
+    pdf.setFont('helvetica', 'bold')
+    pdf.text('Profil de Compétences', 20, 20)
 
-      if (imgHeight > pdfHeight - 20) { // 10mm margin top/bottom
-        imgHeight = pdfHeight - 20
-        imgWidth = imgHeight * canvasRatio
+    pdf.setFontSize(12)
+    pdf.setFont('helvetica', 'normal')
+    pdf.text('Évaluation des compétences techniques', 20, 26)
+
+    // Legend section
+    let yPosition = 45
+    pdf.setTextColor(...colors.text)
+    pdf.setFontSize(16)
+    pdf.setFont('helvetica', 'bold')
+    pdf.text('Légende des niveaux', 20, yPosition)
+
+    yPosition += 8
+    pdf.setFontSize(10)
+    pdf.setFont('helvetica', 'normal')
+
+    const legendItems = [
+      { range: '0', label: 'Inconnu', color: [127, 29, 29] },
+      { range: '1-3', label: 'Novice', color: [220, 38, 38] },
+      { range: '4-6', label: 'Compétent', color: [0, 212, 255] },
+      { range: '7-8', label: 'Avancé', color: [34, 197, 94] },
+      { range: '9-10', label: 'Expert', color: [21, 128, 61] }
+    ]
+
+    legendItems.forEach((item, index) => {
+      const xPos = 20 + (index * 35)
+
+      // Color circle
+      pdf.setFillColor(...item.color)
+      pdf.circle(xPos + 2, yPosition + 1.5, 1.5, 'F')
+
+      // Text
+      pdf.setTextColor(...colors.text)
+      pdf.text(`${item.range}: ${item.label}`, xPos + 6, yPosition + 2)
+    })
+
+    yPosition += 15
+
+    // Skills sections
+    for (const category of skillsData) {
+      // Check if we need a new page
+      if (yPosition > 250) {
+        pdf.addPage()
+        yPosition = 20
       }
 
-      const x = (pdfWidth - imgWidth) / 2
-      const y = 10
+      // Category header with background
+      pdf.setFillColor(240, 242, 247)
+      pdf.rect(15, yPosition - 5, 180, 12, 'F')
 
-      pdfInstance.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight)
+      pdf.setTextColor(...colors.text)
+      pdf.setFontSize(14)
+      pdf.setFont('helvetica', 'bold')
+      pdf.text(category.category, 20, yPosition + 2)
+
+      yPosition += 15
+
+      // Skills in this category
+      for (const skill of category.skills) {
+        // Check if we need a new page
+        if (yPosition > 270) {
+          pdf.addPage()
+          yPosition = 20
+        }
+
+        // Single row layout: "HTML5    7/10  [colored striped bar]"
+        const skillName = skill.name
+        const levelText = `${skill.level}/10`
+
+        // Layout positions
+        const nameX = 25
+        const levelX = 110
+        const barX = 140
+        const barWidth = 50
+        const barHeight = 6
+
+        // Skill name
+        pdf.setTextColor(...colors.text)
+        pdf.setFontSize(11)
+        pdf.setFont('helvetica', 'normal')
+        pdf.text(skillName, nameX, yPosition)
+
+        // Level indicator
+        pdf.setFontSize(10)
+        pdf.setFont('helvetica', 'bold')
+        pdf.setTextColor(...colors.textLight)
+        pdf.text(levelText, levelX, yPosition)
+
+        // Skill bar background (light gray)
+        pdf.setFillColor(229, 231, 235)
+        pdf.rect(barX, yPosition - 3, barWidth, barHeight, 'F')
+
+        // Skill bar fill with stripes
+        const fillWidth = (skill.level / 10) * barWidth
+        const skillColor = getSkillColorRGB(skill.level)
+
+        if (fillWidth > 0) {
+          // Main colored fill
+          pdf.setFillColor(...skillColor)
+          pdf.rect(barX, yPosition - 3, fillWidth, barHeight, 'F')
+
+          // Add stripe pattern (alternating lighter color)
+          const lighterColor = skillColor.map(c => Math.min(255, c + 40))
+          pdf.setFillColor(...lighterColor)
+
+          // Create stripes by drawing thin rectangles
+          for (let i = 0; i < fillWidth; i += 4) {
+            pdf.rect(barX + i, yPosition - 3, 2, barHeight, 'F')
+          }
+        }
+
+        // Bar border
+        pdf.setDrawColor(200, 200, 200)
+        pdf.setLineWidth(0.2)
+        pdf.rect(barX, yPosition - 3, barWidth, barHeight, 'S')
+
+        yPosition += 12
+      }
+
+      yPosition += 8 // Extra space between categories
     }
 
-    // 1. Capture and add legend to first page
-    if (legendBox) {
-      const legendCanvas = await captureElement(legendBox)
-      addImageToPdf(legendCanvas, pdf)
+    // Footer
+    const pageCount = pdf.internal.getNumberOfPages()
+    for (let i = 1; i <= pageCount; i++) {
+      pdf.setPage(i)
+      pdf.setTextColor(...colors.textLight)
+      pdf.setFontSize(9)
+      pdf.text(`Page ${i} sur ${pageCount}`, 20, 290)
+      pdf.text(`Généré le ${new Date().toLocaleDateString('fr-FR')}`, 130, 290)
     }
 
-    // 2. Loop through categories, adding each to a new page
-    for (const box of categoryBoxes) {
-      pdf.addPage()
-      const categoryCanvas = await captureElement(box)
-      addImageToPdf(categoryCanvas, pdf)
-    }
-
-    document.body.style.backgroundColor = originalBg
-    pdf.save('mes-competences-par-categorie.pdf')
+    pdf.save('profil-competences.pdf')
 
   } catch (error) {
     console.error('Erreur lors de l\'export PDF:', error)
-    alert('Une erreur est survenue lors de l\'export PDF. Veuillez réessayer.')
+    alert('Une erreur est survenue lors de l\'export PDF.')
   } finally {
     isExporting.value = false
   }
 }
+
+// Helper function to get RGB color for PDF
+const getSkillColorRGB = (level) => {
+  if (level === 0) return [127, 29, 29]
+  if (level >= 1 && level <= 3) return [220, 38, 38]
+  if (level >= 4 && level <= 6) return [0, 212, 255]
+  if (level >= 7 && level <= 8) return [34, 197, 94]
+  if (level >= 9 && level <= 10) return [21, 128, 61]
+  return [100, 116, 139]
+}
 </script>
 
 <style scoped>
-.skills-evaluator-tool {
-  font-family: 'Inter', sans-serif;
-  background-color: #F8F7F4;
-  color: #3D3B30;
-  min-height: 100vh;
-}
-
-/* Keyframe animations */
-@keyframes fade-in {
+/* Animations */
+@keyframes slide-up {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -294,158 +676,70 @@ const exportToPDF = async () => {
   }
 }
 
-@keyframes slide-in-left {
-  from {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(165, 148, 105, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 0 8px rgba(165, 148, 105, 0);
-  }
-}
-
-.animate-fade-in {
-  animation: fade-in 0.6s ease-out;
-}
-
-.skill-category-box {
-  background-color: #FFFFFF;
-  border: 1px solid #EFEBE4;
-  animation: slide-in-left 0.6s ease-out forwards;
+.animate-slide-up {
+  animation: slide-up 0.6s ease-out forwards;
   opacity: 0;
 }
 
-.skill-category-box:nth-child(1) { animation-delay: 0.1s; }
-.skill-category-box:nth-child(2) { animation-delay: 0.2s; }
-.skill-category-box:nth-child(3) { animation-delay: 0.3s; }
-
-/* Bootstrap-style animated stripes for skill bars */
-@keyframes progress-bar-stripes {
+/* Skill bar stripes animation */
+@keyframes progress-stripes {
   0% {
     background-position-x: 1rem;
   }
 }
 
-.skill-bar-level {
-  transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.skill-bar-stripes {
+.skill-stripes {
   background-image: linear-gradient(
     45deg,
-    rgba(255, 255, 255, 0.15) 25%,
+    rgba(255, 255, 255, 0.2) 25%,
     transparent 25%,
     transparent 50%,
-    rgba(255, 255, 255, 0.15) 50%,
-    rgba(255, 255, 255, 0.15) 75%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.2) 75%,
     transparent 75%,
     transparent
   );
   background-size: 1rem 1rem;
-  animation: progress-bar-stripes 1s linear infinite;
+  animation: progress-stripes 1s linear infinite;
 }
 
-/* Simple skill row styling */
-.skill-row {
-  position: relative;
+/* Range slider styling */
+.slider {
+  -webkit-appearance: none;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  height: 8px;
+  outline: none;
+  cursor: pointer;
 }
 
-/* Legend improvements with enhanced glass effect */
-#skills-legend {
-  backdrop-filter: blur(20px);
-  background: rgba(255, 255, 255, 0.95);
-  position: relative;
-  overflow: hidden;
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--gradient-electric);
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: var(--shadow-sm);
 }
 
-#skills-legend::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(165, 148, 105, 0.05) 0%, transparent 70%);
-  animation: pulse-glow 3s infinite;
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--gradient-electric);
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: var(--shadow-sm);
 }
 
-/* Category header enhancements */
-.skill-category-box h2 {
-  position: relative;
-  overflow: hidden;
-}
-
-.skill-category-box h2::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #A59469, #8C7A4B);
-  transition: width 0.3s ease;
-}
-
-.skill-category-box:hover h2::after {
-  width: 100%;
-}
-
-/* Button hover states with enhanced effects */
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-  filter: grayscale(100%);
-}
-
-/* Floating animation for high-level skills */
-.skill-level-text {
-  transition: all 0.2s ease;
-}
-
-.skill-row:hover .skill-level-text {
-  animation: pulse-glow 1s infinite;
-}
-
-/* Responsive adjustments */
-@media (max-width: 640px) {
-  .skill-name {
-    font-size: 0.875rem;
-  }
-
-  .skill-level-text {
-    font-size: 0.75rem;
-  }
-
-  .skill-category-box {
-    padding: 1rem 1.25rem;
-  }
-
-  h1 {
-    font-size: 2rem;
-  }
-}
-
-/* Print styles for PDF export */
-@media print {
-  .skills-evaluator-tool {
-    background-color: white !important;
-  }
-
-  .skill-category-box {
-    box-shadow: none !important;
-    border: 1px solid #EFEBE4 !important;
-    page-break-inside: avoid;
-    margin-bottom: 1rem;
-  }
+/* Modal styling */
+.glass-modal {
+  background: var(--glass-modal-bg);
+  backdrop-filter: blur(var(--blur-lg));
+  border: 1px solid var(--border-primary);
+  box-shadow: var(--shadow-modal);
 }
 </style>
