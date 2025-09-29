@@ -29,7 +29,7 @@
   --accent-red-light: #FF8E8E;
   --accent-green: #4ECDC4;
   --accent-yellow: #FFE66D;
-  --accent-purple: #A8E6CF;
+  --accent-purple: #daa8e6;
 
   /* ================================
      SEMANTIC COLOR SYSTEM
@@ -236,6 +236,15 @@
   --shadow-button: var(--shadow-md);
   --shadow-card: var(--shadow-lg);
   --shadow-modal: var(--shadow-2xl);
+
+  /* ================================
+     GRADIENT SYSTEM
+     ================================ */
+
+  /* Primary Gradients */
+  --gradient-electric: linear-gradient(135deg, var(--electric-blue-light) 0%, var(--electric-blue-dark) 100%);
+  --gradient-primary: linear-gradient(135deg, var(--electric-blue) 0%, var(--electric-blue-dark) 100%);
+  --gradient-secondary: linear-gradient(135deg, var(--glass-bg-dark) 0%, var(--glass-bg-light) 100%);
 
   /* ================================
      Z-INDEX SYSTEM
