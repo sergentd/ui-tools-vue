@@ -7,7 +7,7 @@
       :href="!useVueRouting ? tool.url : undefined"
       :target="!useVueRouting ? '_blank' : undefined"
       :rel="!useVueRouting ? 'noopener noreferrer' : undefined"
-      class="tool-card glass-card-white hover-lift hover-glow block p-6 rounded-2xl group relative overflow-hidden border-2 border-transparent hover:border-electric-blue/30 transition-all duration-300"
+      class="tool-card glass-card-white hover-lift hover-glow card-interactive block p-6 rounded-2xl group relative overflow-hidden border-2 border-transparent hover:border-electric-blue/30 transition-all duration-300"
       :data-category="category"
       @click="handleClick"
     >
