@@ -14,7 +14,6 @@ import ColorContrastChecker from './components/tools/theming/ColorContrastChecke
 import ShadowGenerator from './components/tools/theming/ShadowGenerator.vue'
 import FlexboxPlayground from './components/tools/theming/FlexboxPlayground.vue'
 import GradientGenerator from './components/tools/theming/GradientGenerator.vue'
-import GradientGeneratorRedesigned from './components/tools/theming/GradientGeneratorRedesigned.vue'
 import PaletteGenerator from './components/tools/theming/PaletteGenerator.vue'
 import ThemingMultiClient from './components/tools/reference/ThemingMultiClient.vue'
 import WebdevGlossary from './components/tools/reference/WebdevGlossary.vue'
@@ -89,18 +88,6 @@ const routes = [
       migrated: true
     }
   },
-  // TEMPORARY ROUTE
-  {
-    path: '/tools/theming/gradient-generator-r',
-    name: 'GradientGenerator',
-    component: GradientGeneratorRedesigned,
-    meta: {
-      title: 'Générateur de Dégradés',
-      category: 'theming',
-      migrated: true
-    }
-  },
-
   {
     path: '/tools/theming/palette-generator',
     name: 'PaletteGenerator',
