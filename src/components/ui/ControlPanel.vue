@@ -1,12 +1,15 @@
 <template>
-  <div class="control-card rounded-2xl p-6 space-y-6">
-    <h2 class="text-xl font-bold text-white mb-4">{{ title }}</h2>
+  <UISection :title="title" class="space-y-6">
+    <UISection
+      v-for="section in sections"
+      :key="section.title"
+      :title="section.title"
+      variant="nested"
+      class="control-group"
+    >
 
-    <div v-for="section in sections" :key="section.title" class="control-group">
-      <h3 class="font-semibold text-white mb-3">{{ section.title }}</h3>
-
-      <div v-for="control in section.controls" :key="control.id" class="control-row">
-        <label class="label">{{ control.label }}:</label>
+      <div v-for="control in section.controls" :key="control.id" class="flex-between gap-3">
+        <label class="text-secondary text-sm font-medium min-w-[120px]">{{ control.label }}:</label>
 
         <!-- Number input -->
         <input
@@ -45,7 +48,7 @@
         </select>
 
         <!-- Range slider -->
-        <div v-else-if="control.type === 'range'" class="flex items-center gap-2 flex-1">
+        <div v-else-if="control.type === 'range'" class="flex items-center gap-2 flex-1 max-w-[200px]">
           <input
             :id="control.id"
             :value="control.value"
@@ -56,15 +59,16 @@
             :step="control.step"
             class="flex-1 h-2 bg-white/20 rounded-lg appearance-none cursor-pointer slider"
           />
-          <span class="text-white/80 text-sm min-w-[40px]">{{ control.value }}{{ control.unit || '' }}</span>
+          <span class="text-secondary text-sm min-w-[40px]">{{ control.value }}{{ control.unit || '' }}</span>
         </div>
       </div>
-    </div>
-  </div>
+    </UISection>
+  </UISection>
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import { UISection } from '@/components/ui'
 
 const props = defineProps({
   title: {
@@ -92,52 +96,33 @@ const handleInput = (controlId, value) => {
 </script>
 
 <style scoped>
-.control-card {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
 .control-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.control-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  @apply flex flex-col items-start space-y-2;
 }
 
 .control-input {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
-  padding: 8px 12px;
-  border-radius: 6px;
+  background: var(--glass-bg-input);
+  border: 1px solid var(--border-primary);
+  color: var(--text-primary);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-input);
   font-size: 14px;
   min-width: 80px;
   flex: 1;
   max-width: 200px;
+  transition: var(--transition-default);
 }
 
 .control-input::placeholder {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-tertiary);
 }
 
 .control-input:focus {
   outline: none;
-  border-color: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-focus);
 }
 
-.label {
-  font-size: 14px;
-  font-weight: 500;
-  min-width: 120px;
-  color: rgba(255, 255, 255, 0.9);
-}
 
 /* Custom slider styling */
 .slider::-webkit-slider-thumb {
@@ -145,19 +130,19 @@ const handleInput = (controlId, value) => {
   height: 18px;
   width: 18px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-electric);
   cursor: pointer;
   border: 2px solid white;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-sm);
 }
 
 .slider::-moz-range-thumb {
   height: 18px;
   width: 18px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-electric);
   cursor: pointer;
   border: 2px solid white;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-sm);
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[
-      'glass-card rounded-2xl p-6 transition-all duration-300',
+      'glass-card rounded-2xl p-6 transition-default',
       variant === 'white' ? 'glass-card-white hover-lift' : '',
       className
     ]"
@@ -13,10 +13,10 @@
 
     <!-- Title and subtitle -->
     <div v-if="title || subtitle" class="mb-4">
-      <h3 v-if="title" class="text-xl font-bold text-white mb-2 leading-tight">
+      <h3 v-if="title" class="text-xl font-bold text-primary mb-2 leading-tight">
         {{ title }}
       </h3>
-      <p v-if="subtitle" class="text-gray-300 text-sm">
+      <p v-if="subtitle" class="text-secondary text-sm">
         {{ subtitle }}
       </p>
     </div>
@@ -27,7 +27,7 @@
     </div>
 
     <!-- Footer slot -->
-    <div v-if="$slots.footer" class="mt-4 pt-4 border-t border-border-primary">
+    <div v-if="$slots.footer" class="mt-4 pt-4 border-t border-t-white/10">
       <slot name="footer" />
     </div>
   </div>

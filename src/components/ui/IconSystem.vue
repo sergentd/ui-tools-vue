@@ -274,12 +274,22 @@
       <!-- Outer ring stroke -->
       <circle cx="12" cy="12" r="8" fill="none" :stroke="accentColor" stroke-width="2"/>
     </g>
+    <!-- Chevron Right -->
+    <g v-else-if="name === 'chevron-right'">
+      <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
 
+    <!-- Chevron Down -->
+    <g v-else-if="name === 'chevron-down'">
+      <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
     <!-- Default fallback -->
     <g v-else>
       <rect x="3" y="3" width="18" height="18" :fill="primaryColor" stroke="currentColor" stroke-width="2" rx="3"/>
       <circle cx="12" cy="12" r="4" :fill="accentColor"/>
     </g>
+
+
   </svg>
 </template>
 

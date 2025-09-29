@@ -340,11 +340,9 @@ const contentClasses = computed(() => ({
   background: var(--glass-bg-section);
 }
 
-/* Focus styles for accessibility */
+/* Focus styles removed - cleaner appearance */
 .ui-section--collapsible:focus-within .section__header {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
-  border-radius: var(--radius-sm);
+  outline: none;
 }
 
 /* Responsive adjustments */

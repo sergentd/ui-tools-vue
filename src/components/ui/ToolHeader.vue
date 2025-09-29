@@ -1,7 +1,7 @@
 <template>
   <header class="tool-header full-width">
     <!-- Full-width dark header with background image support -->
-    <div class="header-container relative w-full">
+    <div class="header-container relative w-full border-primary">
       <!-- Background overlay for future images -->
       <div class="header-background absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
         <!-- Future: background image will go here -->

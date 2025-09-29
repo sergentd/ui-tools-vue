@@ -162,7 +162,7 @@ const handleClick = (event) => {
 
 .ui-button:focus {
   outline: none;
-  box-shadow: var(--shadow-focus);
+  box-shadow: none;
 }
 
 /* Button variants */
