@@ -1,142 +1,340 @@
 <template>
-  <div class="gradient-generator min-h-screen">
-    <!-- Main content with container -->
-    <div class="container mx-auto px-6 max-w-7xl py-8">
-      <!-- Header inside container -->
-      <ToolHeader
-        title="Générateur de Dégradés"
-        description="Créez des dégradés CSS magnifiques avec contrôles visuels pour tous types de gradients"
-        icon="🌈"
-        category="theming"
-        status="Migré vers Vue"
-        :show-badges="true"
-      />
+  <div class="min-h-screen bg-primary space-y-12">
+    <!-- Tool Header -->
+    <ToolHeader
+      title="Générateur de Dégradés"
+      description="Créez des dégradés CSS magnifiques avec contrôles visuels pour tous types de gradients"
+      icon="gradient-generator"
+      category="theming"
+      :show-badges="true"
+    />
 
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 space-y-8">
+      <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
+
         <!-- Controls Panel -->
-        <div class="lg:col-span-1 space-y-6">
-          <!-- Gradient Type -->
-          <GlassCard variant="glass">
-            <template #header>
-              <h2 class="text-xl font-bold text-white">Type de Dégradé</h2>
-            </template>
+        <div class="xl:col-span-1 space-y-6">
 
-            <GradientTypeControls
-              :gradient-state="gradientState"
-              @update="updateGradientProperty"
-            />
-          </GlassCard>
-
-          <!-- Color Stops -->
-          <GlassCard variant="glass">
-            <template #header>
-              <div class="flex justify-between items-center">
-                <h3 class="text-lg font-bold text-white">Couleurs</h3>
-                <button
-                  @click="addColorStop"
-                  class="btn btn-small bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-lg font-medium"
-                >
-                  + Ajouter
-                </button>
-              </div>
-            </template>
-
-            <div class="space-y-3">
-              <ColorStop
-                v-for="stop in gradientState.colorStops"
-                :key="stop.id"
-                :stop="stop"
-                :selected="gradientState.selectedStopId === stop.id"
-                :can-remove="gradientState.colorStops.length > 2"
-                @update="updateColorStop"
-                @remove="removeColorStop"
-                @select="selectColorStop"
-              />
-            </div>
-          </GlassCard>
-
-          <!-- Presets -->
-          <PresetSelector
-            title="Préréglages"
-            :presets="gradientPresets"
-            :active-preset="activePreset"
-            :columns="2"
-            @preset-selected="applyPreset"
-            @custom-selected="setCustomPreset"
-          />
-        </div>
-
-        <!-- Preview and Output -->
-        <div class="lg:col-span-3 space-y-6">
-          <!-- Visual Preview -->
-          <GlassCard variant="glass">
-            <template #header>
-              <h2 class="text-xl font-bold text-white">Aperçu</h2>
-            </template>
-
-            <GradientPreview
-              :gradient="generatedGradient"
-            />
-          </GlassCard>
-
-          <!-- CSS Output -->
-          <GlassCard variant="glass">
-            <template #header>
-              <div class="flex justify-between items-center">
-                <h2 class="text-xl font-bold text-white">Code CSS</h2>
-                <div class="flex gap-2">
+          <!-- Gradient Type Controls -->
+          <UISection title="Type de Dégradé" variant="glass" collapsible>
+            <div class="space-y-4">
+              <!-- Type Selection -->
+              <div>
+                <label class="text-sm font-medium text-secondary mb-2 block">Type</label>
+                <div class="grid grid-cols-3 gap-2">
                   <button
-                    @click="randomGradient"
-                    class="btn btn-secondary"
+                    v-for="type in gradientTypes"
+                    :key="type.id"
+                    @click="updateGradientProperty('type', type.id)"
+                    class="p-2 text-xs rounded-lg transition-default text-center"
+                    :class="gradientState.type === type.id ? 'glass-accent text-electric' : 'glass-light text-secondary hover-lift-sm'"
                   >
-                    🎲 Aléatoire
-                  </button>
-                  <button
-                    @click="copyCSS"
-                    class="btn flex items-center gap-2"
-                    :class="{ 'btn-success': copied }"
-                  >
-                    {{ copied ? '✅' : '📋' }} {{ copied ? 'Copié!' : 'Copier' }}
+                    <div class="text-lg mb-1">{{ type.icon }}</div>
+                    {{ type.name }}
                   </button>
                 </div>
               </div>
+
+              <!-- Angle Control for Linear -->
+              <div v-if="gradientState.type === 'linear'" class="space-y-2">
+                <label class="text-sm font-medium text-secondary">Angle: {{ gradientState.angle }}°</label>
+                <input
+                  type="range"
+                  :value="gradientState.angle"
+                  @input="updateGradientProperty('angle', parseInt($event.target.value))"
+                  min="0"
+                  max="360"
+                  class="w-full slider"
+                />
+                <div class="flex justify-between text-xs text-tertiary">
+                  <span>0°</span>
+                  <span>180°</span>
+                  <span>360°</span>
+                </div>
+              </div>
+
+              <!-- Radial Controls -->
+              <div v-if="gradientState.type === 'radial'" class="space-y-3">
+                <div>
+                  <label class="text-sm font-medium text-secondary mb-2 block">Position</label>
+                  <UISelect
+                    :model-value="gradientState.radialPosition"
+                    @update:model-value="updateGradientProperty('radialPosition', $event)"
+                    :options="radialPositions"
+                    size="sm"
+                    variant="control"
+                  />
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-secondary mb-2 block">Forme</label>
+                  <UISelect
+                    :model-value="gradientState.radialShape"
+                    @update:model-value="updateGradientProperty('radialShape', $event)"
+                    :options="radialShapes"
+                    size="sm"
+                    variant="control"
+                  />
+                </div>
+              </div>
+
+              <!-- Conic Controls -->
+              <div v-if="gradientState.type === 'conic'" class="space-y-2">
+                <label class="text-sm font-medium text-secondary">Rotation: {{ gradientState.conicAngle }}°</label>
+                <input
+                  type="range"
+                  :value="gradientState.conicAngle"
+                  @input="updateGradientProperty('conicAngle', parseInt($event.target.value))"
+                  min="0"
+                  max="360"
+                  class="w-full slider"
+                />
+              </div>
+            </div>
+          </UISection>
+
+          <!-- Color Stops -->
+          <UISection title="Couleurs" variant="glass" collapsible>
+            <template #actions>
+              <UIButton
+                @click="addColorStop"
+                variant="secondary"
+                size="sm"
+                icon="plus"
+              >
+                Ajouter
+              </UIButton>
             </template>
 
-            <!-- Format Tabs -->
-            <div class="format-tabs mb-4">
-              <button
-                v-for="format in outputFormats"
-                :key="format.id"
-                class="format-tab"
-                :class="{ 'active': currentFormat === format.id }"
-                @click="currentFormat = format.id"
+            <div class="space-y-3">
+              <div
+                v-for="stop in gradientState.colorStops"
+                :key="stop.id"
+                class="flex items-center gap-3 p-3 rounded-lg transition-default"
+                :class="gradientState.selectedStopId === stop.id ? 'glass-accent border border-electric' : 'glass-light'"
               >
-                {{ format.name }}
+                <!-- Color Picker -->
+                <input
+                  type="color"
+                  :value="stop.color"
+                  @input="updateColorStop({ id: stop.id, property: 'color', value: $event.target.value })"
+                  @click="selectColorStop(stop.id)"
+                  class="w-12 h-12 rounded-full border-2 border-primary cursor-pointer hover-lift-sm"
+                />
+
+                <!-- Position Control -->
+                <div class="flex-1">
+                  <div class="flex justify-between text-xs text-tertiary mb-1">
+                    <span>Position</span>
+                    <span>{{ stop.position }}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    :value="stop.position"
+                    @input="updateColorStop({ id: stop.id, property: 'position', value: parseInt($event.target.value) })"
+                    min="0"
+                    max="100"
+                    class="w-full slider-sm"
+                  />
+                </div>
+
+                <!-- Remove Button -->
+                <UIButton
+                  v-if="gradientState.colorStops.length > 2"
+                  @click="removeColorStop(stop.id)"
+                  variant="ghost"
+                  size="sm"
+                  icon="x"
+                  class="text-accent-red hover:text-accent-red"
+                />
+              </div>
+            </div>
+          </UISection>
+
+          <!-- Presets -->
+          <UISection title="Préréglages" variant="glass" collapsible>
+            <div class="grid grid-cols-2 gap-2">
+              <button
+                v-for="preset in gradientPresets"
+                :key="preset.id"
+                @click="applyPreset(preset)"
+                class="p-3 rounded-lg text-left transition-default hover-lift-sm"
+                :class="activePreset === preset.id ? 'glass-accent border border-electric' : 'glass-light hover:glass-hover'"
+              >
+                <div class="text-lg mb-1">{{ preset.icon }}</div>
+                <div class="text-sm font-medium text-primary">{{ preset.name }}</div>
+                <div class="text-xs text-tertiary">{{ preset.description }}</div>
+                <div
+                  class="w-full h-4 rounded mt-2"
+                  :style="{ background: preset.example }"
+                ></div>
               </button>
             </div>
+          </UISection>
+        </div>
 
-            <CodeOutput
-              :code="formattedCSS"
-              language="css"
-            />
-          </GlassCard>
+        <!-- Preview and Output -->
+        <div class="xl:col-span-3 space-y-6">
+
+          <!-- Visual Preview -->
+          <UISection title="Aperçu" variant="glass" collapsible>
+            <div class="space-y-4">
+              <!-- Main Preview -->
+              <div class="relative">
+                <div
+                  class="w-full h-64 rounded-lg border-2 border-primary relative overflow-hidden"
+                  :style="{ background: generatedGradient }"
+                >
+                  <!-- Pattern Overlay for Better Visibility -->
+                  <div class="absolute inset-0 opacity-10">
+                    <div class="w-full h-full" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,.1) 10px, rgba(0,0,0,.1) 20px);"></div>
+                  </div>
+
+                  <!-- Gradient Info Overlay -->
+                  <div class="absolute top-4 left-4 glass-dark px-3 py-2 rounded-lg">
+                    <div class="text-xs text-primary font-mono">{{ gradientState.type.toUpperCase() }}</div>
+                    <div class="text-xs text-secondary">
+                      {{ gradientState.colorStops.length }} couleur{{ gradientState.colorStops.length > 1 ? 's' : '' }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Mini Previews with Different Applications -->
+              <div class="grid grid-cols-4 gap-3">
+                <div class="text-center space-y-2">
+                  <div class="h-12 rounded-lg border border-primary shadow-sm" :style="{ background: generatedGradient }"></div>
+                  <div class="text-xs text-tertiary">Standard</div>
+                </div>
+                <div class="text-center space-y-2">
+                  <div class="h-12 w-12 mx-auto rounded-full border border-primary shadow-sm" :style="{ background: generatedGradient }"></div>
+                  <div class="text-xs text-tertiary">Bouton</div>
+                </div>
+                <div class="text-center space-y-2">
+                  <div class="h-12 rounded-lg border border-primary shadow-sm relative overflow-hidden glass-light">
+                    <div class="w-full h-2 absolute bottom-0 rounded-b-lg" :style="{ background: generatedGradient }"></div>
+                    <div class="p-2 flex items-center justify-center h-full">
+                      <div class="text-xs text-tertiary">Card</div>
+                    </div>
+                  </div>
+                  <div class="text-xs text-tertiary">Accent</div>
+                </div>
+                <div class="text-center space-y-2">
+                  <div class="h-12 rounded-lg border border-primary shadow-sm relative overflow-hidden glass-light">
+                    <div class="w-full h-full opacity-60" :style="{ background: generatedGradient }"></div>
+                  </div>
+                  <div class="text-xs text-tertiary">Arrière-plan</div>
+                </div>
+              </div>
+            </div>
+          </UISection>
+
+          <!-- CSS Output -->
+          <UISection title="Code CSS" variant="glass" collapsible>
+            <template #actions>
+              <div class="flex gap-2">
+                <UIButton
+                  @click="randomGradient"
+                  variant="secondary"
+                  size="sm"
+                  icon="shuffle"
+                >
+                  Aléatoire
+                </UIButton>
+                <UIButton
+                  @click="copyCSS"
+                  :variant="copied ? 'success' : 'secondary'"
+                  size="sm"
+                  :icon="copied ? 'check' : 'clipboard'"
+                >
+                  {{ copied ? 'Copié!' : 'Copier' }}
+                </UIButton>
+              </div>
+            </template>
+
+            <div class="space-y-4">
+              <!-- Format Selection -->
+              <div class="flex gap-1 glass-dark p-1 rounded-lg">
+                <button
+                  v-for="format in outputFormats"
+                  :key="format.id"
+                  @click="currentFormat = format.id"
+                  class="flex-1 py-2 px-3 text-sm font-medium rounded-md transition-default"
+                  :class="currentFormat === format.id
+                    ? 'bg-electric text-electric shadow-sm'
+                    : 'text-white hover:text-electric-blue'"
+                >
+                  {{ format.name }}
+                </button>
+              </div>
+
+              <!-- Code Display -->
+              <CodeBlock
+                :code="formattedCSS"
+                language="css"
+                :show-line-numbers="false"
+              />
+
+              <!-- Quick Actions -->
+              <div class="flex justify-between items-center text-xs text-tertiary">
+                <span>{{ generatedGradient.length }} caractères</span>
+                <div class="flex gap-4">
+                  <span>Compatibilité: Tous navigateurs modernes</span>
+                  <span>Format: CSS3</span>
+                </div>
+              </div>
+            </div>
+          </UISection>
         </div>
       </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="mt-16 border-t border-primary glass-light">
+      <div class="container mx-auto py-6 px-4 text-center text-tertiary">
+        <p>&copy; 2025 - Générateur de dégradés CSS. Créez des designs magnifiques avec facilité.</p>
+      </div>
+    </footer>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, computed } from 'vue'
-
-// Components
+import { UISection, UIButton, UISelect } from '@/components/ui'
 import ToolHeader from '@/components/ui/ToolHeader.vue'
-import GlassCard from '@/components/ui/GlassCard.vue'
-import PresetSelector from '@/components/ui/PresetSelector.vue'
-import CodeOutput from '@/components/ui/CodeOutput.vue'
-import GradientTypeControls from './GradientGenerator/GradientTypeControls.vue'
-import ColorStop from './GradientGenerator/ColorStop.vue'
-import GradientPreview from './GradientGenerator/GradientPreview.vue'
+import CodeBlock from '@/components/ui/CodeBlock.vue'
+
+// Gradient types
+const gradientTypes = [
+  { id: 'linear', name: 'Linéaire', icon: '📐' },
+  { id: 'radial', name: 'Radial', icon: '🎯' },
+  { id: 'conic', name: 'Conique', icon: '🌀' }
+]
+
+// Select options
+const radialPositions = [
+  { label: 'Centre', value: 'center' },
+  { label: 'Haut', value: 'top' },
+  { label: 'Bas', value: 'bottom' },
+  { label: 'Gauche', value: 'left' },
+  { label: 'Droite', value: 'right' },
+  { label: 'Haut gauche', value: 'top left' },
+  { label: 'Haut droite', value: 'top right' },
+  { label: 'Bas gauche', value: 'bottom left' },
+  { label: 'Bas droite', value: 'bottom right' }
+]
+
+const radialShapes = [
+  { label: 'Ellipse', value: 'ellipse' },
+  { label: 'Cercle', value: 'circle' }
+]
+
+// Output formats
+const outputFormats = [
+  { id: 'css', name: 'CSS' },
+  { id: 'background', name: 'Background' },
+  { id: 'webkit', name: 'Préfixes' }
+]
 
 // State management
 const gradientState = reactive({
@@ -146,8 +344,8 @@ const gradientState = reactive({
   radialShape: 'ellipse',
   conicAngle: 0,
   colorStops: [
-    { id: 1, color: '#667eea', position: 0 },
-    { id: 2, color: '#764ba2', position: 100 }
+    { id: 1, color: '#00D4FF', position: 0 },
+    { id: 2, color: '#0099CC', position: 100 }
   ],
   selectedStopId: null
 })
@@ -157,27 +355,35 @@ const activePreset = ref('custom')
 const copied = ref(false)
 const currentFormat = ref('css')
 
-// Output formats
-const outputFormats = [
-  { id: 'css', name: 'CSS' },
-  { id: 'background', name: 'Background' },
-  { id: 'webkit', name: 'WebKit' }
-]
-
-// Gradient presets
+// Gradient presets with our color scheme
 const gradientPresets = [
   {
+    id: 'electric',
+    name: 'Electric',
+    icon: '⚡',
+    description: 'Bleu électrique',
+    example: 'linear-gradient(135deg, #00D4FF 0%, #0099CC 100%)',
+    config: {
+      type: 'linear',
+      angle: 135,
+      colorStops: [
+        { id: 1, color: '#00D4FF', position: 0 },
+        { id: 2, color: '#0099CC', position: 100 }
+      ]
+    }
+  },
+  {
     id: 'sunset',
-    name: 'Coucher de Soleil',
+    name: 'Coucher',
     icon: '🌅',
-    description: 'Dégradé chaleureux',
-    example: 'linear-gradient(45deg, #ff9a9e 0%, #fecfef 100%)',
+    description: 'Chaleur douce',
+    example: 'linear-gradient(45deg, #FF6B6B 0%, #FFE66D 100%)',
     config: {
       type: 'linear',
       angle: 45,
       colorStops: [
-        { id: 1, color: '#ff9a9e', position: 0 },
-        { id: 2, color: '#fecfef', position: 100 }
+        { id: 1, color: '#FF6B6B', position: 0 },
+        { id: 2, color: '#FFE66D', position: 100 }
       ]
     }
   },
@@ -185,14 +391,44 @@ const gradientPresets = [
     id: 'ocean',
     name: 'Océan',
     icon: '🌊',
-    description: 'Bleu profond',
-    example: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    description: 'Profondeur marine',
+    example: 'linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%)',
     config: {
       type: 'linear',
       angle: 135,
       colorStops: [
-        { id: 1, color: '#667eea', position: 0 },
-        { id: 2, color: '#764ba2', position: 100 }
+        { id: 1, color: '#4ECDC4', position: 0 },
+        { id: 2, color: '#44A08D', position: 100 }
+      ]
+    }
+  },
+  {
+    id: 'neon',
+    name: 'Néon',
+    icon: '🎨',
+    description: 'Vibrante nuit',
+    example: 'linear-gradient(135deg, #daa8e6 0%, #00D4FF 100%)',
+    config: {
+      type: 'linear',
+      angle: 135,
+      colorStops: [
+        { id: 1, color: '#daa8e6', position: 0 },
+        { id: 2, color: '#00D4FF', position: 100 }
+      ]
+    }
+  },
+  {
+    id: 'fire',
+    name: 'Feu',
+    icon: '🔥',
+    description: 'Rouge intense',
+    example: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)',
+    config: {
+      type: 'linear',
+      angle: 135,
+      colorStops: [
+        { id: 1, color: '#FF6B6B', position: 0 },
+        { id: 2, color: '#FF8E53', position: 100 }
       ]
     }
   },
@@ -201,63 +437,13 @@ const gradientPresets = [
     name: 'Forêt',
     icon: '🌲',
     description: 'Vert naturel',
-    example: 'linear-gradient(135deg, #5f7c8a 0%, #a8d8ea 100%)',
+    example: 'linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%)',
     config: {
       type: 'linear',
       angle: 135,
       colorStops: [
-        { id: 1, color: '#5f7c8a', position: 0 },
-        { id: 2, color: '#a8d8ea', position: 100 }
-      ]
-    }
-  },
-  {
-    id: 'fire',
-    name: 'Feu',
-    icon: '🔥',
-    description: 'Rouge ardent',
-    example: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-    config: {
-      type: 'linear',
-      angle: 135,
-      colorStops: [
-        { id: 1, color: '#f093fb', position: 0 },
-        { id: 2, color: '#f5576c', position: 100 }
-      ]
-    }
-  },
-  {
-    id: 'rainbow',
-    name: 'Arc-en-ciel',
-    icon: '🌈',
-    description: 'Toutes les couleurs',
-    example: 'linear-gradient(135deg, rainbow spectrum)',
-    config: {
-      type: 'linear',
-      angle: 135,
-      colorStops: [
-        { id: 1, color: '#ff0000', position: 0 },
-        { id: 2, color: '#ff8000', position: 16 },
-        { id: 3, color: '#ffff00', position: 33 },
-        { id: 4, color: '#00ff00', position: 50 },
-        { id: 5, color: '#0000ff', position: 66 },
-        { id: 6, color: '#8000ff', position: 83 },
-        { id: 7, color: '#ff0000', position: 100 }
-      ]
-    }
-  },
-  {
-    id: 'pastel',
-    name: 'Pastel',
-    icon: '🎨',
-    description: 'Couleurs douces',
-    example: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
-    config: {
-      type: 'linear',
-      angle: 135,
-      colorStops: [
-        { id: 1, color: '#ffecd2', position: 0 },
-        { id: 2, color: '#fcb69f', position: 100 }
+        { id: 1, color: '#4ECDC4', position: 0 },
+        { id: 2, color: '#44A08D', position: 100 }
       ]
     }
   }
@@ -287,20 +473,19 @@ const formattedCSS = computed(() => {
 
   switch (currentFormat.value) {
     case 'css':
-      return `.gradient {\n    background: ${gradient};\n}`
+      return `.gradient {\n  background: ${gradient};\n}`
     case 'background':
       return `background: ${gradient};`
     case 'webkit':
       return `background: -webkit-${gradient};\nbackground: -moz-${gradient};\nbackground: ${gradient};`
     default:
-      return `.gradient {\n    background: ${gradient};\n}`
+      return `.gradient {\n  background: ${gradient};\n}`
   }
 })
 
 // Methods
-const updateGradientProperty = ({ property, value }) => {
+const updateGradientProperty = (property, value) => {
   gradientState[property] = value
-  // Mark as custom when user makes manual changes
   if (activePreset.value !== 'custom') {
     activePreset.value = 'custom'
   }
@@ -313,11 +498,10 @@ const addColorStop = () => {
 
   gradientState.colorStops.push({
     id: nextStopId.value++,
-    color: '#ff0000',
+    color: '#00D4FF',
     position: Math.min(newPosition, 100)
   })
 
-  // Mark as custom when user makes manual changes
   if (activePreset.value !== 'custom') {
     activePreset.value = 'custom'
   }
@@ -329,7 +513,6 @@ const removeColorStop = (id) => {
     if (gradientState.selectedStopId === id) {
       gradientState.selectedStopId = null
     }
-    // Mark as custom when user makes manual changes
     if (activePreset.value !== 'custom') {
       activePreset.value = 'custom'
     }
@@ -344,7 +527,6 @@ const updateColorStop = ({ id, property, value }) => {
   const stop = gradientState.colorStops.find(s => s.id === id)
   if (stop) {
     stop[property] = value
-    // Mark as custom when user makes manual changes
     if (activePreset.value !== 'custom') {
       activePreset.value = 'custom'
     }
@@ -360,14 +542,9 @@ const applyPreset = (preset) => {
   gradientState.selectedStopId = null
 }
 
-const setCustomPreset = () => {
-  activePreset.value = 'custom'
-}
-
 const randomGradient = () => {
-  // Generate random colors and positions
-  const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F']
-  const numStops = Math.floor(Math.random() * 3) + 2 // 2-4 stops
+  const colors = ['#00D4FF', '#0099CC', '#FF6B6B', '#4ECDC4', '#FFE66D', '#daa8e6', '#FF8E53']
+  const numStops = Math.floor(Math.random() * 3) + 2
 
   gradientState.colorStops = []
   for (let i = 0; i < numStops; i++) {
@@ -400,77 +577,60 @@ const copyCSS = async () => {
 </script>
 
 <style scoped>
-.gradient-generator {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
-}
-
-.container {
-  max-width: 1400px;
-}
-
-.format-tabs {
-  display: flex;
-  gap: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 4px;
-}
-
-.format-tab {
-  flex: 1;
-  padding: 8px 16px;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.7);
+/* Color input styling */
+input[type="color"] {
+  -webkit-appearance: none;
   border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
 }
 
-.format-tab:hover {
-  color: rgba(255, 255, 255, 0.9);
-  background: rgba(255, 255, 255, 0.1);
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
 }
 
-.format-tab.active {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-}
-
-.btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+input[type="color"]::-webkit-color-swatch {
   border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  border-radius: 50%;
 }
 
-.btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-}
-
-.btn-success {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-}
-
-.btn-secondary {
+/* Range sliders */
+.slider, .slider-sm {
+  -webkit-appearance: none;
   background: rgba(255, 255, 255, 0.2);
-  color: white;
+  border-radius: 10px;
+  height: 8px;
+  outline: none;
+  cursor: pointer;
 }
 
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.3);
+.slider-sm {
+  height: 6px;
 }
 
-.btn-small {
-  padding: 6px 12px;
-  font-size: 14px;
+.slider::-webkit-slider-thumb, .slider-sm::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--gradient-electric);
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: var(--shadow-sm);
+}
+
+.slider-sm::-webkit-slider-thumb {
+  width: 16px;
+  height: 16px;
+}
+
+.slider::-moz-range-thumb, .slider-sm::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--gradient-electric);
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: var(--shadow-sm);
 }
 </style>
