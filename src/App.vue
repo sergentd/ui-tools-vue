@@ -1,9 +1,13 @@
 <template>
   <div id="app" class="min-h-screen flex flex-col">
+    <!-- Global Search Modal -->
+    <GlobalSearch ref="globalSearch" />
+
     <!-- Global Header -->
     <AppHeader
       @toggle-favorites="handleToggleFavorites"
       @toggle-theme="handleToggleTheme"
+      @open-search="openSearch"
     />
 
     <!-- Main Content Area -->
@@ -54,6 +58,7 @@ import { useCatalogStore } from '@/stores/catalog'
 // Components
 import AppHeader from '@/components/ui/AppHeader.vue'
 import AppFooter from '@/components/ui/AppFooter.vue'
+import GlobalSearch from '@/components/search/GlobalSearch.vue'
 
 // Store
 const catalogStore = useCatalogStore()
@@ -61,6 +66,7 @@ const catalogStore = useCatalogStore()
 // App state
 const appVersion = ref('1.0.0')
 const showAboutModal = ref(false)
+const globalSearch = ref(null)
 
 // Event handlers
 const handleToggleFavorites = () => {
@@ -71,6 +77,10 @@ const handleToggleFavorites = () => {
 const handleToggleTheme = () => {
   // TODO: Implement theme toggle
   console.log('Toggle theme')
+}
+
+const openSearch = () => {
+  globalSearch.value?.open()
 }
 
 const handleShowAbout = () => {
