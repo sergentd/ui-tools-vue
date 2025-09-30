@@ -1,11 +1,8 @@
 <template>
-  <div class="filter-menu flex flex-wrap justify-center gap-3 mb-8">
+  <div class="filter-menu">
     <!-- All button -->
     <button
-      :class="[
-        'filter-btn flex items-center space-x-2',
-        activeFilter === 'all' ? 'active' : ''
-      ]"
+      :class="['filter-btn', activeFilter === 'all' ? 'active' : '']"
       @click="handleFilterChange('all')"
     >
       <IconSystem name="all" size="sm" variant="mono" />
@@ -14,10 +11,7 @@
 
     <!-- Favorites Button (always visible) -->
     <button
-      :class="[
-        'filter-btn flex items-center space-x-2',
-        activeFilter === 'favorites' ? 'active' : ''
-      ]"
+      :class="['filter-btn', activeFilter === 'favorites' ? 'active' : '']"
       @click="handleFilterChange('favorites')"
     >
       <IconSystem name="favorites" size="sm" variant="mono" />
@@ -28,10 +22,7 @@
     <button
       v-for="[key, category] in availableCategories"
       :key="key"
-      :class="[
-        'filter-btn flex items-center space-x-2',
-        activeFilter === key ? 'active' : ''
-      ]"
+      :class="['filter-btn', activeFilter === key ? 'active' : '']"
       @click="handleFilterChange(key)"
     >
       <IconSystem :name="category.icon" size="sm" variant="mono" />
@@ -71,7 +62,18 @@ const handleFilterChange = (filter) => {
 </script>
 
 <style scoped>
+.filter-menu {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-8);
+}
+
 .filter-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   min-width: max-content;
   white-space: nowrap;
 }

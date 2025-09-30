@@ -22,30 +22,45 @@
         </div>
       </div>
 
-      <!-- Navigation -->
-      <nav class="hidden md:flex items-center space-x-6">
-        <router-link
-          to="/"
-          class="nav-link"
-          :class="{ 'active': $route.path === '/' }"
+      <!-- Navigation & Actions -->
+      <div class="hidden md:flex items-center space-x-6">
+        <nav class="flex items-center space-x-6">
+          <router-link
+            to="/"
+            class="nav-link"
+            :class="{ 'active': $route.path === '/' }"
+          >
+            Catalogue
+          </router-link>
+          <router-link
+            to="/tools/organization/ticketing-system"
+            class="nav-link"
+            :class="{ 'active': $route.path === '/tools/organization/ticketing-system' }"
+          >
+            Tickets
+          </router-link>
+          <router-link
+            to="/components"
+            class="nav-link"
+            :class="{ 'active': $route.path === '/components' }"
+          >
+            Composants
+          </router-link>
+        </nav>
+
+        <!-- Search Button -->
+        <UIButton
+          variant="ghost"
+          size="sm"
+          icon="search"
+          @click="$emit('open-search')"
+          title="Rechercher (Ctrl+K / Cmd+K)"
+          class="search-trigger-btn"
         >
-          Catalogue
-        </router-link>
-        <router-link
-          to="/tools/organization/ticketing-system"
-          class="nav-link"
-          :class="{ 'active': $route.path === '/tools/organization/ticketing-system' }"
-        >
-          Tickets
-        </router-link>
-        <router-link
-          to="/components"
-          class="nav-link"
-          :class="{ 'active': $route.path === '/components' }"
-        >
-          Composants
-        </router-link>
-      </nav>
+          <span class="hidden lg:inline">Rechercher</span>
+          <kbd class="hidden lg:inline shortcut-key">⌘K</kbd>
+        </UIButton>
+      </div>
 
       <!-- Mobile Menu Button -->
       <UIButton
@@ -105,18 +120,25 @@ const closeMobileMenu = () => {
 
 <style scoped>
 .app-header {
-  background: rgba(0, 0, 0, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--electric-blue-alpha);
+  background: var(--glass-dark);
+  backdrop-filter: blur(var(--blur-md));
+  border-bottom: 1px solid var(--border-primary);
 }
 
 .nav-link {
-  @apply text-gray-300 hover:text-white hover:text-electric-blue transition-colors duration-200 font-medium text-sm;
+  color: var(--text-secondary);
+  font-weight: var(--font-medium);
+  font-size: var(--text-sm);
   position: relative;
+  transition: color var(--duration-normal) var(--easing-ease);
+}
+
+.nav-link:hover {
+  color: var(--text-primary);
 }
 
 .nav-link.active {
-  @apply text-electric-blue;
+  color: var(--electric-blue);
 }
 
 .nav-link.active::after {
@@ -127,14 +149,29 @@ const closeMobileMenu = () => {
   right: 0;
   height: 2px;
   background: var(--electric-blue);
-  border-radius: 1px;
+  border-radius: var(--radius-xs);
 }
 
 .nav-link-mobile {
-  @apply text-gray-300 hover:text-electric-blue transition-colors duration-200 font-medium py-2 px-4 rounded-lg;
+  color: var(--text-secondary);
+  font-weight: var(--font-medium);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  transition: all var(--duration-normal) var(--easing-ease);
 }
 
 .nav-link-mobile:hover {
-  background: rgba(var(--electric-blue-rgb), 0.1);
+  color: var(--electric-blue);
+  background: var(--glass-light);
+}
+
+.shortcut-key {
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--text-xs);
+  border-radius: var(--radius-xs);
+  background: var(--glass-light);
+  border: 1px solid var(--border-secondary);
+  font-family: var(--font-mono);
+  color: var(--text-tertiary);
 }
 </style>

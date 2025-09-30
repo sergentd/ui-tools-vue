@@ -1,7 +1,7 @@
 <template>
-  <footer class="app-footer border-t border-electric-blue/20 mt-auto">
-    <div class="container mx-auto px-4 max-w-7xl">
-      <div class="py-8">
+  <footer class="app-footer">
+    <UIContainer size="xlarge">
+      <div class="footer-content">
 
         <!-- Main Footer Content -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
@@ -89,12 +89,13 @@
           </div>
         </div>
       </div>
-    </div>
+    </UIContainer>
   </footer>
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import { UIContainer } from '@/components/ui'
 
 // Props
 const props = defineProps({
@@ -120,23 +121,43 @@ const currentYear = computed(() => new Date().getFullYear())
 
 <style scoped>
 .app-footer {
-  background: rgba(0, 0, 0, 0.98);
-  backdrop-filter: blur(10px);
+  background: var(--glass-dark);
+  backdrop-filter: blur(var(--blur-md));
+  border-top: 1px solid var(--border-primary);
+  margin-top: auto;
+}
+
+.footer-content {
+  padding: var(--space-2xl) 0;
 }
 
 .footer-link {
-  @apply text-gray-400 hover:text-electric-blue transition-colors duration-200 text-sm;
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  transition: all var(--duration-normal) var(--easing-ease);
 }
 
 .footer-link:hover {
-  transform: translateX(2px);
+  color: var(--electric-blue);
+  transform: translateX(var(--space-xs));
 }
 
 .stat-card {
-  @apply p-3 rounded-lg border border-gray-800 bg-gray-900/50;
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-secondary);
+  background: var(--glass-light);
 }
 
 .footer-icon-btn {
-  @apply p-2 rounded-lg text-gray-400 hover:text-electric-blue hover:bg-gray-800 transition-all duration-200;
+  padding: var(--space-sm);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  transition: all var(--duration-normal) var(--easing-ease);
+}
+
+.footer-icon-btn:hover {
+  color: var(--electric-blue);
+  background: var(--glass-light);
 }
 </style>

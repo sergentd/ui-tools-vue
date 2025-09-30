@@ -2,51 +2,49 @@
   <div class="relative">
     <!-- Click handler -->
     <component
-      :is="useVueRouting ? 'router-link' : 'a'"
-      :to="useVueRouting ? vueRoute : undefined"
-      :href="!useVueRouting ? tool.url : undefined"
+      :is="useVueRouting && vueRoute ? 'router-link' : 'a'"
+      :to="useVueRouting && vueRoute ? vueRoute : undefined"
+      :href="!useVueRouting || !vueRoute ? (tool.url || '#') : undefined"
       :target="!useVueRouting ? '_blank' : undefined"
       :rel="!useVueRouting ? 'noopener noreferrer' : undefined"
-      class="tool-card glass-card-white hover-lift hover-glow card-interactive block p-6 rounded-2xl group relative overflow-hidden border-2 border-transparent hover:border-electric-blue/30 transition-all duration-300"
+      class="tool-card glass-card-white hover-lift hover-glow card-interactive block group relative overflow-hidden"
       :data-category="category"
       @click="handleClick"
     >
       <!-- Gradient overlay -->
-      <div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-electric-blue/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      <div class="gradient-overlay"></div>
 
       <!-- Card Content -->
       <div class="flex flex-col h-full relative z-10">
         <!-- Header with icon, category, and favorite button -->
-        <div class="flex-between mb-4 relative">
+        <div class="card-header">
           <div class="tool-icon hover-scale-lg transition-default relative">
             <IconSystem :name="tool.icon" size="xl" variant="electric" />
-            <div class="absolute -inset-2 bg-electric-blue/5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="icon-glow"></div>
           </div>
-          <div class="text-xs text-tertiary font-medium uppercase tracking-wide absolute left-1/2 -translate-x-1/2 glass-light px-2 py-1 rounded-full">
+          <div class="category-label">
             {{ category }}
           </div>
-          <button @click.prevent="toggleFavorite" class="text-gray-400 hover:text-electric-blue transition-colors z-10 p-1 rounded-full hover:bg-electric-blue/10">
+          <button @click.prevent="toggleFavorite" class="favorite-button">
             <svg :class="{ 'text-electric-blue': isFavorite }" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
             </svg>
           </button>
         </div>
 
-        <h3 class="text-xl font-bold text-primary mb-3 leading-tight" v-html="highlightTitle(tool.titre)">
+        <h3 class="card-title" v-html="highlightTitle(tool.titre)">
         </h3>
 
-        <p class="text-secondary flex-grow text-sm leading-relaxed mb-4">
+        <p class="card-description">
           {{ tool.description }}
         </p>
 
-        <div class="flex-between pt-4 border-t border-t-white/10 group-hover:border-t-electric-blue/20 transition-colors">
-          <span class="text-xs text-tertiary group-hover:text-secondary transition-colors">
-            {{ tool.migrated ? 'Application Vue' : (useVueRouting ? 'Cliquer pour naviguer' : 'Cliquer pour ouvrir') }}
-          </span>
-          <div class="flex items-center space-x-1">
+        <div class="card-footer">
+          <span class="footer-label">Ouvrir l'outil</span>
+          <div class="footer-actions">
             <svg
               v-if="useVueRouting"
-              class="w-4 h-4 text-gray-400 group-hover:text-electric-blue transition-colors"
+              class="action-icon"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -60,7 +58,7 @@
             </svg>
             <svg
               v-else
-              class="w-4 h-4 text-gray-400 group-hover:text-electric-blue transition-colors"
+              class="action-icon"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -72,7 +70,7 @@
                 d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
               />
             </svg>
-            <div class="w-1 h-1 bg-electric-blue rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="action-dot"></div>
           </div>
         </div>
       </div>
@@ -189,3 +187,133 @@ const highlightTitle = (title) => {
   return highlightedWords.join(' ')
 }
 </script>
+
+<style scoped>
+.tool-card {
+  padding: var(--card-padding);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-primary);
+  transition: all var(--duration-normal) var(--easing-smooth);
+}
+
+.tool-card:hover {
+  border-color: var(--electric-blue-alpha-30);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+  position: relative;
+}
+
+.icon-glow {
+  position: absolute;
+  inset: calc(-1 * var(--space-2));
+  background: rgba(var(--electric-blue-rgb), 0.05);
+  border-radius: var(--radius-full);
+  opacity: 0;
+  transition: opacity var(--duration-normal) var(--easing-ease);
+}
+
+.tool-card:hover .icon-glow {
+  opacity: 1;
+}
+
+.category-label {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  font-weight: var(--font-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--glass-light);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-full);
+}
+
+.favorite-button {
+  color: var(--text-muted);
+  transition: color var(--duration-normal) var(--easing-ease);
+  z-index: 10;
+  padding: var(--space-1);
+  border-radius: var(--radius-full);
+}
+
+.favorite-button:hover {
+  color: var(--electric-blue);
+  background: var(--electric-blue-alpha);
+}
+
+.card-title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
+  line-height: var(--leading-tight);
+}
+
+.card-description {
+  color: var(--text-secondary);
+  flex-grow: 1;
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-4);
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-primary);
+  transition: border-color var(--duration-normal) var(--easing-ease);
+}
+
+.tool-card:hover .card-footer {
+  border-top-color: var(--electric-blue-alpha-20);
+}
+
+.footer-label {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  transition: color var(--duration-normal) var(--easing-ease);
+}
+
+.tool-card:hover .footer-label {
+  color: var(--electric-blue);
+}
+
+.footer-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.action-icon {
+  width: var(--space-4);
+  height: var(--space-4);
+  color: var(--text-muted);
+  transition: color var(--duration-normal) var(--easing-ease);
+}
+
+.tool-card:hover .action-icon {
+  color: var(--electric-blue);
+}
+
+.action-dot {
+  width: var(--space-1);
+  height: var(--space-1);
+  background: var(--electric-blue);
+  border-radius: var(--radius-full);
+  opacity: 0;
+  transition: opacity var(--duration-normal) var(--easing-ease);
+}
+
+.tool-card:hover .action-dot {
+  opacity: 1;
+}
+</style>

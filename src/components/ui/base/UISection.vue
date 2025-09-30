@@ -1,5 +1,5 @@
 <template>
-  <section :class="sectionClasses">
+  <section :id="sectionId" :class="sectionClasses">
     <!-- Section Header -->
     <header v-if="hasHeader" class="section__header">
       <slot name="header">
@@ -55,7 +55,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import IconSystem from '@/components/ui/IconSystem.vue'
 import UIButton from './UIButton.vue'
 
@@ -70,6 +70,10 @@ const props = defineProps({
     default: null
   },
   icon: {
+    type: String,
+    default: null
+  },
+  id: {
     type: String,
     default: null
   },
@@ -115,7 +119,27 @@ const toggleCollapsed = () => {
   isCollapsed.value = !isCollapsed.value
 }
 
+/**
+ * Generate slug from text for IDs
+ */
+const slugify = (text) => {
+  if (!text) return null
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+    .replace(/[^\w\s-]/g, '') // Remove special chars
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Remove consecutive hyphens
+    .trim()
+}
+
 // Computed properties
+const sectionId = computed(() => {
+  // Use explicit ID if provided, otherwise generate from title
+  return props.id || (props.title ? slugify(props.title) : null)
+})
+
 const hasHeader = computed(() => {
   return props.title || props.description || props.icon || props.$slots?.header || props.$slots?.actions || props.collapsible
 })
@@ -146,6 +170,13 @@ const sectionClasses = computed(() => [
 const contentClasses = computed(() => ({
   'section__content--no-header': !hasHeader.value
 }))
+
+// Debug: Log section ID on mount
+onMounted(() => {
+  if (sectionId.value) {
+    console.log(`[UISection] Mounted with ID: ${sectionId.value}, Title: ${props.title}`)
+  }
+})
 </script>
 
 <style scoped>

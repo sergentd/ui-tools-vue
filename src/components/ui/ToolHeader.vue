@@ -1,7 +1,7 @@
 <template>
   <header class="tool-header full-width">
     <!-- Full-width dark header with background image support -->
-    <div class="header-container relative w-full border-primary">
+    <div class="header-container relative w-full border-primary mb-6">
       <!-- Background overlay for future images -->
       <div class="header-background absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
         <!-- Future: background image will go here -->
@@ -9,18 +9,18 @@
       </div>
 
       <!-- Header content -->
-      <div class="header-content relative z-10 max-w-7xl mx-auto px-6 py-4">
+      <div class="header-content relative z-10">
         <!-- Top navigation bar -->
         <div class="nav-bar flex items-center mb-3">
           <!-- Left side: Return button -->
           <div class="flex-1">
             <router-link
               to="/"
-              class="return-button flex items-center space-x-3 text-white/90 hover:text-white transition-all duration-300 group"
+              class="return-button flex items-center space-x-3 text-white group"
             >
-              <div class="button-background bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-xl p-3 transition-all duration-300">
+              <div class="button-background">
                 <svg
-                  class="w-5 h-5 transform group-hover:-translate-x-1 transition-transform duration-300"
+                  class="w-5 h-5 transform group-hover:-translate-x-1 transition-transform"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -46,7 +46,7 @@
 
           <!-- Right side: Category badge -->
           <div v-if="category" class="flex-1 flex justify-end">
-            <span class="category-badge bg-white/15 backdrop-blur-sm border border-white/25 text-white px-3 py-1 rounded-lg font-medium text-sm">
+            <span class="category-badge">
               {{ categoryDisplayName }}
             </span>
           </div>
@@ -129,7 +129,7 @@ const categoryDisplayName = computed(() => {
 <style scoped>
 .tool-header {
   position: relative;
-  animation: slideDown 0.6s ease-out;
+  animation: slideDown var(--duration-slow) var(--easing-ease);
 }
 
 .full-width {
@@ -148,7 +148,7 @@ const categoryDisplayName = computed(() => {
 }
 
 .header-background {
-  background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #1a1a1a 100%);
+  background: var(--bg-primary);
   background-size: 400% 400%;
   animation: gradientShift 15s ease infinite;
 }
@@ -159,67 +159,87 @@ const categoryDisplayName = computed(() => {
 
 .header-content {
   position: relative;
-  z-index: 10;
+  z-index: var(--z-modal-content);
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-xl);
 }
 
 /* Navigation bar */
 .nav-bar {
   align-items: center;
+  margin-bottom: var(--space-md);
 }
 
 .return-button {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--duration-normal) var(--easing-smooth);
 }
 
 .return-button:hover {
-  transform: translateX(-4px);
+  transform: translateX(calc(-1 * var(--space-xs)));
 }
 
 .button-background {
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all var(--duration-normal) var(--easing-ease);
+  box-shadow: var(--shadow-sm);
+  background: var(--glass-lighter);
+  backdrop-filter: blur(var(--blur-sm));
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
 }
 
 .return-button:hover .button-background {
-  background: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  background: var(--glass-light);
+  box-shadow: var(--shadow-lg);
   transform: scale(1.05);
 }
 
 /* Title section */
 .title-section {
-  margin-top: 1rem;
+  margin-top: var(--space-lg);
 }
 
 .tool-icon {
-  text-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  text-shadow: var(--shadow-lg);
+  filter: drop-shadow(var(--shadow-md));
   animation: float 6s ease-in-out infinite;
 }
 
 .tool-title {
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  font-weight: 800;
+  text-shadow: var(--shadow-lg);
+  font-weight: var(--font-extrabold);
   letter-spacing: -0.025em;
-  background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .tool-description {
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  line-height: 1.8;
+  text-shadow: var(--shadow-md);
+  line-height: var(--leading-relaxed);
+}
+
+.category-badge {
+  background: var(--electric-blue);
+  color: var(--bg-primary);
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-xl);
+  font-weight: var(--font-semibold);
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .status-badge {
-  transition: all 0.3s ease;
-  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.3);
+  transition: all var(--duration-normal) var(--easing-ease);
+  box-shadow: var(--shadow-glow-success);
 }
 
 .status-badge:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
+  transform: translateY(calc(-1 * var(--space-xs)));
+  box-shadow: var(--shadow-glow-success-strong);
 }
 
 /* Animations */
@@ -258,13 +278,13 @@ const categoryDisplayName = computed(() => {
 /* Mobile responsive */
 @media (max-width: 768px) {
   .header-content {
-    padding: 1.5rem 1rem;
+    padding: var(--space-xl) var(--space-lg);
   }
 
   .nav-bar {
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-lg);
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--space-lg);
   }
 
   .nav-bar > div {
@@ -278,27 +298,27 @@ const categoryDisplayName = computed(() => {
   }
 
   .return-button span {
-    font-size: 1rem;
+    font-size: var(--text-base);
   }
 
   .category-badge {
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
+    padding: var(--space-sm) var(--space-lg);
+    font-size: var(--text-base);
   }
 
   .tool-title {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-lg);
   }
 
   .tool-description {
-    font-size: 1.125rem;
-    margin-bottom: 1.5rem;
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-xl);
   }
 
   .tool-icon {
-    font-size: 4rem;
-    margin-bottom: 1.5rem;
+    font-size: var(--text-6xl);
+    margin-bottom: var(--space-xl);
   }
 }
 
@@ -308,13 +328,13 @@ const categoryDisplayName = computed(() => {
   }
 
   .header-content {
-    padding: 1rem 0.75rem;
+    padding: var(--space-lg) var(--space-md);
   }
 
   .nav-bar {
     flex-direction: column;
     align-items: stretch;
-    gap: 1rem;
+    gap: var(--space-lg);
   }
 
   .nav-bar > div {
@@ -328,15 +348,15 @@ const categoryDisplayName = computed(() => {
   }
 
   .tool-title {
-    font-size: 2rem;
+    font-size: var(--text-3xl);
   }
 
   .tool-description {
-    font-size: 1rem;
+    font-size: var(--text-base);
   }
 
   .tool-icon {
-    font-size: 3rem;
+    font-size: var(--text-5xl);
   }
 }
 
