@@ -1033,3 +1033,22 @@ body::before {
     transform: none;
   }
 }
+
+/* ===========================
+   Search Highlight Styles
+   =========================== */
+
+.search-highlight {
+  transition: background-color 0.3s ease-out, outline 0.3s ease-out;
+  border-radius: 8px;
+  scroll-margin-top: 100px; /* Ensure element is not hidden under header */
+}
+
+@keyframes search-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(0, 212, 255, 0);
+  }
+}
