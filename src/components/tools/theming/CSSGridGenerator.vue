@@ -6,7 +6,7 @@
       <ToolHeader
         title="Générateur de Grille CSS"
         description="Créez visuellement vos layouts CSS Grid et exportez le code"
-        icon="🔲"
+        icon="css-grid-generator"
         category="theming"
         status="Migré vers Vue"
         :show-badges="true"

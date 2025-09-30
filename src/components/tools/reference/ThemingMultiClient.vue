@@ -6,7 +6,7 @@
       <ToolHeader
         title="Thèmes Multi-Clients"
         description="Guide interactif pour la gestion de thèmes dynamiques dans les applications WEBDEV"
-        icon="🎭"
+        icon="theming-multiclient"
         category="reference"
         status="Migré vers Vue"
         :show-badges="true"

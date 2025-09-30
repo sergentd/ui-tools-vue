@@ -6,7 +6,7 @@
       <ToolHeader
         title="Glossaire WEBDEV"
         description="Référence complète du vocabulaire des styles et feuilles de style PC SOFT"
-        icon="📚"
+        icon="glossaire-webdev"
         category="reference"
         status="Migré vers Vue"
         :show-badges="true"

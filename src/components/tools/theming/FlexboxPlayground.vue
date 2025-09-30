@@ -6,7 +6,7 @@
       <ToolHeader
         title="Terrain de Jeu Flexbox"
         description="Explorez CSS Flexbox avec des contrôles interactifs et des exemples de mise en page"
-        icon="🔧"
+        icon="flexbox-playground"
         category="theming"
         status="Migré vers Vue"
         :show-badges="true"

@@ -111,7 +111,7 @@
                 <div v-else-if="component.id === 'icon-system'" class="flex items-center gap-4">
                   <IconSystem name="palette-generator" size="sm" variant="default" />
                   <IconSystem name="css-grid-generator" size="md" variant="electric" />
-                  <IconSystem name="color-contrast-checker" size="lg" variant="success" />
+                  <IconSystem name="color-contrast-checker" size="lg" variant="mono" />
                 </div>
 
                 <!-- Default fallback -->

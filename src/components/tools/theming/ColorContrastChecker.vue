@@ -6,7 +6,7 @@
       <ToolHeader
         title="Vérificateur de Contraste"
         description="Vérifiez la conformité WCAG de vos combinaisons de couleurs pour l'accessibilité"
-        icon="⚖️"
+        icon="color-contrast-checker"
         category="theming"
         status="Migré vers Vue"
         :show-badges="true"

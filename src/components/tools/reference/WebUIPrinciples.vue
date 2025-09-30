@@ -3,7 +3,7 @@
     <ToolHeader
       title="Principes WebUI"
       description="Tableau de bord interactif des principes fondamentaux du design web."
-      icon="📐"
+      icon="webui-principles"
       category="reference"
       status="Migré vers Vue"
       :show-badges="true"

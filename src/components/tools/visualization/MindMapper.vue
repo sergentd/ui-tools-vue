@@ -3,7 +3,7 @@
     <ToolHeader
       title="Mind Map Avancée"
       description="Créez et éditez des cartes mentales interactives avec export JSON et SVG."
-      icon="🧠"
+      icon="mindmap"
       category="visualization"
       status="Migré vers Vue"
       :show-badges="true"

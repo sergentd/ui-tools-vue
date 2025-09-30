@@ -6,7 +6,7 @@
       <ToolHeader
         title="Générateur d'Ombres"
         description="Créez des effets d'ombre CSS personnalisés avec support multi-couches et aperçu en temps réel"
-        icon="🌑"
+        icon="shadow-generator"
         category="theming"
         status="Migré vers Vue"
         :show-badges="true"
