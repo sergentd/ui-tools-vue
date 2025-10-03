@@ -20,9 +20,7 @@
           @click.stop="showMenu = !showMenu"
           class="p-1 rounded-lg hover:bg-glass-bg-light transition-colors"
         >
-          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01"/>
-          </svg>
+          <IconSystem name="dots-vertical" size="sm" class="text-gray-400" />
         </button>
 
         <!-- Dropdown Menu -->
@@ -32,18 +30,14 @@
               @click="$emit('edit', ticket.id); showMenu = false"
               class="w-full text-left px-4 py-2 text-sm text-white hover:bg-glass-bg transition-colors flex items-center gap-2"
             >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-              </svg>
+              <IconSystem name="edit" size="xs" />
               Modifier
             </button>
             <button
               @click="$emit('delete', ticket.id); showMenu = false"
               class="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-glass-bg transition-colors flex items-center gap-2"
             >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-              </svg>
+              <IconSystem name="trash" size="xs" />
               Supprimer
             </button>
           </div>
@@ -60,12 +54,8 @@
         'inline-flex items-center px-2 py-1 text-xs font-medium rounded-full',
         typeColors[ticket.type]
       ]">
-        <svg v-if="ticket.type === 'callback'" class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-        </svg>
-        <svg v-else class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v11a2 2 0 002 2h2m0-13h10a2 2 0 012 2v11a2 2 0 01-2 2H9m0-13v13"/>
-        </svg>
+        <IconSystem v-if="ticket.type === 'callback'" name="phone" size="xs" class="mr-1" variant="mono" />
+        <IconSystem v-else name="document" size="xs" class="mr-1" variant="mono" />
         {{ typeLabels[ticket.type] }}
       </span>
     </div>
@@ -97,9 +87,7 @@
             class="p-1 rounded text-gray-400 hover:text-electric-blue hover:bg-glass-bg-light transition-colors"
             title="Commencer"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1.5a1.5 1.5 0 011.5 1.5v1a1.5 1.5 0 01-1.5 1.5H9m3.5-5.5v3m0 0h-3"/>
-            </svg>
+            <IconSystem name="play" size="xs" variant="mono" />
           </button>
 
           <button
@@ -108,9 +96,7 @@
             class="p-1 rounded text-gray-400 hover:text-yellow-400 hover:bg-glass-bg-light transition-colors"
             title="Mettre en attente"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
+            <IconSystem name="clock" size="xs" variant="mono"/>
           </button>
 
           <button
@@ -119,9 +105,7 @@
             class="p-1 rounded text-gray-400 hover:text-electric-blue hover:bg-glass-bg-light transition-colors"
             title="Reprendre"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1.5a1.5 1.5 0 011.5 1.5v1a1.5 1.5 0 01-1.5 1.5H9m3.5-5.5v3m0 0h-3"/>
-            </svg>
+            <IconSystem name="play" size="xs" variant="mono" />
           </button>
 
           <button
@@ -130,9 +114,7 @@
             class="p-1 rounded text-gray-400 hover:text-green-400 hover:bg-glass-bg-light transition-colors"
             title="Marquer comme terminé"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-            </svg>
+            <IconSystem name="check" size="xs" variant="mono" />
           </button>
 
           <button
@@ -141,9 +123,7 @@
             class="p-1 rounded text-gray-400 hover:text-gray-300 hover:bg-glass-bg-light transition-colors"
             title="Rouvrir"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-            </svg>
+            <IconSystem name="refresh" size="xs" variant="mono" />
           </button>
         </div>
 
@@ -249,6 +229,7 @@ const formatDate = (dateString) => {
 
 // Add click outside listener
 import { onMounted, onUnmounted } from 'vue'
+import IconSystem from '../../../ui/IconSystem.vue'
 
 const dropdownRef = ref(null)
 

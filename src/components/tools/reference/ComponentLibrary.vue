@@ -109,9 +109,9 @@
 
                 <!-- IconSystem Preview -->
                 <div v-else-if="component.id === 'icon-system'" class="flex items-center gap-4">
-                  <IconSystem name="palette-generator" size="sm" variant="default" />
-                  <IconSystem name="css-grid-generator" size="md" variant="electric" />
-                  <IconSystem name="color-contrast-checker" size="lg" variant="mono" />
+                  <IconSystem name="palette-generator" size="md" variant="default" />
+                  <IconSystem name="css-grid-generator" size="xl" variant="mono" />
+                  <IconSystem name="color-contrast-checker" size="lg" variant="electric" />
                 </div>
 
                 <!-- Default fallback -->
@@ -304,14 +304,14 @@ const components = [
     path: 'src/components/ui/IconSystem.vue',
     tags: ['Icon', 'System', 'Design'],
     usage: `<div class="flex items-center gap-4">
-  <IconSystem name="palette-generator" size="sm" variant="default" />
-  <IconSystem name="css-grid-generator" size="md" variant="electric" />
-  <IconSystem name="color-contrast-checker" size="lg" variant="success" />
+  <IconSystem name="palette-generator" size="md" variant="default" />
+  <IconSystem name="css-grid-generator" size="xl" variant="mono" />
+  <IconSystem name="color-contrast-checker" size="lg" variant="electric" />
 </div>`,
     props: [
       { name: 'name', type: 'String', default: 'required', description: 'Nom de l\'icône' },
-      { name: 'size', type: 'String', default: "'md'", description: 'Taille de l\'icône (sm, md, lg)' },
-      { name: 'variant', type: 'String', default: "'default'", description: 'Variante de couleur (default, electric, success)' }
+      { name: 'size', type: 'String', default: "'md'", description: 'Taille de l\'icône (xs, sm, md, lg, xl, 2xl)' },
+      { name: 'variant', type: 'String', default: "'default'", description: 'Variante de couleur (default, electric, mono, custom)' }
     ]
   }
 ]
