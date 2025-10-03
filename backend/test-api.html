@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pocketbase API Test</title>
+  <script src="https://cdn.jsdelivr.net/npm/pocketbase@0.21.3/dist/pocketbase.umd.js"></script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .section {
+      margin: 2rem 0;
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    button {
+      margin: 0.5rem 0.5rem 0.5rem 0;
+      padding: 0.5rem 1rem;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .success {
+      color: green;
+    }
+    .error {
+      color: red;
+    }
+    pre {
+      background: #f5f5f5;
+      padding: 1rem;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Pocketbase API Test</h1>
+
+  <div class="section">
+    <h2>1. Connection Test</h2>
+    <button onclick="testConnection()">Test Connection</button>
+    <div id="connection-result"></div>
+  </div>
+
+  <div class="section">
+    <h2>2. Create Admin Account</h2>
+    <p>First, create an admin account by visiting: <a href="http://localhost:8090/_/" target="_blank">http://localhost:8090/_/</a></p>
+    <p>Then come back and test user registration below.</p>
+  </div>
+
+  <div class="section">
+    <h2>3. User Registration</h2>
+    <button onclick="testRegister()">Register Test User</button>
+    <div id="register-result"></div>
+  </div>
+
+  <div class="section">
+    <h2>4. User Login</h2>
+    <button onclick="testLogin()">Login Test User</button>
+    <div id="login-result"></div>
+  </div>
+
+  <div class="section">
+    <h2>5. Create Ticket</h2>
+    <button onclick="testCreateTicket()">Create Ticket</button>
+    <div id="create-ticket-result"></div>
+  </div>
+
+  <div class="section">
+    <h2>6. List Tickets</h2>
+    <button onclick="testListTickets()">List Tickets</button>
+    <div id="list-tickets-result"></div>
+  </div>
+
+  <div class="section">
+    <h2>7. Update Ticket</h2>
+    <button onclick="testUpdateTicket()">Update Ticket</button>
+    <div id="update-ticket-result"></div>
+  </div>
+
+  <div class="section">
+    <h2>8. Delete Ticket</h2>
+    <button onclick="testDeleteTicket()">Delete Ticket</button>
+    <div id="delete-ticket-result"></div>
+  </div>
+
+  <script>
+    const pb = new PocketBase('http://localhost:8090');
+    let testTicketId = null;
+
+    async function testConnection() {
+      const result = document.getElementById('connection-result');
+      try {
+        const health = await fetch('http://localhost:8090/api/health');
+        if (health.ok) {
+          result.innerHTML = '<p class="success">✅ Connection successful!</p>';
+        } else {
+          result.innerHTML = '<p class="error">❌ Connection failed</p>';
+        }
+      } catch (error) {
+        result.innerHTML = `<p class="error">❌ Error: ${error.message}</p>`;
+      }
+    }
+
+    async function testRegister() {
+      const result = document.getElementById('register-result');
+      try {
+        const email = `test${Date.now()}@example.com`;
+        const password = 'Test123456!';
+
+        const user = await pb.collection('users').create({
+          email,
+          password,
+          passwordConfirm: password,
+          emailVisibility: true
+        });
+
+        // Auto-login
+        await pb.collection('users').authWithPassword(email, password);
+
+        result.innerHTML = `
+          <p class="success">✅ User registered and logged in!</p>
+          <pre>${JSON.stringify({ email, id: user.id }, null, 2)}</pre>
+        `;
+      } catch (error) {
+        result.innerHTML = `<p class="error">❌ Error: ${error.message}</p>`;
+      }
+    }
+
+    async function testLogin() {
+      const result = document.getElementById('login-result');
+      try {
+        if (!pb.authStore.model) {
+          result.innerHTML = '<p class="error">❌ Please register first</p>';
+          return;
+        }
+
+        const authData = await pb.collection('users').authRefresh();
+
+        result.innerHTML = `
+          <p class="success">✅ Login successful!</p>
+          <pre>${JSON.stringify({ email: authData.record.email, id: authData.record.id }, null, 2)}</pre>
+        `;
+      } catch (error) {
+        result.innerHTML = `<p class="error">❌ Error: ${error.message}</p>`;
+      }
+    }
+
+    async function testCreateTicket() {
+      const result = document.getElementById('create-ticket-result');
+      try {
+        if (!pb.authStore.model) {
+          result.innerHTML = '<p class="error">❌ Please login first</p>';
+          return;
+        }
+
+        const ticket = await pb.collection('tickets').create({
+          user_id: pb.authStore.model.id,
+          title: 'Test Ticket',
+          description: 'This is a test ticket created via API',
+          customer: 'Test Customer',
+          priority: 'high',
+          status: 'todo',
+          type: 'task',
+          due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+        });
+
+        testTicketId = ticket.id;
+
+        result.innerHTML = `
+          <p class="success">✅ Ticket created!</p>
+          <pre>${JSON.stringify(ticket, null, 2)}</pre>
+        `;
+      } catch (error) {
+        result.innerHTML = `<p class="error">❌ Error: ${error.message}</p>`;
+      }
+    }
+
+    async function testListTickets() {
+      const result = document.getElementById('list-tickets-result');
+      try {
+        if (!pb.authStore.model) {
+          result.innerHTML = '<p class="error">❌ Please login first</p>';
+          return;
+        }
+
+        const tickets = await pb.collection('tickets').getFullList({
+          sort: '-created'
+        });
+
+        result.innerHTML = `
+          <p class="success">✅ Found ${tickets.length} ticket(s)!</p>
+          <pre>${JSON.stringify(tickets, null, 2)}</pre>
+        `;
+      } catch (error) {
+        result.innerHTML = `<p class="error">❌ Error: ${error.message}</p>`;
+      }
+    }
+
+    async function testUpdateTicket() {
+      const result = document.getElementById('update-ticket-result');
+      try {
+        if (!pb.authStore.model) {
+          result.innerHTML = '<p class="error">❌ Please login first</p>';
+          return;
+        }
+
+        if (!testTicketId) {
+          result.innerHTML = '<p class="error">❌ Please create a ticket first</p>';
+          return;
+        }
+
+        const updatedTicket = await pb.collection('tickets').update(testTicketId, {
+          status: 'in-progress',
+          priority: 'urgent'
+        });
+
+        result.innerHTML = `
+          <p class="success">✅ Ticket updated!</p>
+          <pre>${JSON.stringify(updatedTicket, null, 2)}</pre>
+        `;
+      } catch (error) {
+        result.innerHTML = `<p class="error">❌ Error: ${error.message}</p>`;
+      }
+    }
+
+    async function testDeleteTicket() {
+      const result = document.getElementById('delete-ticket-result');
+      try {
+        if (!pb.authStore.model) {
+          result.innerHTML = '<p class="error">❌ Please login first</p>';
+          return;
+        }
+
+        if (!testTicketId) {
+          result.innerHTML = '<p class="error">❌ Please create a ticket first</p>';
+          return;
+        }
+
+        await pb.collection('tickets').delete(testTicketId);
+
+        result.innerHTML = `
+          <p class="success">✅ Ticket deleted!</p>
+          <p>Ticket ID: ${testTicketId}</p>
+        `;
+
+        testTicketId = null;
+      } catch (error) {
+        result.innerHTML = `<p class="error">❌ Error: ${error.message}</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
