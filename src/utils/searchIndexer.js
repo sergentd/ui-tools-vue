@@ -152,9 +152,6 @@ function extractContentFromDOM(container, config) {
     })
   })
 
-  console.log(`[SearchIndexer] Extracted ${entries.length} entries from ${config.toolTitle}:`,
-    entries.map(e => ({ title: e.title, id: e.id })))
-
   return entries
 }
 
@@ -248,7 +245,6 @@ export async function indexTools(toolConfigs) {
 
       if (entries.length > 0) {
         searchStore.addEntries(config.toolId, entries)
-        console.log(`[SearchIndexer] Pre-indexed ${entries.length} sections from ${config.toolTitle}`)
       }
     } catch (error) {
       console.error(`[SearchIndexer] Failed to index ${config.toolId}:`, error)

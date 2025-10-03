@@ -50,9 +50,6 @@ export function initializeSearchIndexer() {
   // Pre-index reference tools in the background
   setTimeout(() => {
     indexTools(referenceTools)
-      .then(() => {
-        console.log('[SearchIndexer] All reference tools indexed and ready for search')
-      })
       .catch((error) => {
         console.error('[SearchIndexer] Error during pre-indexing:', error)
       })
