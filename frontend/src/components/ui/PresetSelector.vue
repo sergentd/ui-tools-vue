@@ -1,38 +1,51 @@
 <template>
   <div class="preset-selector">
-    <h3 v-if="title" class="font-semibold text-white mb-3">{{ title }}</h3>
+    <h3 v-if="title" class="preset-title">{{ title }}</h3>
 
     <div :class="['preset-grid', gridClass]">
-      <button
+      <div
         v-for="preset in presets"
         :key="preset.id"
-        :class="['preset-btn', { 'active': activePreset === preset.id }]"
-        @click="selectPreset(preset)"
-        :title="preset.description"
+        class="preset-item"
       >
-        <div v-if="preset.icon" class="preset-icon">{{ preset.icon }}</div>
-        <span class="preset-name">{{ preset.name }}</span>
-      </button>
+        <UIButton
+          :variant="activePreset === preset.id ? 'primary' : 'secondary'"
+          size="md"
+          block
+          class="preset-btn"
+          @click="selectPreset(preset)"
+          :title="preset.description"
+        >
+          <div class="preset-content">
+            <div v-if="preset.icon" class="preset-icon">{{ preset.icon }}</div>
+            <span class="preset-name">{{ preset.name }}</span>
+          </div>
+        </UIButton>
+      </div>
     </div>
 
     <!-- Custom preset option -->
-    <div v-if="allowCustom" class="mt-3">
-      <button
-        :class="['preset-btn preset-custom', { 'active': activePreset === 'custom' }]"
+    <div v-if="allowCustom" class="preset-custom-wrapper">
+      <UIButton
+        :variant="activePreset === 'custom' ? 'primary' : 'secondary'"
+        size="md"
+        block
         @click="selectCustom"
         title="Configuration personnalisée"
       >
-        <div class="preset-icon">⚙️</div>
-        <span class="preset-name">Personnalisé</span>
-      </button>
+        <div class="preset-content">
+          <div class="preset-icon">⚙️</div>
+          <span class="preset-name">Personnalisé</span>
+        </div>
+      </UIButton>
     </div>
 
     <!-- Preset details -->
-    <div v-if="showDetails && selectedPresetDetails" class="preset-details mt-3">
-      <div class="text-white/70 text-xs">
+    <div v-if="showDetails && selectedPresetDetails" class="preset-details">
+      <div class="preset-details-description">
         {{ selectedPresetDetails.description }}
       </div>
-      <div v-if="selectedPresetDetails.example" class="text-white/50 text-xs mt-1 font-mono">
+      <div v-if="selectedPresetDetails.example" class="preset-details-example">
         {{ selectedPresetDetails.example }}
       </div>
     </div>
@@ -40,7 +53,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
+import UIButton from '@/components/ui/base/UIButton.vue'
 
 const props = defineProps({
   title: {
@@ -100,61 +114,72 @@ const selectCustom = () => {
 </script>
 
 <style scoped>
+.preset-selector {
+  width: 100%;
+}
+
+.preset-title {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
+}
+
 .preset-grid {
   display: grid;
-  gap: 8px;
+  gap: var(--space-2);
+}
+
+.preset-item {
+  width: 100%;
 }
 
 .preset-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
-  border-radius: 8px;
-  padding: 12px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
   min-height: 70px;
 }
 
-.preset-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
-}
-
-.preset-btn.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-color: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-}
-
-.preset-custom {
-  width: 100%;
-  margin-top: 8px;
+.preset-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
 }
 
 .preset-icon {
-  font-size: 18px;
+  font-size: var(--text-lg);
   line-height: 1;
 }
 
 .preset-name {
-  font-size: 12px;
+  font-size: var(--text-xs);
   text-align: center;
-  line-height: 1.2;
+  line-height: var(--leading-tight);
+}
+
+.preset-custom-wrapper {
+  margin-top: var(--space-3);
 }
 
 .preset-details {
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  background: var(--glass-bg-light);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-primary);
+}
+
+.preset-details-description {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  line-height: var(--leading-relaxed);
+}
+
+.preset-details-example {
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-family: var(--font-mono, monospace);
+  line-height: var(--leading-relaxed);
 }
 
 /* Grid column utilities */
@@ -162,4 +187,17 @@ const selectCustom = () => {
 .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+/* Responsive */
+@media (max-width: 640px) {
+  .preset-grid {
+    gap: var(--space-2);
+  }
+
+  .grid-cols-2,
+  .grid-cols-3,
+  .grid-cols-4 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
 </style>

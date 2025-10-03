@@ -41,7 +41,7 @@ const props = defineProps({
   variant: {
     type: String,
     default: 'primary',
-    validator: value => ['primary', 'secondary', 'ghost', 'danger', 'success', 'warning'].includes(value)
+    validator: value => ['primary', 'secondary', 'ghost', 'danger', 'success', 'warning', 'filter'].includes(value)
   },
   size: {
     type: String,
@@ -59,6 +59,10 @@ const props = defineProps({
     default: false
   },
   block: {
+    type: Boolean,
+    default: false
+  },
+  active: {
     type: Boolean,
     default: false
   },
@@ -125,7 +129,8 @@ const buttonClasses = computed(() => [
     'ui-button--block': props.block,
     'ui-button--icon-only': props.iconOnly || (props.icon && !slots.default),
     'ui-button--loading': props.loading,
-    'ui-button--disabled': props.disabled
+    'ui-button--disabled': props.disabled,
+    'ui-button--active': props.active
   }
 ])
 
@@ -250,6 +255,23 @@ const handleClick = (event) => {
   background: var(--color-warning-light);
   transform: translateY(-1px);
   box-shadow: var(--shadow-hover);
+}
+
+.ui-button--filter {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-primary);
+}
+
+.ui-button--filter:hover:not(:disabled) {
+  background: var(--glass-bg-light);
+  color: var(--text-primary);
+  border-color: var(--border-hover);
+}
+
+.ui-button--filter.ui-button--active {
+  background: var(--electric-blue-alpha);
+  border-color: var(--electric-blue-darker);
 }
 
 /* Button sizes */

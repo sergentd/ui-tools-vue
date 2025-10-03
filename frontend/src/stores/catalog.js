@@ -143,11 +143,11 @@ export const useCatalogStore = defineStore('catalog', {
     },
     categories: {
       theming: { name: 'Théming & Couleurs', icon: 'category-theming' },
-      reference: { name: 'Références & Documentation', icon: 'category-reference' },
+      reference: { name: 'Références & Documentation', icon: 'glossaire-webdev' },
       dashboard: { name: 'Tableaux de Bord', icon: 'category-dashboard' },
-      evaluation: { name: 'Évaluation & Profils', icon: 'category-evaluation' },
-      visualization: { name: 'Visualisation', icon: 'category-visualization' },
-      organization: { name: 'Organisation & Productivité', icon: 'category-organization' }
+      evaluation: { name: 'Évaluation & Profils', icon: 'skills-evaluator' },
+      visualization: { name: 'Visualisation', icon: 'eye' },
+      organization: { name: 'Organisation & Productivité', icon: 'lifebuoy' }
     },
     activeFilter: 'all',
     searchQuery: '',

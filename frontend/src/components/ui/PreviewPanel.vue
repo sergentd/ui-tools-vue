@@ -1,8 +1,8 @@
 <template>
-  <div class="glass-card rounded-2xl p-6">
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-xl font-bold text-white">{{ title }}</h2>
-      <div v-if="showDimensions" class="text-white/70 text-sm">
+  <UIGlassCard variant="light" padding="lg">
+    <div class="preview-header">
+      <h2 class="preview-title">{{ title }}</h2>
+      <div v-if="showDimensions" class="preview-dimensions">
         {{ dimensions.width }} × {{ dimensions.height }}
       </div>
     </div>
@@ -36,16 +36,17 @@
     </div>
 
     <!-- Info footer -->
-    <div v-if="showInfo" class="mt-4 text-white/60 text-sm">
+    <div v-if="showInfo" class="preview-info">
       <slot name="info">
         {{ infoText }}
       </slot>
     </div>
-  </div>
+  </UIGlassCard>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue'
+import UIGlassCard from '@/components/ui/base/UIGlassCard.vue'
 
 const props = defineProps({
   title: {
@@ -156,16 +157,30 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.glass-card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+/* Header */
+.preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
 }
 
+.preview-title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+}
+
+.preview-dimensions {
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+}
+
+/* Preview Container */
 .preview-container {
   background: rgba(255, 255, 255, 0.9);
-  border: 2px dashed rgba(102, 126, 234, 0.5);
+  border: 2px dashed var(--border-primary);
+  border-radius: var(--radius-lg);
   min-height: 300px;
   overflow: auto;
 }
@@ -175,41 +190,61 @@ onMounted(() => {
   height: 100%;
 }
 
+/* Grid Items - Using electric blue theme */
 .grid-item {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 8px;
+  background: linear-gradient(135deg, var(--electric-blue-dark) 0%, var(--electric-blue-light) 100%);
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-weight: 500;
-  transition: all 0.3s ease;
+  color: var(--text-inverse);
+  font-weight: var(--font-medium);
+  transition: var(--transition-default);
   min-height: 60px;
   cursor: pointer;
+  box-shadow: var(--shadow-sm);
 }
 
 .grid-item:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: var(--shadow-glow);
+}
+
+/* Info Footer */
+.preview-info {
+  margin-top: var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
 }
 
 /* Custom scrollbar for preview container */
 .preview-container::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: var(--space-2);
+  height: var(--space-2);
 }
 
 .preview-container::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
+  background: var(--glass-bg-dark);
+  border-radius: var(--radius-sm);
 }
 
 .preview-container::-webkit-scrollbar-thumb {
-  background: rgba(102, 126, 234, 0.5);
-  border-radius: 3px;
+  background: var(--electric-blue);
+  border-radius: var(--radius-sm);
 }
 
 .preview-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(102, 126, 234, 0.7);
+  background: var(--electric-blue-light);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .grid-item {
+    transition: none;
+  }
+
+  .grid-item:hover {
+    transform: none;
+  }
 }
 </style>

@@ -1,39 +1,44 @@
 <template>
   <div class="filter-menu">
     <!-- All button -->
-    <button
-      :class="['filter-btn', activeFilter === 'all' ? 'active' : '']"
+    <UIButton
+      variant="filter"
+      size="sm"
+      icon="all"
+      :active="activeFilter === 'all'"
       @click="handleFilterChange('all')"
     >
-      <IconSystem name="all" size="sm" variant="mono" />
-      <span>Tous</span>
-    </button>
+      Tous
+    </UIButton>
 
     <!-- Favorites Button (always visible) -->
-    <button
-      :class="['filter-btn', activeFilter === 'favorites' ? 'active' : '']"
+    <UIButton
+      variant="filter"
+      size="sm"
+      icon="favorites"
+      :active="activeFilter === 'favorites'"
       @click="handleFilterChange('favorites')"
     >
-      <IconSystem name="favorites" size="sm" variant="mono" />
-      <span>Favoris ({{ favoritesCount }})</span>
-    </button>
+      Favoris ({{ favoritesCount }})
+    </UIButton>
 
     <!-- Category buttons -->
-    <button
+    <UIButton
       v-for="[key, category] in availableCategories"
       :key="key"
-      :class="['filter-btn', activeFilter === key ? 'active' : '']"
+      variant="filter"
+      size="sm"
+      :icon="category.icon"
+      :active="activeFilter === key"
       @click="handleFilterChange(key)"
     >
-      <IconSystem :name="category.icon" size="sm" variant="mono" />
-      <span>{{ category.name }}</span>
-    </button>
+      {{ category.name }}
+    </UIButton>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import IconSystem from '@/components/ui/IconSystem.vue'
+import UIButton from '@/components/ui/base/UIButton.vue'
 
 const props = defineProps({
   categories: {
@@ -70,11 +75,10 @@ const handleFilterChange = (filter) => {
   margin-bottom: var(--space-8);
 }
 
-.filter-btn {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-width: max-content;
-  white-space: nowrap;
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .filter-menu {
+    gap: var(--space-2);
+  }
 }
 </style>

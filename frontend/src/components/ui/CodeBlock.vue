@@ -2,19 +2,14 @@
   <div class="code-block-container">
     <div class="code-header">
       <span class="language-label">{{ language }}</span>
-      <button
+      <UIButton
+        variant="ghost"
+        size="sm"
+        :icon="isCopied ? 'check' : 'copy'"
         @click="copyCode"
-        class="copy-button"
-        :class="{ copied: isCopied }"
         :title="isCopied ? 'Copié!' : 'Copier le code'"
-      >
-        <svg v-if="!isCopied" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"/>
-        </svg>
-        <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/>
-        </svg>
-      </button>
+        :class="{ 'copy-success': isCopied }"
+      />
     </div>
     <pre class="code-content"><code :class="`language-${language}`" v-html="highlightedCode"></code></pre>
   </div>
@@ -22,6 +17,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import UIButton from '@/components/ui/base/UIButton.vue'
 
 const props = defineProps({
   code: {
@@ -127,28 +123,8 @@ const copyCode = async () => {
   letter-spacing: 0.05em;
 }
 
-.copy-button {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-  padding: var(--space-1) var(--space-2);
-  background: var(--border-primary);
-  border: none;
-  border-radius: var(--radius-sm);
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all var(--duration-fast) var(--easing-ease);
-  font-size: var(--text-xs);
-}
-
-.copy-button:hover {
-  background: var(--border-secondary);
-  color: var(--text-primary);
-}
-
-.copy-button.copied {
-  background: var(--color-success-alpha);
-  color: var(--color-success);
+.copy-success {
+  color: var(--color-success) !important;
 }
 
 .code-content {
