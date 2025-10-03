@@ -88,7 +88,6 @@ export const useSearchIndexStore = defineStore('searchIndex', {
       })
 
       this.isIndexed = true
-      console.log(`[SearchIndex] Indexed ${allEntries.length} entries from ${Object.keys(this.tools).length} tools`)
     },
 
     /**
