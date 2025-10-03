@@ -104,60 +104,60 @@ const copyCode = async () => {
 
 <style scoped>
 .code-block-container {
-  background: #1e293b;
-  border-radius: 8px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-primary);
 }
 
 .code-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
-  background: #0f172a;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-primary);
 }
 
 .language-label {
-  font-size: 12px;
-  color: #94a3b8;
-  font-weight: 500;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  font-weight: var(--font-medium);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.05em;
 }
 
 .copy-button {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  background: rgba(255, 255, 255, 0.1);
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  background: var(--border-primary);
   border: none;
-  border-radius: 4px;
-  color: #94a3b8;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
   cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 12px;
+  transition: all var(--duration-fast) var(--easing-ease);
+  font-size: var(--text-xs);
 }
 
 .copy-button:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
+  background: var(--border-secondary);
+  color: var(--text-primary);
 }
 
 .copy-button.copied {
-  background: rgba(34, 197, 94, 0.2);
-  color: #22c55e;
+  background: var(--color-success-alpha);
+  color: var(--color-success);
 }
 
 .code-content {
-  padding: 16px;
+  padding: var(--space-4);
   margin: 0;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: 14px;
-  line-height: 1.5;
-  color: #e2e8f0;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--text-primary);
   overflow-x: hidden;
   white-space: pre-wrap;
 }
@@ -165,7 +165,7 @@ const copyCode = async () => {
 /* Syntax highlighting styles */
 :deep(.keyword) {
   color: #c792ea;
-  font-weight: 500;
+  font-weight: var(--font-medium);
 }
 
 :deep(.string) {
@@ -195,7 +195,7 @@ const copyCode = async () => {
 
 :deep(.directive) {
   color: #f78c6c;
-  font-weight: 500;
+  font-weight: var(--font-medium);
 }
 
 :deep(.tag) {
@@ -204,16 +204,16 @@ const copyCode = async () => {
 
 /* Scrollbar styling */
 .code-content::-webkit-scrollbar {
-  height: 8px;
+  height: var(--space-2);
 }
 
 .code-content::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--border-secondary);
 }
 
 .code-content::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
+  background: var(--border-primary);
+  border-radius: var(--radius-sm);
 }
 
 .code-content::-webkit-scrollbar-thumb:hover {

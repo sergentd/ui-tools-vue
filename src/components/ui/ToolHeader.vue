@@ -1,51 +1,36 @@
 <template>
-  <header class="tool-header full-width">
+  <header class="tool-header">
     <!-- Full-width dark header with background image support -->
-    <div class="header-container relative w-full border-primary mb-6">
+    <div class="header-container">
       <!-- Background overlay for future images -->
-      <div class="header-background absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      <div class="header-background">
         <!-- Future: background image will go here -->
-        <div class="background-overlay absolute inset-0 bg-black/40"></div>
+        <div class="background-overlay"></div>
       </div>
 
       <!-- Header content -->
-      <div class="header-content relative z-10">
+      <UIContainer class="header-content">
         <!-- Top navigation bar -->
-        <div class="nav-bar flex items-center mb-3">
+        <div class="nav-bar">
           <!-- Left side: Return button -->
-          <div class="flex-1">
-            <router-link
-              to="/"
-              class="return-button flex items-center space-x-3 text-white group"
-            >
+          <div class="nav-start">
+            <router-link to="/" class="return-button">
               <div class="button-background">
-                <svg
-                  class="w-5 h-5 transform group-hover:-translate-x-1 transition-transform"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                  />
-                </svg>
+                <IconSystem name="arrow-left" size="sm" />
               </div>
-              <span class="font-semibold text-lg">{{ backButtonText }}</span>
+              <span class="button-text">{{ backButtonText }}</span>
             </router-link>
           </div>
 
           <!-- Center: Tool icon -->
-          <div v-if="icon" class="flex-1 flex justify-center">
-            <div class="tool-icon filter drop-shadow-lg">
+          <div v-if="icon" class="nav-center">
+            <div class="tool-icon">
               <IconSystem :name="icon" size="xl" variant="electric" />
             </div>
           </div>
 
           <!-- Right side: Category badge -->
-          <div v-if="category" class="flex-1 flex justify-end">
+          <div v-if="category" class="nav-end">
             <span class="category-badge">
               {{ categoryDisplayName }}
             </span>
@@ -53,26 +38,26 @@
         </div>
 
         <!-- Main title section -->
-        <div class="title-section text-center">
+        <div class="title-section">
           <!-- Title -->
-          <h1 class="tool-title text-5xl font-bold text-white mb-4 tracking-tight">{{ title }}</h1>
+          <h1 class="tool-title">{{ title }}</h1>
 
           <!-- Description -->
-          <p v-if="description" class="tool-description text-white/90 text-xl leading-relaxed mb-6 max-w-3xl mx-auto font-medium">
+          <p v-if="description" class="tool-description">
             {{ description }}
           </p>
 
           <!-- Additional content slot -->
-          <div v-if="$slots.content" class="additional-content mt-6">
+          <div v-if="$slots.content" class="additional-content">
             <slot name="content" />
           </div>
         </div>
 
         <!-- Optional actions at bottom -->
-        <div v-if="$slots.actions" class="actions-section mt-8 flex justify-center">
+        <div v-if="$slots.actions" class="actions-section">
           <slot name="actions" />
         </div>
-      </div>
+      </UIContainer>
     </div>
   </header>
 </template>
@@ -80,6 +65,7 @@
 <script setup>
 import { computed } from 'vue'
 import IconSystem from '@/components/ui/IconSystem.vue'
+import UIContainer from '@/components/ui/base/UIContainer.vue'
 
 const props = defineProps({
   title: {
@@ -129,87 +115,123 @@ const categoryDisplayName = computed(() => {
 <style scoped>
 .tool-header {
   position: relative;
-  animation: slideDown var(--duration-slow) var(--easing-ease);
-}
-
-.full-width {
   width: 100vw;
-  position: relative;
   left: 50%;
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
+  animation: slideDown var(--duration-slow) var(--easing-default);
 }
 
 .header-container {
   min-height: 140px;
   position: relative;
   overflow: hidden;
+  margin-bottom: var(--space-6);
 }
 
 .header-background {
+  position: absolute;
+  inset: 0;
   background: var(--bg-primary);
   background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
+  animation: gradientShift var(--duration-ultra-slow) var(--easing-default) infinite;
 }
 
 .background-overlay {
+  position: absolute;
+  inset: 0;
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.1) 100%);
 }
 
 .header-content {
   position: relative;
   z-index: var(--z-modal-content);
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: var(--space-lg) var(--space-xl);
+  padding: var(--space-8) var(--space-6);
 }
 
 /* Navigation bar */
 .nav-bar {
+  display: flex;
   align-items: center;
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-4);
+}
+
+.nav-start {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.nav-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-end {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .return-button {
-  transition: all var(--duration-normal) var(--easing-smooth);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: var(--transition-default);
 }
 
 .return-button:hover {
-  transform: translateX(calc(-1 * var(--space-xs)));
+  transform: translateX(calc(-1 * var(--space-1)));
 }
 
 .button-background {
-  transition: all var(--duration-normal) var(--easing-ease);
-  box-shadow: var(--shadow-sm);
-  background: var(--glass-lighter);
-  backdrop-filter: blur(var(--blur-sm));
-  border: 1px solid var(--border-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3);
+  background: var(--glass-bg-lighter);
+  backdrop-filter: blur(var(--blur-md));
+  border: 1px solid var(--border-primary);
   border-radius: var(--radius-lg);
-  padding: var(--space-md);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-default);
 }
 
 .return-button:hover .button-background {
-  background: var(--glass-light);
-  box-shadow: var(--shadow-lg);
+  background: var(--glass-bg-light);
+  box-shadow: var(--shadow-hover);
   transform: scale(1.05);
+}
+
+.button-text {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
 }
 
 /* Title section */
 .title-section {
-  margin-top: var(--space-lg);
+  margin-top: var(--space-8);
+  text-align: center;
 }
 
 .tool-icon {
-  text-shadow: var(--shadow-lg);
+  text-shadow: 0 0 var(--space-4) var(--electric-blue);
   filter: drop-shadow(var(--shadow-md));
-  animation: float 6s ease-in-out infinite;
+  animation: float var(--duration-ultra-slow) var(--easing-smooth) infinite;
 }
 
 .tool-title {
-  text-shadow: var(--shadow-lg);
-  font-weight: var(--font-extrabold);
+  font-size: var(--text-5xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
   letter-spacing: -0.025em;
+  text-shadow: var(--shadow-lg);
   background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -217,36 +239,43 @@ const categoryDisplayName = computed(() => {
 }
 
 .tool-description {
-  text-shadow: var(--shadow-md);
+  font-size: var(--text-xl);
+  font-weight: var(--font-medium);
+  color: rgba(255, 255, 255, 0.9);
   line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-6);
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+  text-shadow: var(--shadow-md);
+}
+
+.additional-content {
+  margin-top: var(--space-6);
+}
+
+.actions-section {
+  margin-top: var(--space-8);
+  display: flex;
+  justify-content: center;
 }
 
 .category-badge {
   background: var(--electric-blue);
   color: var(--bg-primary);
-  padding: var(--space-xs) var(--space-md);
-  border-radius: var(--radius-xl);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
   font-weight: var(--font-semibold);
   font-size: var(--text-sm);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.status-badge {
-  transition: all var(--duration-normal) var(--easing-ease);
-  box-shadow: var(--shadow-glow-success);
-}
-
-.status-badge:hover {
-  transform: translateY(calc(-1 * var(--space-xs)));
-  box-shadow: var(--shadow-glow-success-strong);
-}
-
 /* Animations */
 @keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateY(-30px);
+    transform: translateY(calc(-1 * var(--space-8)));
   }
   to {
     opacity: 1;
@@ -268,76 +297,28 @@ const categoryDisplayName = computed(() => {
 
 @keyframes float {
   0%, 100% {
-    transform: translateY(0px);
+    transform: translateY(0);
   }
   50% {
-    transform: translateY(-8px);
+    transform: translateY(calc(-1 * var(--space-2)));
   }
 }
 
 /* Mobile responsive */
 @media (max-width: 768px) {
   .header-content {
-    padding: var(--space-xl) var(--space-lg);
+    padding: var(--space-6) var(--space-4);
   }
 
   .nav-bar {
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-6);
     flex-direction: column;
-    gap: var(--space-lg);
+    gap: var(--space-4);
   }
 
-  .nav-bar > div {
-    flex: none;
-    width: 100%;
-    justify-content: center;
-  }
-
-  .nav-bar .return-button {
-    justify-content: center;
-  }
-
-  .return-button span {
-    font-size: var(--text-base);
-  }
-
-  .category-badge {
-    padding: var(--space-sm) var(--space-lg);
-    font-size: var(--text-base);
-  }
-
-  .tool-title {
-    font-size: var(--text-4xl);
-    margin-bottom: var(--space-lg);
-  }
-
-  .tool-description {
-    font-size: var(--text-lg);
-    margin-bottom: var(--space-xl);
-  }
-
-  .tool-icon {
-    font-size: var(--text-6xl);
-    margin-bottom: var(--space-xl);
-  }
-}
-
-@media (max-width: 480px) {
-  .header-container {
-    min-height: 120px;
-  }
-
-  .header-content {
-    padding: var(--space-lg) var(--space-md);
-  }
-
-  .nav-bar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--space-lg);
-  }
-
-  .nav-bar > div {
+  .nav-start,
+  .nav-center,
+  .nav-end {
     flex: none;
     width: 100%;
     justify-content: center;
@@ -347,16 +328,45 @@ const categoryDisplayName = computed(() => {
     justify-content: center;
   }
 
+  .button-text {
+    font-size: var(--text-base);
+  }
+
+  .category-badge {
+    padding: var(--space-2) var(--space-6);
+    font-size: var(--text-base);
+  }
+
+  .tool-title {
+    font-size: var(--text-4xl);
+    margin-bottom: var(--space-4);
+  }
+
+  .tool-description {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-6);
+  }
+}
+
+@media (max-width: 480px) {
+  .header-container {
+    min-height: 120px;
+  }
+
+  .header-content {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .nav-bar {
+    gap: var(--space-3);
+  }
+
   .tool-title {
     font-size: var(--text-3xl);
   }
 
   .tool-description {
     font-size: var(--text-base);
-  }
-
-  .tool-icon {
-    font-size: var(--text-5xl);
   }
 }
 
@@ -370,5 +380,17 @@ const categoryDisplayName = computed(() => {
 
 .header-background.with-image .background-overlay {
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 100%);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .tool-header,
+  .header-background,
+  .return-button,
+  .button-background,
+  .tool-icon {
+    animation: none;
+    transition: none;
+  }
 }
 </style>

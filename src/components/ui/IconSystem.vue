@@ -20,21 +20,22 @@
       <circle cx="15" cy="9" r="1.5" :fill="secondaryColor"/>
       <circle cx="9" cy="15" r="1.5" :fill="accentColor"/>
       <circle cx="15" cy="15" r="1.5" :fill="tertiaryColor"/>
-      <circle cx="12" cy="12" r="1.5" fill="#FF6B6B"/>
+      <circle cx="12" cy="12" r="1.5" :fill="accentRed"/>
     </g>
 
     <!-- CSS Grid Generator - Clear grid layout -->
     <g v-else-if="name === 'css-grid-generator'">
-      <!-- Grid container -->
-      <rect x="3" y="5" width="18" height="14" stroke="currentColor" stroke-width="2" fill="none" rx="2"/>
-      <!-- Grid lines -->
-      <path d="M9 5v14M15 5v14M3 11h18M3 15h18" stroke="#FF6B6B" stroke-width="1" opacity="0.4"/>
-      <!-- Grid items -->
-      <rect x="4" y="6" width="4" height="4" :fill="primaryColor" rx="1"/>
-      <rect x="10" y="6" width="4" height="4" :fill="secondaryColor" rx="1"/>
-      <rect x="16" y="6" width="4" height="4" :fill="accentColor" rx="1"/>
-      <rect x="4" y="12" width="10" height="6" :fill="tertiaryColor" rx="1" opacity="0.7"/>
-      <rect x="16" y="12" width="4" height="6" fill="#FF6B6B" rx="1" opacity="0.7"/>
+      <!-- 2x2 Grid with gap -->
+      <!-- Top-left: Primary blue -->
+      <rect x="4" y="4" width="7" height="7" :fill="primaryColor" rx="0.5"/>
+      <!-- Top-right: Red accent -->
+      <rect x="13" y="4" width="7" height="7" :fill="accentRed" rx="0.5"/>
+      <!-- Bottom-left: Tertiary semi-transparent blue -->
+      <rect x="4" y="13" width="7" height="7" :fill="tertiaryColor" rx="0.5"/>
+      <!-- Bottom-right: Accent dark blue -->
+      <rect x="13" y="13" width="7" height="7" :fill="accentColor" rx="0.5"/>
+      <!-- Grid border -->
+      <rect x="4" y="4" width="16" height="16" stroke="currentColor" stroke-width="1" fill="none" rx="1"/>
     </g>
 
     <!-- Color Contrast Checker - Simple circle half black half blue with dot -->
@@ -48,13 +49,13 @@
       <!-- Dividing line -->
       <path d="M12 4v16" stroke="currentColor" stroke-width="1"/>
       <!-- Opposed color dot -->
-      <circle cx="16" cy="12" r="1.5" fill="#FF6B6B"/>
+      <circle cx="16" cy="12" r="1.5" :fill="accentRed"/>
     </g>
 
     <!-- Shadow Generator - Blue circle with offset black circle -->
     <g v-else-if="name === 'shadow-generator'">
       <!-- Shadow circle (offset black) -->
-      <circle cx="14" cy="14" r="9" fill="#FF6B6B" opacity="0.5"/>
+      <circle cx="14" cy="14" r="9" :fill="accentRed" opacity="0.5"/>
       <!-- Main blue circle -->
       <circle cx="12" cy="12" r="6" :fill="primaryColor" stroke="currentColor" stroke-width="2"/>
     </g>
@@ -62,25 +63,25 @@
     <!-- Flexbox Playground - Simple container with flexible rectangles -->
     <g v-else-if="name === 'flexbox-playground'">
       <!-- Container -->
-      <rect x="3" y="8" width="18" height="8" stroke="currentColor" stroke-width="2" fill="none" rx="1"/>
+      <rect x="3" y="4" width="18" height="16" stroke="currentColor" stroke-width="1" fill="none" rx="1"/>
       <!-- Simple flexible items -->
-      <rect x="5" y="10" width="2" height="4" fill="#FF6B6B"/>
-      <rect x="8" y="10" width="3" height="4" :fill="secondaryColor"/>
-      <rect x="12" y="10" width="4" height="4" :fill="accentColor"/>
-      <rect x="17" y="10" width="2" height="4" :fill="tertiaryColor"/>
+      <rect x="5" y="8" width="2" height="8" :fill="accentRed"/>
+      <rect x="8" y="8" width="3" height="8" :fill="secondaryColor"/>
+      <rect x="12" y="8" width="4" height="8" :fill="accentColor"/>
+      <rect x="17" y="8" width="2" height="8" :fill="tertiaryColor"/>
     </g>
 
     <!-- Gradient Generator - Simple rectangle with gradient -->
     <g v-else-if="name === 'gradient-generator'">
       <defs>
-        <linearGradient id="simple-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#FF6B6B"/>
-          <stop offset="50%" :stop-color="accentColor"/>
-          <stop offset="100%" :stop-color="primaryColor"/>
+        <linearGradient id="simple-gradient" x1="0%" y1="0%" x2="100%" y2="60%">
+          <stop offset="0%" :stop-color="accentRed"/>
+          
+          <stop offset="100%" :stop-color="accentColor"/>
         </linearGradient>
       </defs>
       <!-- Simple gradient rectangle -->
-      <rect x="4" y="8" width="16" height="8" fill="url(#simple-gradient)" stroke="currentColor" stroke-width="2" rx="2"/>
+      <rect x="4" y="4" width="16" height="16" fill="url(#simple-gradient)" stroke="currentColor" stroke-width="1" rx="2"/>
     </g>
 
     <!-- Glossary/Book - Simple book -->
@@ -94,7 +95,7 @@
     <!-- Theming Multi-client - Three rectangles with different colors -->
     <g v-else-if="name === 'theming-multiclient'">
       <rect x="3" y="6" width="5" height="12" :fill="primaryColor" stroke="currentColor" stroke-width="1.5" rx="1"/>
-      <rect x="9.5" y="6" width="5" height="12" fill="#FF6B6B" stroke="currentColor" stroke-width="1.5" rx="1"/>
+      <rect x="9.5" y="6" width="5" height="12" :fill="accentRed" stroke="currentColor" stroke-width="1.5" rx="1"/>
       <rect x="16" y="6" width="5" height="12" :fill="accentColor" stroke="currentColor" stroke-width="1.5" rx="1"/>
     </g>
 
@@ -102,7 +103,7 @@
     <g v-else-if="name === 'css-specificity'">
       <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2" fill="none"/>
       <circle cx="12" cy="12" r="5" :fill="primaryColor" opacity="0.6"/>
-      <circle cx="12" cy="12" r="2" fill="#FF6B6B"/>
+      <circle cx="12" cy="12" r="2" :fill="accentRed"/>
     </g>
 
     <!-- WebUI Principles - Simple document with lines -->
@@ -115,7 +116,7 @@
     <!-- Skills Evaluator - Simple bar chart -->
     <g v-else-if="name === 'skills-evaluator'">
       <rect x="4" y="14" width="2" height="6" :fill="primaryColor"/>
-      <rect x="8" y="12" width="2" height="8" fill="#FF6B6B"/>
+      <rect x="8" y="12" width="2" height="8" :fill="accentRed"/>
       <rect x="12" y="8" width="2" height="12" :fill="accentColor"/>
       <rect x="16" y="10" width="2" height="10" :fill="tertiaryColor"/>
       <rect x="20" y="6" width="2" height="14" :fill="primaryColor"/>
@@ -126,7 +127,7 @@
       <circle cx="12" cy="12" r="3" :fill="primaryColor" stroke="currentColor" stroke-width="2"/>
       <circle cx="6" cy="6" r="1.5" :fill="secondaryColor"/>
       <circle cx="18" cy="6" r="1.5" :fill="accentColor"/>
-      <circle cx="6" cy="18" r="1.5" fill="#FF6B6B"/>
+      <circle cx="6" cy="18" r="1.5" :fill="accentRed"/>
       <circle cx="18" cy="18" r="1.5" :fill="primaryColor"/>
       <path d="M9.5 10.5L7.5 7.5M14.5 10.5L16.5 7.5M9.5 13.5L7.5 16.5M14.5 13.5L16.5 16.5" stroke="currentColor" stroke-width="1"/>
     </g>
@@ -193,7 +194,7 @@
     <g v-else-if="name === 'search'">
       <circle cx="10" cy="10" r="6" stroke="currentColor" stroke-width="2" fill="none"/>
       <path d="M14.5 14.5L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      <circle cx="10" cy="10" r="3" :fill="primaryColor" opacity="0.3"/>
+      <circle cx="10" cy="10" r="3" :fill="accentRed" opacity="0.3"/>
     </g>
 
     <!-- All/Everything -->
@@ -220,7 +221,7 @@
       <rect x="13" y="5" width="6" height="4" :fill="secondaryColor" rx="1"/>
       <rect x="5" y="11" width="14" height="3" :fill="accentColor" rx="1"/>
       <rect x="5" y="16" width="6" height="4" :fill="tertiaryColor" rx="1"/>
-      <rect x="13" y="16" width="6" height="4" fill="#FF6B6B" rx="1"/>
+      <rect x="13" y="16" width="6" height="4" :fill="accentRed" rx="1"/>
       <circle cx="8" cy="7" r="0.5" fill="white"/>
       <circle cx="16" cy="7" r="0.5" fill="white"/>
       <circle cx="12" cy="12.5" r="0.5" fill="white"/>
@@ -234,7 +235,7 @@
     <!-- Eye/View Icon -->
     <g v-else-if="name === 'eye' || name === 'view'">
       <path d="M12 5C7 5 2.73 8.11 1 12C2.73 15.89 7 19 12 19C17 19 21.27 15.89 23 12C21.27 8.11 17 5 12 5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17Z" :fill="primaryColor" stroke="currentColor" stroke-width="1"/>
-      <circle cx="12" cy="12" r="3" fill="#FF6B6B"/>
+      <circle cx="12" cy="12" r="3" :fill="accentRed"/>
     </g>
 
     <!-- Headset Icon -->
@@ -248,7 +249,7 @@
       <!-- Microphone arm - longer and more curved -->
       <path d="M5 11Q3 12 2 14Q1 16 2 18" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
       <!-- Microphone - more centered -->
-      <circle cx="2" cy="18" r="1.5" fill="#FF6B6B"/>
+      <circle cx="2" cy="18" r="1.5" :fill="accentRed"/>
       <!-- Connection to headband -->
       <path d="M7 8v2M17 8v2" stroke="currentColor" stroke-width="1.5"/>
     </g>
@@ -264,11 +265,11 @@
       </defs>
       <!-- Four quarter segments with alternating colors -->
       <!-- Top quarter (red) -->
-      <path d="M12 4A8 8 0 0 1 20 12L12 12Z" fill="#FF6B6B" mask="url(#lifebuoy-mask)"/>
+      <path d="M12 4A8 8 0 0 1 20 12L12 12Z" :fill="accentRed" mask="url(#lifebuoy-mask)"/>
       <!-- Right quarter (white) -->
       <path d="M20 12A8 8 0 0 1 12 20L12 12Z" fill="white" mask="url(#lifebuoy-mask)"/>
       <!-- Bottom quarter (red) -->
-      <path d="M12 20A8 8 0 0 1 4 12L12 12Z" fill="#FF6B6B" mask="url(#lifebuoy-mask)"/>
+      <path d="M12 20A8 8 0 0 1 4 12L12 12Z" :fill="accentRed" mask="url(#lifebuoy-mask)"/>
       <!-- Left quarter (white) -->
       <path d="M4 12A8 8 0 0 1 12 4L12 12Z" fill="white" mask="url(#lifebuoy-mask)"/>
       <!-- Outer ring stroke -->
@@ -311,6 +312,66 @@
     <g v-else-if="name === 'clipboard'">
       <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
       <rect x="8" y="2" width="8" height="4" rx="1" ry="1" stroke="currentColor" stroke-width="2" fill="none"/>
+    </g>
+
+    <!-- Menu Icon -->
+    <g v-else-if="name === 'menu'">
+      <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- Dots Vertical (More Options) Icon -->
+    <g v-else-if="name === 'dots-vertical' || name === 'more-vertical'">
+      <path d="M12 5v.01M12 12v.01M12 19v.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- Edit/Pencil Icon -->
+    <g v-else-if="name === 'edit' || name === 'pencil'">
+      <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- Trash/Delete Icon -->
+    <g v-else-if="name === 'trash' || name === 'delete'">
+      <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- Phone Icon -->
+    <g v-else-if="name === 'phone'">
+      <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- Document/File Icon -->
+    <g v-else-if="name === 'document' || name === 'file'">
+      <path d="M9 5H7a2 2 0 00-2 2v11a2 2 0 002 2h2m0-13h10a2 2 0 012 2v11a2 2 0 01-2 2H9m0-13v13" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- Clock Icon -->
+    <g v-else-if="name === 'clock' || name === 'time'">
+      <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- Refresh/Redo Icon -->
+    <g v-else-if="name === 'refresh' || name === 'redo'">
+      <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- Star (outline) -->
+    <g v-else-if="name === 'star'">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- Star (filled) -->
+    <g v-else-if="name === 'star-filled'">
+      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="currentColor"/>
+    </g>
+
+    <!-- Arrow Left -->
+    <g v-else-if="name === 'arrow-left'">
+      <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- External Link -->
+    <g v-else-if="name === 'external-link'">
+      <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
 
     <!-- Default fallback -->
@@ -395,6 +456,7 @@ const primaryColor = computed(() => colorScheme.value.primary)
 const secondaryColor = computed(() => colorScheme.value.secondary)
 const accentColor = computed(() => colorScheme.value.accent)
 const tertiaryColor = computed(() => colorScheme.value.tertiary)
+const accentRed = computed(() => 'var(--accent-red)')
 
 // CSS classes
 const colorClass = computed(() => {

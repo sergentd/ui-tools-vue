@@ -1,34 +1,32 @@
 <template>
-  <div class="relative">
-    <!-- Click handler -->
-    <component
-      :is="useVueRouting && vueRoute ? 'router-link' : 'a'"
-      :to="useVueRouting && vueRoute ? vueRoute : undefined"
-      :href="!useVueRouting || !vueRoute ? (tool.url || '#') : undefined"
-      :target="!useVueRouting ? '_blank' : undefined"
-      :rel="!useVueRouting ? 'noopener noreferrer' : undefined"
-      class="tool-card glass-card-white hover-lift hover-glow card-interactive block group relative overflow-hidden"
-      :data-category="category"
-      @click="handleClick"
+  <component
+    :is="useVueRouting && vueRoute ? 'router-link' : 'a'"
+    :to="useVueRouting && vueRoute ? vueRoute : undefined"
+    :href="!useVueRouting || !vueRoute ? (tool.url || '#') : undefined"
+    :target="!useVueRouting ? '_blank' : undefined"
+    :rel="!useVueRouting ? 'noopener noreferrer' : undefined"
+    class="tool-card-link"
+    :data-category="category"
+    @click="handleClick"
+  >
+    <UIGlassCard
+      variant="light"
+      :hover="true"
+      class="tool-card"
+      padding="card"
     >
-      <!-- Gradient overlay -->
-      <div class="gradient-overlay"></div>
-
-      <!-- Card Content -->
-      <div class="flex flex-col h-full relative z-10">
+      <div class="card-content">
         <!-- Header with icon, category, and favorite button -->
         <div class="card-header">
-          <div class="tool-icon hover-scale-lg transition-default relative">
+          <div class="tool-icon-wrapper">
             <IconSystem :name="tool.icon" size="xl" variant="electric" />
             <div class="icon-glow"></div>
           </div>
           <div class="category-label">
             {{ category }}
           </div>
-          <button @click.prevent="toggleFavorite" class="favorite-button">
-            <svg :class="{ 'text-electric-blue': isFavorite }" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-            </svg>
+          <button @click.prevent="toggleFavorite" class="favorite-button" :aria-label="isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'">
+            <IconSystem :name="isFavorite ? 'star-filled' : 'star'" size="sm" class="star-icon" :class="{ 'is-favorite': isFavorite }" />
           </button>
         </div>
 
@@ -42,46 +40,24 @@
         <div class="card-footer">
           <span class="footer-label">Ouvrir l'outil</span>
           <div class="footer-actions">
-            <svg
-              v-if="useVueRouting"
+            <IconSystem
+              :name="useVueRouting ? 'chevron-right' : 'external-link'"
+              size="sm"
               class="action-icon"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-            <svg
-              v-else
-              class="action-icon"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-              />
-            </svg>
+            />
             <div class="action-dot"></div>
           </div>
         </div>
       </div>
-    </component>
-  </div>
+    </UIGlassCard>
+  </component>
 </template>
 
 <script setup>
 import { computed } from 'vue'
 import { useCatalogStore } from '@/stores/catalog'
 import IconSystem from '@/components/ui/IconSystem.vue'
+import UIGlassCard from '@/components/ui/base/UIGlassCard.vue'
 
 const props = defineProps({
   tool: {
@@ -189,15 +165,21 @@ const highlightTitle = (title) => {
 </script>
 
 <style scoped>
-.tool-card {
-  padding: var(--card-padding);
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--border-primary);
-  transition: all var(--duration-normal) var(--easing-smooth);
+.tool-card-link {
+  display: block;
+  text-decoration: none;
+  transition: var(--transition-default);
 }
 
-.tool-card:hover {
-  border-color: var(--electric-blue-alpha-30);
+.tool-card {
+  height: 100%;
+  cursor: pointer;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .card-header {
@@ -208,16 +190,25 @@ const highlightTitle = (title) => {
   position: relative;
 }
 
+.tool-icon-wrapper {
+  position: relative;
+  transition: var(--transition-default);
+}
+
+.tool-card-link:hover .tool-icon-wrapper {
+  transform: scale(1.1);
+}
+
 .icon-glow {
   position: absolute;
   inset: calc(-1 * var(--space-2));
   background: rgba(var(--electric-blue-rgb), 0.05);
   border-radius: var(--radius-full);
   opacity: 0;
-  transition: opacity var(--duration-normal) var(--easing-ease);
+  transition: var(--transition-default);
 }
 
-.tool-card:hover .icon-glow {
+.tool-card-link:hover .icon-glow {
   opacity: 1;
 }
 
@@ -230,22 +221,36 @@ const highlightTitle = (title) => {
   font-weight: var(--font-medium);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  background: var(--glass-light);
-  padding: var(--space-xs) var(--space-sm);
+  background: var(--glass-bg-light);
+  padding: var(--space-1) var(--space-3);
   border-radius: var(--radius-full);
 }
 
 .favorite-button {
-  color: var(--text-muted);
-  transition: color var(--duration-normal) var(--easing-ease);
+  color: var(--text-tertiary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-default);
   z-index: 10;
   padding: var(--space-1);
   border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .favorite-button:hover {
   color: var(--electric-blue);
-  background: var(--electric-blue-alpha);
+  background: rgba(var(--electric-blue-rgb), 0.1);
+}
+
+.star-icon {
+  transition: var(--transition-default);
+}
+
+.star-icon.is-favorite {
+  color: var(--electric-blue);
 }
 
 .card-title {
@@ -269,51 +274,70 @@ const highlightTitle = (title) => {
   align-items: center;
   justify-content: space-between;
   padding-top: var(--space-4);
+  margin-top: auto;
   border-top: 1px solid var(--border-primary);
-  transition: border-color var(--duration-normal) var(--easing-ease);
+  transition: var(--transition-default);
 }
 
-.tool-card:hover .card-footer {
-  border-top-color: var(--electric-blue-alpha-20);
+.tool-card-link:hover .card-footer {
+  border-top-color: rgba(var(--electric-blue-rgb), 0.2);
 }
 
 .footer-label {
   font-size: var(--text-xs);
   color: var(--text-tertiary);
-  transition: color var(--duration-normal) var(--easing-ease);
+  transition: var(--transition-default);
 }
 
-.tool-card:hover .footer-label {
+.tool-card-link:hover .footer-label {
   color: var(--electric-blue);
 }
 
 .footer-actions {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: var(--space-2);
 }
 
 .action-icon {
-  width: var(--space-4);
-  height: var(--space-4);
-  color: var(--text-muted);
-  transition: color var(--duration-normal) var(--easing-ease);
+  color: var(--text-tertiary);
+  transition: var(--transition-default);
 }
 
-.tool-card:hover .action-icon {
+.tool-card-link:hover .action-icon {
   color: var(--electric-blue);
 }
 
 .action-dot {
-  width: var(--space-1);
-  height: var(--space-1);
+  width: var(--space-2);
+  height: var(--space-2);
   background: var(--electric-blue);
   border-radius: var(--radius-full);
   opacity: 0;
-  transition: opacity var(--duration-normal) var(--easing-ease);
+  transition: var(--transition-default);
 }
 
-.tool-card:hover .action-dot {
+.tool-card-link:hover .action-dot {
   opacity: 1;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .tool-card-link,
+  .tool-card,
+  .tool-icon-wrapper,
+  .icon-glow,
+  .favorite-button,
+  .star-icon,
+  .card-footer,
+  .footer-label,
+  .action-icon,
+  .action-dot {
+    transition: none;
+  }
+
+  .tool-card-link:hover .tool-icon-wrapper {
+    transform: none;
+  }
 }
 </style>

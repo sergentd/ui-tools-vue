@@ -1,6 +1,6 @@
 <template>
   <footer class="app-footer">
-    <UIContainer size="xlarge">
+    <UIContainer>
       <div class="footer-content">
 
         <!-- Main Footer Content -->

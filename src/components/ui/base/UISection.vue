@@ -171,12 +171,6 @@ const contentClasses = computed(() => ({
   'section__content--no-header': !hasHeader.value
 }))
 
-// Debug: Log section ID on mount
-onMounted(() => {
-  if (sectionId.value) {
-    console.log(`[UISection] Mounted with ID: ${sectionId.value}, Title: ${props.title}`)
-  }
-})
 </script>
 
 <style scoped>
