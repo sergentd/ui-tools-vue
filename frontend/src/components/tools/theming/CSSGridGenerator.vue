@@ -1,25 +1,26 @@
 <template>
-  <div class="css-grid-generator min-h-screen">
-    <!-- Main content with container -->
-    <div class="container mx-auto px-6 max-w-7xl py-8">
-      <!-- Header inside container -->
-      <ToolHeader
-        title="Générateur de Grille CSS"
-        description="Créez visuellement vos layouts CSS Grid et exportez le code"
-        icon="css-grid-generator"
-        category="theming"
-        status="Migré vers Vue"
-        :show-badges="true"
-      />
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <div class="min-h-screen bg-primary space-y-12">
+    <!-- Tool Header -->
+    <ToolHeader
+      title="Générateur de Grille CSS"
+      description="Créez visuellement vos layouts CSS Grid et exportez le code"
+      icon="css-grid-generator"
+      category="theming"
+      :show-badges="true"
+    />
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 space-y-8">
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <!-- Controls Panel -->
-        <div class="lg:col-span-1 space-y-6">
+        <div class="xl:col-span-1 space-y-6">
           <!-- Main Controls -->
-          <ControlPanel
-            title="Paramètres"
-            :sections="controlSections"
-            @update="handleControlUpdate"
-          />
+          <UISection title="Paramètres" variant="glass" collapsible>
+            <ControlPanel
+              :sections="controlSections"
+              @update="handleControlUpdate"
+            />
+          </UISection>
 
           <!-- Presets -->
           <PresetSelector
@@ -33,37 +34,35 @@
         </div>
 
         <!-- Preview and Code Output -->
-        <div class="lg:col-span-2 space-y-6">
+        <div class="xl:col-span-2 space-y-6">
           <!-- Visual Preview -->
-          <PreviewPanel
-            title="Aperçu"
-            :grid-config="gridState"
-            :show-dimensions="true"
-            :show-info="true"
-            :info-text="previewInfo"
-            @item-click="handleGridItemClick"
-          />
+          <UISection title="Aperçu" variant="glass" collapsible>
+            <PreviewPanel
+              :grid-config="gridState"
+              :show-dimensions="true"
+              :show-info="true"
+              :info-text="previewInfo"
+              @item-click="handleGridItemClick"
+            />
+          </UISection>
 
           <!-- CSS Output -->
-          <GlassCard variant="glass">
-            <template #header>
-              <div class="flex justify-between items-center">
-                <h2 class="text-xl font-bold text-white">Code CSS</h2>
-                <button
-                  @click="copyCSS"
-                  class="btn flex items-center gap-2"
-                  :class="{ 'btn-success': copied }"
-                >
-                  {{ copied ? '✅' : '📋' }} {{ copied ? 'Copié!' : 'Copier' }}
-                </button>
-              </div>
+          <UISection title="Code CSS" variant="glass" collapsible>
+            <template #actions>
+              <UIButton
+                :variant="copied ? 'success' : 'primary'"
+                size="sm"
+                @click="copyCSS"
+              >
+                {{ copied ? '✅ Copié!' : '📋 Copier' }}
+              </UIButton>
             </template>
 
             <CodeOutput
               :code="generatedCSS"
               language="css"
             />
-          </GlassCard>
+          </UISection>
         </div>
       </div>
     </div>
@@ -72,10 +71,8 @@
 
 <script setup>
 import { ref, reactive, computed, watch } from 'vue'
-
-// Components
+import { UISection, UIButton } from '@/components/ui'
 import ToolHeader from '@/components/ui/ToolHeader.vue'
-import GlassCard from '@/components/ui/GlassCard.vue'
 import ControlPanel from '@/components/ui/ControlPanel.vue'
 import PresetSelector from '@/components/ui/PresetSelector.vue'
 import PreviewPanel from '@/components/ui/PreviewPanel.vue'
@@ -299,32 +296,5 @@ watch(gridState, () => {
 </script>
 
 <style scoped>
-.css-grid-generator {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
-}
-
-.container {
-  max-width: 1400px;
-}
-
-.btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-}
-
-.btn-success {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-}
+/* Styles handled by design tokens and shared components */
 </style>

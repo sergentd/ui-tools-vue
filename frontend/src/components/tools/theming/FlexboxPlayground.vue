@@ -1,134 +1,138 @@
 <template>
-  <div class="flexbox-playground min-h-screen">
-    <!-- Main content with container -->
-    <div class="container mx-auto px-6 max-w-7xl py-8">
-      <!-- Header inside container -->
-      <ToolHeader
-        title="Terrain de Jeu Flexbox"
-        description="Explorez CSS Flexbox avec des contrôles interactifs et des exemples de mise en page"
-        icon="flexbox-playground"
-        category="theming"
-        status="Migré vers Vue"
-        :show-badges="true"
-      />
+  <div class="min-h-screen bg-primary space-y-12">
+    <!-- Tool Header -->
+    <ToolHeader
+      title="Terrain de Jeu Flexbox"
+      description="Explorez CSS Flexbox avec des contrôles interactifs et des exemples de mise en page"
+      icon="flexbox-playground"
+      category="theming"
+      :show-badges="true"
+    />
 
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <!-- Container Controls -->
-        <div class="lg:col-span-1">
-          <GlassCard variant="glass" class="mb-6">
-            <template #header>
-              <h2 class="text-xl font-bold text-white">Conteneur Flex</h2>
-            </template>
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 space-y-8">
+      <!-- Tabs Navigation -->
+      <UITabs
+        v-model="activeTab"
+        :tabs="mainTabs"
+        variant="underline"
+        size="lg"
+        value-key="id"
+        label-key="label"
+      >
+        <!-- Playground Tab -->
+        <template #tab-playground>
+          <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
+            <!-- Container Controls -->
+            <div class="xl:col-span-1 space-y-6">
+              <UISection title="Conteneur Flex" variant="glass" collapsible>
+                <ContainerControls
+                  :container="flexState.container"
+                  @update="updateContainerProperty"
+                  @preset="applyPreset"
+                />
+              </UISection>
+            </div>
 
-            <ContainerControls
-              :container="flexState.container"
-              @update="updateContainerProperty"
-              @preset="applyPreset"
-            />
-          </GlassCard>
+            <!-- Flex Container Preview -->
+            <div class="xl:col-span-2 space-y-6">
+              <UISection title="Conteneur Flexbox" variant="glass" collapsible>
+                <template #actions>
+                  <div class="flex gap-2">
+                    <UIButton
+                      variant="success"
+                      size="sm"
+                      icon="plus"
+                      @click="addFlexItem"
+                    >
+                      Ajouter
+                    </UIButton>
+                    <UIButton
+                      variant="danger"
+                      size="sm"
+                      @click="removeFlexItem"
+                      :disabled="flexState.items.length <= 1"
+                    >
+                      Supprimer
+                    </UIButton>
+                  </div>
+                </template>
 
-          <!-- Theory Section -->
-          <GlassCard variant="glass">
-            <template #header>
-              <h3 class="text-lg font-bold text-white">💡 Théorie Flexbox</h3>
-            </template>
+                <FlexContainer
+                  :container="flexState.container"
+                  :items="flexState.items"
+                  :selected-item-id="flexState.selectedItemId"
+                  @item-click="selectItem"
+                />
+              </UISection>
 
-            <FlexboxTheory />
-          </GlassCard>
-        </div>
-
-        <!-- Flex Container Preview -->
-        <div class="lg:col-span-2">
-          <GlassCard variant="glass" class="mb-6">
-            <template #header>
-              <div class="flex justify-between items-center">
-                <h2 class="text-xl font-bold text-white">Conteneur Flexbox</h2>
-                <div class="flex gap-2">
-                  <button
-                    @click="addFlexItem"
-                    class="btn btn-small bg-green-500 hover:bg-green-600"
+              <!-- CSS Output -->
+              <UISection title="Code CSS" variant="glass" collapsible>
+                <template #actions>
+                  <UIButton
+                    :variant="copied ? 'success' : 'primary'"
+                    size="sm"
+                    @click="copyCSS"
                   >
-                    + Ajouter
-                  </button>
-                  <button
-                    @click="removeFlexItem"
-                    class="btn btn-small bg-red-500 hover:bg-red-600"
-                    :disabled="flexState.items.length <= 1"
-                  >
-                    - Supprimer
-                  </button>
+                    {{ copied ? '✅ Copié!' : '📋 Copier' }}
+                  </UIButton>
+                </template>
+
+                <CodeOutput
+                  :code="generatedCSS"
+                  language="css"
+                />
+              </UISection>
+            </div>
+
+            <!-- Item Controls -->
+            <div class="xl:col-span-1">
+              <UISection title="Propriétés de l'Élément" variant="glass" collapsible>
+                <div v-if="selectedItem">
+                  <div class="selected-item-indicator glass-light">
+                    <p class="text-primary font-medium">Élément {{ selectedItem.id }} sélectionné</p>
+                  </div>
+
+                  <ItemControls
+                    :item="selectedItem"
+                    @update="updateItemProperty"
+                  />
                 </div>
-              </div>
-            </template>
-
-            <FlexContainer
-              :container="flexState.container"
-              :items="flexState.items"
-              :selected-item-id="flexState.selectedItemId"
-              @item-click="selectItem"
-            />
-          </GlassCard>
-
-          <!-- CSS Output -->
-          <GlassCard variant="glass">
-            <template #header>
-              <div class="flex justify-between items-center">
-                <h2 class="text-xl font-bold text-white">Code CSS</h2>
-                <button
-                  @click="copyCSS"
-                  class="btn flex items-center gap-2"
-                  :class="{ 'btn-success': copied }"
-                >
-                  {{ copied ? '✅' : '📋' }} {{ copied ? 'Copié!' : 'Copier' }}
-                </button>
-              </div>
-            </template>
-
-            <CodeOutput
-              :code="generatedCSS"
-              language="css"
-            />
-          </GlassCard>
-        </div>
-
-        <!-- Item Controls -->
-        <div class="lg:col-span-1">
-          <GlassCard variant="glass">
-            <template #header>
-              <h2 class="text-xl font-bold text-white">Propriétés de l'Élément</h2>
-            </template>
-
-            <div v-if="selectedItem">
-              <div class="mb-4 p-3 bg-white/10 rounded-lg">
-                <p class="text-white font-medium">Élément {{ selectedItem.id }} sélectionné</p>
-              </div>
-
-              <ItemControls
-                :item="selectedItem"
-                @update="updateItemProperty"
-              />
+                <div v-else class="no-selection">
+                  Cliquez sur un élément pour voir ses propriétés
+                </div>
+              </UISection>
             </div>
-            <div v-else class="text-white/60 text-center py-8">
-              Cliquez sur un élément pour voir ses propriétés
-            </div>
-          </GlassCard>
-        </div>
-      </div>
+          </div>
+        </template>
+
+        <!-- Theory Tab -->
+        <template #tab-theory>
+          <UISection title="💡 Théorie Flexbox" variant="glass">
+            <FlexboxTheory />
+          </UISection>
+        </template>
+      </UITabs>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, reactive, computed } from 'vue'
-
-// Components
+import { UISection, UIButton, UITabs } from '@/components/ui'
 import ToolHeader from '@/components/ui/ToolHeader.vue'
-import GlassCard from '@/components/ui/GlassCard.vue'
 import CodeOutput from '@/components/ui/CodeOutput.vue'
 import ContainerControls from './FlexboxPlayground/ContainerControls.vue'
 import FlexContainer from './FlexboxPlayground/FlexContainer.vue'
 import ItemControls from './FlexboxPlayground/ItemControls.vue'
 import FlexboxTheory from './FlexboxPlayground/FlexboxTheory.vue'
+
+// Tab state
+const activeTab = ref('playground')
+const mainTabs = [
+  { id: 'playground', label: '🎮 Terrain de Jeu' },
+  { id: 'theory', label: '📚 Théorie' }
+]
 
 // State management
 const flexState = reactive({
@@ -296,42 +300,15 @@ const copyCSS = async () => {
 </script>
 
 <style scoped>
-.flexbox-playground {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
+.selected-item-indicator {
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
 }
 
-.container {
-  max-width: 1400px;
-}
-
-.btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-}
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn-success {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-}
-
-.btn-small {
-  padding: 6px 12px;
-  font-size: 14px;
+.no-selection {
+  color: var(--text-tertiary);
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
 }
 </style>

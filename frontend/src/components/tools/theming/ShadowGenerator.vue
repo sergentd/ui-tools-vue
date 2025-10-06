@@ -1,32 +1,30 @@
 <template>
-  <div class="shadow-generator min-h-screen">
-    <!-- Main content with container -->
-    <div class="container mx-auto px-6 max-w-7xl py-8">
-      <!-- Header inside container -->
-      <ToolHeader
-        title="Générateur d'Ombres"
-        description="Créez des effets d'ombre CSS personnalisés avec support multi-couches et aperçu en temps réel"
-        icon="shadow-generator"
-        category="theming"
-        status="Migré vers Vue"
-        :show-badges="true"
-      />
+  <div class="min-h-screen bg-primary">
+    <!-- Tool Header -->
+    <ToolHeader
+      title="Générateur d'Ombres"
+      description="Créez des effets d'ombre CSS personnalisés avec support multi-couches et aperçu en temps réel"
+      icon="shadow-generator"
+      category="theming"
+      :show-badges="true"
+    />
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 space-y-8">
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <!-- Controls Panel -->
-        <div class="lg:col-span-1 space-y-6">
+        <div class="xl:col-span-1 space-y-6">
           <!-- Shadow Layers -->
-          <GlassCard variant="glass">
-            <template #header>
-              <div class="flex justify-between items-center">
-                <h2 class="text-xl font-bold text-white">Couches d'Ombre</h2>
-                <button
-                  @click="addShadowLayer"
-                  class="btn btn-small bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-lg font-medium"
-                >
-                  + Ajouter
-                </button>
-              </div>
+          <UISection title="Couches d'Ombre" variant="glass" collapsible>
+            <template #actions>
+              <UIButton
+                variant="secondary"
+                size="sm"
+                icon="plus"
+                @click="addShadowLayer"
+              >
+                Ajouter
+              </UIButton>
             </template>
 
             <div class="space-y-4">
@@ -42,7 +40,7 @@
                 @remove="removeShadowLayer"
               />
             </div>
-          </GlassCard>
+          </UISection>
 
           <!-- Presets -->
           <PresetSelector
@@ -56,13 +54,9 @@
         </div>
 
         <!-- Preview and Output -->
-        <div class="lg:col-span-2 space-y-6">
+        <div class="xl:col-span-2 space-y-6">
           <!-- Visual Preview -->
-          <GlassCard variant="glass">
-            <template #header>
-              <h2 class="text-xl font-bold text-white">Aperçu</h2>
-            </template>
-
+          <UISection title="Aperçu" variant="glass" collapsible>
             <div class="preview-area">
               <div
                 class="shadow-preview"
@@ -71,28 +65,25 @@
                 Élément avec ombre
               </div>
             </div>
-          </GlassCard>
+          </UISection>
 
           <!-- CSS Output -->
-          <GlassCard variant="glass">
-            <template #header>
-              <div class="flex justify-between items-center">
-                <h2 class="text-xl font-bold text-white">Code CSS</h2>
-                <button
-                  @click="copyCSS"
-                  class="btn flex items-center gap-2"
-                  :class="{ 'btn-success': copied }"
-                >
-                  {{ copied ? '✅' : '📋' }} {{ copied ? 'Copié!' : 'Copier' }}
-                </button>
-              </div>
+          <UISection title="Code CSS" variant="glass" collapsible>
+            <template #actions>
+              <UIButton
+                :variant="copied ? 'success' : 'primary'"
+                size="sm"
+                @click="copyCSS"
+              >
+                {{ copied ? '✅ Copié!' : '📋 Copier' }}
+              </UIButton>
             </template>
 
             <CodeOutput
               :code="generatedCSS"
               language="css"
             />
-          </GlassCard>
+          </UISection>
         </div>
       </div>
     </div>
@@ -101,10 +92,8 @@
 
 <script setup>
 import { ref, reactive, computed, nextTick } from 'vue'
-
-// Components
+import { UISection, UIButton } from '@/components/ui'
 import ToolHeader from '@/components/ui/ToolHeader.vue'
-import GlassCard from '@/components/ui/GlassCard.vue'
 import PresetSelector from '@/components/ui/PresetSelector.vue'
 import CodeOutput from '@/components/ui/CodeOutput.vue'
 import ShadowLayer from './ShadowGenerator/ShadowLayer.vue'
@@ -184,10 +173,10 @@ const shadowPresets = [
     id: 'glow',
     name: 'Lueur',
     icon: '✨',
-    description: 'Effet de lueur colorée',
-    example: '0 0 20px rgba(102,126,234,0.5)',
+    description: 'Effet de lueur électrique',
+    example: '0 0 20px rgba(0,212,255,0.5)',
     config: [
-      { id: 1, offsetX: 0, offsetY: 0, blur: 20, spread: 0, color: '#667eea', opacity: 50, inset: false, active: true }
+      { id: 1, offsetX: 0, offsetY: 0, blur: 20, spread: 0, color: '#00D4FF', opacity: 50, inset: false, active: true }
     ]
   }
 ]
@@ -220,7 +209,6 @@ const addShadowLayer = () => {
     inset: false,
     active: false
   })
-  // Mark as custom when user makes manual changes
   if (activePreset.value !== 'custom') {
     activePreset.value = 'custom'
   }
@@ -229,7 +217,6 @@ const addShadowLayer = () => {
 const removeShadowLayer = (id) => {
   if (shadowLayers.value.length > 1) {
     shadowLayers.value = shadowLayers.value.filter(layer => layer.id !== id)
-    // Mark as custom when user makes manual changes
     if (activePreset.value !== 'custom') {
       activePreset.value = 'custom'
     }
@@ -241,7 +228,6 @@ const duplicateShadowLayer = (id) => {
   if (layer) {
     const newLayer = { ...layer, id: nextLayerId.value++, active: false }
     shadowLayers.value.push(newLayer)
-    // Mark as custom when user makes manual changes
     if (activePreset.value !== 'custom') {
       activePreset.value = 'custom'
     }
@@ -263,7 +249,6 @@ const updateLayerProperty = ({ id, property, value }) => {
       layer[property] = value
     }
 
-    // Mark as custom when user makes manual changes
     if (activePreset.value !== 'custom') {
       activePreset.value = 'custom'
     }
@@ -302,15 +287,6 @@ const hexToRgba = (hex, alpha) => {
 </script>
 
 <style scoped>
-.shadow-generator {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
-}
-
-.container {
-  max-width: 1400px;
-}
-
 .preview-area {
   background: linear-gradient(45deg, #f0f2f5 25%, transparent 25%),
               linear-gradient(-45deg, #f0f2f5 25%, transparent 25%),
@@ -323,45 +299,20 @@ const hexToRgba = (hex, alpha) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
-  padding: 40px;
+  border-radius: var(--radius-lg);
+  padding: var(--space-10);
 }
 
 .shadow-preview {
   background: #ffffff;
   width: 200px;
   height: 120px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  color: #374151;
-  transition: all 0.3s ease;
-}
-
-.btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-}
-
-.btn-success {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-}
-
-.btn-small {
-  padding: 6px 12px;
-  font-size: 14px;
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  transition: var(--duration-normal) var(--easing-ease);
 }
 </style>
