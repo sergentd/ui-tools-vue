@@ -1,77 +1,26 @@
 <template>
-  <div class="webdev-glossary min-h-screen">
-    <!-- Main content with container -->
-    <div class="container mx-auto px-6 max-w-6xl py-8">
-      <!-- Header inside container -->
-      <ToolHeader
-        title="Glossaire WEBDEV"
-        description="Référence complète du vocabulaire des styles et feuilles de style PC SOFT"
-        icon="glossaire-webdev"
-        category="reference"
-        status="Migré vers Vue"
-        :show-badges="true"
-      />
+  <div class="min-h-screen bg-primary space-y-12">
+    <!-- Tool Header -->
+    <ToolHeader
+      title="Glossaire WEBDEV"
+      description="Référence complète du vocabulaire des styles et feuilles de style PC SOFT"
+      icon="glossaire-webdev"
+      category="reference"
+      :show-badges="true"
+    />
 
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <!-- Table of Contents -->
-        <div class="lg:col-span-1">
-          <GlassCard variant="glass" class="sticky top-8">
-            <template #header>
-              <h3 class="text-lg font-bold text-white">Sommaire</h3>
-            </template>
-
-            <div class="space-y-2">
-              <button
-                v-for="section in sections"
-                :key="section.id"
-                @click="scrollToSection(section.id)"
-                class="toc-link"
-              >
-                <span class="icon">{{ section.icon }}</span>
-                {{ section.title }}
-              </button>
-            </div>
-
-            <!-- Search Box -->
-            <div class="mt-6 pt-4 border-t border-white/20">
-              <input
-                v-model="searchQuery"
-                type="text"
-                placeholder="Rechercher un terme..."
-                class="search-input"
-              >
-            </div>
-
-            <div v-if="searchQuery && filteredTerms.length > 0" class="mt-4">
-              <h4 class="text-sm font-semibold text-white mb-2">Résultats ({{ filteredTerms.length }})</h4>
-              <div class="space-y-1">
-                <button
-                  v-for="term in filteredTerms.slice(0, 5)"
-                  :key="term.id"
-                  @click="scrollToTerm(term.id)"
-                  class="search-result"
-                >
-                  {{ term.title }}
-                </button>
-                <p v-if="filteredTerms.length > 5" class="text-xs text-gray-300">
-                  +{{ filteredTerms.length - 5 }} autres résultats
-                </p>
-              </div>
-            </div>
-          </GlassCard>
-        </div>
-
-        <!-- Main Content -->
-        <div class="lg:col-span-3">
-          <!-- Section: Les Fondamentaux -->
-          <section id="fondamentaux" class="section-content">
-            <GlassCard variant="glass" class="mb-8">
-              <template #header>
-                <h2 class="text-2xl font-bold text-white flex items-center gap-3">
-                  🏗️ Les Fondamentaux
-                </h2>
-              </template>
-
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 space-y-8">
+          <UITabs
+            v-model="activeTab"
+            :tabs="sections"
+            variant="underline"
+            size="lg"
+            value-key="id"
+            label-key="label"
+            icon-key="icon"
+          >
+            <template #tab-fondamentaux>
               <div class="space-y-6">
                 <div
                   v-for="term in fundamentalsTerms"
@@ -83,18 +32,9 @@
                   <dd class="term-definition" v-html="term.definition"></dd>
                 </div>
               </div>
-            </GlassCard>
-          </section>
+            </template>
 
-          <!-- Section: Les Différents Types de Styles -->
-          <section id="types-styles" class="section-content">
-            <GlassCard variant="glass" class="mb-8">
-              <template #header>
-                <h2 class="text-2xl font-bold text-white flex items-center gap-3">
-                  🎨 Les Différents Types de Styles
-                </h2>
-              </template>
-
+            <template #tab-types-styles>
               <div class="space-y-6">
                 <div
                   v-for="term in styleTypesTerms"
@@ -106,18 +46,9 @@
                   <dd class="term-definition" v-html="term.definition"></dd>
                 </div>
               </div>
-            </GlassCard>
-          </section>
+            </template>
 
-          <!-- Section: Mécanismes et Priorité -->
-          <section id="mecanismes" class="section-content">
-            <GlassCard variant="glass" class="mb-8">
-              <template #header>
-                <h2 class="text-2xl font-bold text-white flex items-center gap-3">
-                  ⚙️ Mécanismes et Priorité
-                </h2>
-              </template>
-
+            <template #tab-mecanismes>
               <div class="space-y-6">
                 <div
                   v-for="term in mechanismsTerms"
@@ -129,18 +60,9 @@
                   <dd class="term-definition" v-html="term.definition"></dd>
                 </div>
               </div>
-            </GlassCard>
-          </section>
+            </template>
 
-          <!-- Section: Outils et Concepts Avancés -->
-          <section id="outils-avances" class="section-content">
-            <GlassCard variant="glass" class="mb-8">
-              <template #header>
-                <h2 class="text-2xl font-bold text-white flex items-center gap-3">
-                  🛠️ Outils et Concepts Avancés
-                </h2>
-              </template>
-
+            <template #tab-outils-avances>
               <div class="space-y-6">
                 <div
                   v-for="term in advancedTerms"
@@ -152,26 +74,40 @@
                   <dd class="term-definition" v-html="term.definition"></dd>
                 </div>
               </div>
-            </GlassCard>
-          </section>
-        </div>
-      </div>
+            </template>
+          </UITabs>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
+import { UITabs } from '@/components/ui'
 import ToolHeader from '@/components/ui/ToolHeader.vue'
-import GlassCard from '@/components/ui/GlassCard.vue'
 
-const searchQuery = ref('')
+const activeTab = ref('fondamentaux')
 
 const sections = [
-  { id: 'fondamentaux', title: 'Les Fondamentaux', icon: '🏗️' },
-  { id: 'types-styles', title: 'Types de Styles', icon: '🎨' },
-  { id: 'mecanismes', title: 'Mécanismes', icon: '⚙️' },
-  { id: 'outils-avances', title: 'Outils Avancés', icon: '🛠️' }
+  {
+    id: 'fondamentaux',
+    label: 'Les Fondamentaux',
+    icon: 'book'
+  },
+  {
+    id: 'types-styles',
+    label: 'Types de Styles',
+    icon: 'palette'
+  },
+  {
+    id: 'mecanismes',
+    label: 'Mécanismes',
+    icon: 'cog'
+  },
+  {
+    id: 'outils-avances',
+    label: 'Outils Avancés',
+    icon: 'wrench'
+  }
 ]
 
 const fundamentalsTerms = [
@@ -271,123 +207,9 @@ const advancedTerms = [
   }
 ]
 
-// Computed property for all terms combined
-const allTerms = computed(() => [
-  ...fundamentalsTerms,
-  ...styleTypesTerms,
-  ...mechanismsTerms,
-  ...advancedTerms
-])
-
-// Filtered terms based on search query
-const filteredTerms = computed(() => {
-  if (!searchQuery.value) return []
-
-  const query = searchQuery.value.toLowerCase()
-  return allTerms.value.filter(term =>
-    term.title.toLowerCase().includes(query) ||
-    term.definition.toLowerCase().includes(query)
-  )
-})
-
-// Navigation methods
-const scrollToSection = (sectionId) => {
-  const element = document.getElementById(sectionId)
-  if (element) {
-    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
-}
-
-const scrollToTerm = (termId) => {
-  const element = document.getElementById(termId)
-  if (element) {
-    element.scrollIntoView({ behavior: 'smooth', block: 'center' })
-
-    // Highlight the term briefly
-    element.classList.add('highlight')
-    setTimeout(() => {
-      element.classList.remove('highlight')
-    }, 2000)
-  }
-  searchQuery.value = '' // Clear search after navigation
-}
 </script>
 
 <style scoped>
-.webdev-glossary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
-}
-
-.toc-link {
-  width: 100%;
-  text-left: left;
-  padding: 10px 12px;
-  color: rgba(255, 255, 255, 0.8);
-  border-radius: 6px;
-  transition: all 0.3s ease;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: none;
-  background: none;
-  cursor: pointer;
-}
-
-.toc-link:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  transform: translateX(4px);
-}
-
-.icon {
-  font-size: 16px;
-}
-
-.search-input {
-  width: 100%;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 14px;
-  transition: all 0.2s ease;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.search-input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.search-result {
-  display: block;
-  width: 100%;
-  text-left: left;
-  padding: 6px 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: none;
-  color: rgba(255, 255, 255, 0.9);
-  border-radius: 4px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.search-result:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-}
-
-.section-content {
-  scroll-margin-top: 2rem;
-}
 
 .glossary-entry {
   background: rgba(255, 255, 255, 0.05);

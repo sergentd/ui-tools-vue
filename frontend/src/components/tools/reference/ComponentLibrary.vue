@@ -1,57 +1,51 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-deep-space via-dark-slate to-deep-space">
-    <div class="container mx-auto px-4 py-8">
-      <!-- Header -->
-      <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-white mb-4">
-          Bibliothèque de <span class="text-electric-blue">Composants</span>
-        </h1>
-        <p class="text-gray-300 text-lg max-w-3xl mx-auto">
-          Collection de composants réutilisables de l'application UI Tools Vue.
-          Copiez et réutilisez ces composants pour accélérer le développement de nouveaux outils.
-        </p>
-      </div>
+  <div class="min-h-screen bg-primary space-y-12">
+    <!-- Tool Header -->
+    <ToolHeader
+      title="Bibliothèque de Composants"
+      description="Collection de composants réutilisables de l'application UI Tools Vue"
+      icon="component-library"
+      category="reference"
+      :show-badges="true"
+    />
 
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 space-y-8">
       <!-- Navigation -->
-      <div class="flex flex-wrap justify-center gap-2 mb-8">
-        <button
+      <div class="flex flex-wrap justify-center gap-2">
+        <UIButton
           v-for="category in categories"
           :key="category.id"
+          :variant="activeCategory === category.id ? 'primary' : 'secondary'"
+          size="md"
           @click="activeCategory = category.id"
-          :class="[
-            'px-4 py-2 rounded-lg font-medium transition-all duration-200',
-            activeCategory === category.id
-              ? 'bg-electric-blue text-dark-slate'
-              : 'bg-glass-bg-light text-gray-300 hover:bg-glass-bg-dark'
-          ]"
         >
           {{ category.name }}
-        </button>
+        </UIButton>
       </div>
 
       <!-- Components Grid -->
       <div class="grid gap-8">
-        <div
+        <UISection
           v-for="component in filteredComponents"
           :key="component.id"
-          class="glass-card rounded-2xl p-6"
+          :title="component.name"
+          variant="glass"
+          collapsible
         >
-          <div class="flex items-start justify-between mb-6">
-            <div>
-              <h3 class="text-2xl font-bold text-white mb-2">{{ component.name }}</h3>
-              <p class="text-gray-300 mb-2">{{ component.description }}</p>
-              <div class="flex flex-wrap gap-2">
-                <span
-                  v-for="tag in component.tags"
-                  :key="tag"
-                  class="px-2 py-1 bg-electric-blue/20 text-electric-blue text-xs rounded-full"
-                >
-                  {{ tag }}
-                </span>
-              </div>
-            </div>
-            <div class="text-xs text-gray-400 text-right">
-              <div>{{ component.path }}</div>
+          <template #actions>
+            <span class="text-xs text-gray-400">{{ component.path }}</span>
+          </template>
+          <div class="mb-6">
+            <p class="text-gray-300 mb-3">{{ component.description }}</p>
+            <div class="flex flex-wrap gap-2">
+              <span
+                v-for="tag in component.tags"
+                :key="tag"
+                class="px-2 py-1 bg-electric-blue/20 text-electric-blue text-xs rounded-full"
+              >
+                {{ tag }}
+              </span>
             </div>
           </div>
 
@@ -191,14 +185,16 @@
               </div>
             </div>
           </div>
-        </div>
+        </UISection>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, markRaw } from 'vue'
+import { ref, computed } from 'vue'
+import { UISection, UIButton } from '@/components/ui'
+import ToolHeader from '@/components/ui/ToolHeader.vue'
 import CodeBlock from '@/components/ui/CodeBlock.vue'
 
 // Import all components for previews

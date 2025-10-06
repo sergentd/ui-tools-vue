@@ -10,10 +10,19 @@
     />
 
     <!-- Main Content -->
-    <div class="container mx-auto px-4 space-y-10">
-
-      <!-- Problem Section -->
-      <UISection title="1. Le Problème : Mon bouton ne change pas de couleur" collapsible>
+    <div class="container mx-auto px-4 space-y-8">
+      <UITabs
+        v-model="activeTab"
+        :tabs="tabs"
+        variant="underline"
+        size="lg"
+        value-key="id"
+        label-key="label"
+        icon-key="icon"
+      >
+        <!-- Problem Section -->
+        <template #tab-problem>
+          <div class="space-y-4">
         <p class="text-secondary mb-4">
           Vous utilisez du code WLangage pour injecter une variable CSS (--couleur-primaire) afin de personnaliser un bouton BTN_Defaut.
           Vous vérifiez avec F12 : la variable est bien présente, mais le bouton conserve sa couleur grise par défaut.
@@ -63,10 +72,12 @@
             </p>
           </div>
         </UIGlassCard>
-      </UISection>
+          </div>
+        </template>
 
-      <!-- Theory Section -->
-      <UISection title="2. La Théorie : La Cascade et la Spécificité" collapsible>
+        <!-- Theory Section -->
+        <template #tab-theory>
+          <div class="space-y-4">
         <p class="text-secondary mb-4">
           Le navigateur décide quel style appliquer en suivant un ordre strict :
           1. Origine et Importance, 2. Spécificité, 3. Ordre d'apparition.
@@ -126,10 +137,12 @@
             </div>
           </UIGlassCard>
         </div>
-      </UISection>
+          </div>
+        </template>
 
-      <!-- Diagnostic Section -->
-      <UISection title="3. Le Diagnostic : Simuler l'inspection (F12)" collapsible>
+        <!-- Diagnostic Section -->
+        <template #tab-diagnostic>
+          <div class="space-y-4">
         <p class="text-secondary mb-6">
           Utilisons les outils de développement pour voir quelles règles s'appliquent à notre BTN_Defaut.
         </p>
@@ -170,10 +183,12 @@
             </div>
           </div>
         </UIGlassCard>
-      </UISection>
+          </div>
+        </template>
 
-      <!-- Solution Section -->
-      <UISection title="4. La Solution : Créer une règle concurrente" collapsible>
+        <!-- Solution Section -->
+        <template #tab-solution>
+          <div class="space-y-4">
         <p class="text-secondary mb-6">
           Ajoutez une règle qui cible le même sélecteur (.BTN_Defaut) et utilise votre variable.
         </p>
@@ -228,10 +243,12 @@
             </div>
           </UIGlassCard>
         </div>
-      </UISection>
+          </div>
+        </template>
 
-      <!-- Best Practices Section -->
-      <UISection title="5. Bonnes Pratiques" collapsible>
+        <!-- Best Practices Section -->
+        <template #tab-practices>
+          <div class="space-y-4">
         <p class="text-secondary mb-6">
           Pour un système de thèmes robuste et maintenable, considérez ces stratégies avancées.
         </p>
@@ -247,8 +264,9 @@
             <p class="text-secondary" v-html="practice.content"></p>
           </UIGlassCard>
         </div>
-      </UISection>
-
+          </div>
+        </template>
+      </UITabs>
     </div>
 
     <!-- Footer -->
@@ -262,10 +280,20 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { UISection, UIGlassCard, UIButton, UIInput } from '@/components/ui'
+import { UISection, UIGlassCard, UIButton, UIInput, UITabs } from '@/components/ui'
 import IconSystem from '@/components/ui/IconSystem.vue'
 import CodeBlock from '@/components/ui/CodeBlock.vue'
 import ToolHeader from '@/components/ui/ToolHeader.vue'
+
+// Tabs configuration
+const activeTab = ref('problem')
+const tabs = [
+  { id: 'problem', label: 'Le Problème', icon: 'alert' },
+  { id: 'theory', label: 'La Théorie', icon: 'book' },
+  { id: 'diagnostic', label: 'Le Diagnostic', icon: 'search' },
+  { id: 'solution', label: 'La Solution', icon: 'check' },
+  { id: 'practices', label: 'Bonnes Pratiques', icon: 'star' }
+]
 
 // Reactive data
 const problemColor = ref('#E57373')

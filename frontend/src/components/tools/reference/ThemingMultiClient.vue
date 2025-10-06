@@ -1,48 +1,45 @@
 <template>
-  <div class="theming-multiclient min-h-screen">
-    <!-- Main content with container -->
-    <div class="container mx-auto px-6 max-w-7xl py-8">
-      <!-- Header inside container -->
-      <ToolHeader
-        title="Thèmes Multi-Clients"
-        description="Guide interactif pour la gestion de thèmes dynamiques dans les applications WEBDEV"
-        icon="theming-multiclient"
-        category="reference"
-        status="Migré vers Vue"
-        :show-badges="true"
-      />
+  <div class="min-h-screen bg-primary space-y-12">
+    <!-- Tool Header -->
+    <ToolHeader
+      title="Thèmes Multi-Clients"
+      description="Guide interactif pour la gestion de thèmes dynamiques dans les applications WEBDEV"
+      icon="theming-multiclient"
+      category="reference"
+      :show-badges="true"
+    />
 
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 space-y-8">
+      <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
         <!-- Sidebar Navigation -->
-        <div class="lg:col-span-1">
-          <GlassCard variant="glass" class="sticky top-8">
-            <template #header>
-              <h3 class="text-lg font-bold text-white">Navigation</h3>
-            </template>
-
+        <div class="xl:col-span-1">
+          <UISection title="Navigation" variant="glass" class="sticky top-8">
             <nav class="space-y-2">
-              <button
+              <UIButton
                 v-for="section in sections"
                 :key="section.id"
+                :variant="activeSection === section.id ? 'danger' : 'ghost'"
+                size="sm"
+                class="w-full justify-start"
                 @click="activeSection = section.id"
-                class="nav-link w-full text-left"
-                :class="{ active: activeSection === section.id }"
               >
-                <span class="icon">{{ section.icon }}</span>
+                <span class="mr-2">{{ section.icon }}</span>
                 {{ section.title }}
-              </button>
+              </UIButton>
             </nav>
-          </GlassCard>
+          </UISection>
         </div>
 
         <!-- Main Content -->
-        <div class="lg:col-span-3">
+        <div class="xl:col-span-3 space-y-6">
           <!-- Introduction Section -->
-          <section v-if="activeSection === 'intro'" class="content-section">
-            <GlassCard variant="glass">
-              <template #header>
-                <h2 class="text-3xl font-bold text-white">Le Défi du Theming Multi-Client</h2>
-              </template>
+          <UISection
+            v-if="activeSection === 'intro'"
+            title="Le Défi du Theming Multi-Client"
+            variant="glass"
+            collapsible
+          >
 
               <div class="space-y-6">
                 <p class="text-lg text-gray-200 leading-relaxed">
@@ -75,15 +72,15 @@
                   </ul>
                 </div>
               </div>
-            </GlassCard>
-          </section>
+          </UISection>
 
           <!-- Concepts Section -->
-          <section v-if="activeSection === 'concepts'" class="content-section">
-            <GlassCard variant="glass">
-              <template #header>
-                <h2 class="text-3xl font-bold text-white">L'Écosystème de Style Natif de WEBDEV</h2>
-              </template>
+          <UISection
+            v-if="activeSection === 'concepts'"
+            title="L'Écosystème de Style Natif de WEBDEV"
+            variant="glass"
+            collapsible
+          >
 
               <div class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -103,15 +100,15 @@
                   </div>
                 </div>
               </div>
-            </GlassCard>
-          </section>
+          </UISection>
 
           <!-- Architectures Section -->
-          <section v-if="activeSection === 'architectures'" class="content-section">
-            <GlassCard variant="glass">
-              <template #header>
-                <h2 class="text-3xl font-bold text-white">Comparaison des Architectures</h2>
-              </template>
+          <UISection
+            v-if="activeSection === 'architectures'"
+            title="Comparaison des Architectures"
+            variant="glass"
+            collapsible
+          >
 
               <div class="space-y-6">
                 <!-- Architecture Tabs -->
@@ -176,15 +173,15 @@
                   </div>
                 </div>
               </div>
-            </GlassCard>
-          </section>
+          </UISection>
 
           <!-- Implementation Section -->
-          <section v-if="activeSection === 'implementation'" class="content-section">
-            <GlassCard variant="glass">
-              <template #header>
-                <h2 class="text-3xl font-bold text-white">Guide de Mise en Œuvre</h2>
-              </template>
+          <UISection
+            v-if="activeSection === 'implementation'"
+            title="Guide de Mise en Œuvre"
+            variant="glass"
+            collapsible
+          >
 
               <div class="space-y-6">
                 <p class="text-gray-300">
@@ -214,15 +211,15 @@
                   </div>
                 </div>
               </div>
-            </GlassCard>
-          </section>
+          </UISection>
 
           <!-- Conclusion Section -->
-          <section v-if="activeSection === 'conclusion'" class="content-section">
-            <GlassCard variant="glass">
-              <template #header>
-                <h2 class="text-3xl font-bold text-white">Synthèse & Recommandations</h2>
-              </template>
+          <UISection
+            v-if="activeSection === 'conclusion'"
+            title="Synthèse & Recommandations"
+            variant="glass"
+            collapsible
+          >
 
               <div class="space-y-6">
                 <div class="bg-green-500/10 p-6 rounded-xl border border-green-500/20">
@@ -263,8 +260,7 @@
                   </div>
                 </div>
               </div>
-            </GlassCard>
-          </section>
+          </UISection>
         </div>
       </div>
     </div>
@@ -273,8 +269,8 @@
 
 <script setup>
 import { ref } from 'vue'
+import { UISection, UIButton } from '@/components/ui'
 import ToolHeader from '@/components/ui/ToolHeader.vue'
-import GlassCard from '@/components/ui/GlassCard.vue'
 import CodeBlock from '@/components/ui/CodeBlock.vue'
 
 const activeSection = ref('intro')
@@ -695,44 +691,12 @@ export default {
 </script>
 
 <style scoped>
-.theming-multiclient {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
-}
-
-.nav-link {
-  padding: 12px 16px;
-  border-radius: 8px;
-  color: rgba(255, 255, 255, 0.8);
-  transition: all 0.3s ease;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.nav-link:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  transform: translateX(4px);
-}
-
-.nav-link.active {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-  color: white;
-  transform: translateX(8px);
-  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
-}
-
-.icon {
-  font-size: 18px;
-}
-
 .context-card,
 .concept-card {
   background: rgba(255, 255, 255, 0.05);
   padding: 16px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
 }
 
 .architecture-tab {
@@ -753,7 +717,7 @@ export default {
 
 .architecture-tab.active {
   color: white;
-  border-bottom-color: #ff6b6b;
+  border-bottom-color: var(--accent-red);
   background: rgba(255, 255, 255, 0.1);
 }
 
@@ -781,21 +745,21 @@ export default {
 .step-number {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--electric-blue);
+  color: var(--bg-primary);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
   font-size: 18px;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 212, 255, 0.4);
 }
 
 .step-line {
   width: 2px;
   height: 60px;
-  background: linear-gradient(to bottom, #667eea, transparent);
+  background: linear-gradient(to bottom, var(--electric-blue), transparent);
   margin-top: 8px;
 }
 
