@@ -37,589 +37,309 @@
         </div>
       </div>
 
-      <!-- Global Search Bar -->
-      <div class="mb-8">
-        <div class="relative max-w-2xl mx-auto">
-          <input
-            id="main-search-input"
-            v-model="searchQuery"
-            type="text"
-            placeholder="Rechercher dans tous les tickets..."
-            class="w-full px-4 py-3 pl-10 bg-glass-bg-light backdrop-blur-sm border border-border-primary
-                   rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2
-                   focus:ring-electric-blue focus:border-electric-blue transition-all duration-200"
-          >
-          <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
-               fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-          </svg>
-        </div>
-      </div>
-
       <!-- Tab Navigation -->
-      <div class="mb-8">
-        <div class="border-b border-border-primary">
-          <nav class="flex space-x-8" aria-label="Tabs">
-            <button
-              @click="activeTab = 'active'"
-              :class="[
-                'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors',
-                activeTab === 'active'
-                  ? 'border-electric-blue text-electric-blue'
-                  : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300'
-              ]"
-            >
-              Tickets Actifs
-              <span :class="[
-                'ml-2 py-0.5 px-2 rounded-full text-xs',
-                activeTab === 'active'
-                  ? 'bg-electric-blue/20 text-electric-blue'
-                  : 'bg-gray-600/20 text-gray-400 border border-gray-500/30'
-              ]"
-              :style="activeTab === 'active' ? { border: '1px solid var(--electric-blue)' } : {}">
-                {{ activeTicketsCount }}
-              </span>
-            </button>
-            <button
-              @click="activeTab = 'create'"
-              :class="[
-                'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors',
-                activeTab === 'create'
-                  ? 'border-electric-blue text-electric-blue'
-                  : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300'
-              ]"
-            >
-              Créer
-              <svg class="w-4 h-4 ml-1 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-              </svg>
-            </button>
-            <button
-              @click="activeTab = 'completed'"
-              :class="[
-                'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors',
-                activeTab === 'completed'
-                  ? 'border-electric-blue text-electric-blue'
-                  : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300'
-              ]"
-            >
-              Terminés
-              <span :class="[
-                'ml-2 py-0.5 px-2 rounded-full text-xs',
-                activeTab === 'completed'
-                  ? 'bg-electric-blue/20 text-electric-blue'
-                  : 'bg-gray-600/20 text-gray-400 border border-gray-500/30'
-              ]"
-              :style="activeTab === 'completed' ? { border: '1px solid var(--electric-blue)' } : {}">
-                {{ completedTickets.length }}
-              </span>
-            </button>
-            <button
-              @click="activeTab = 'advanced'"
-              :class="[
-                'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors',
-                activeTab === 'advanced'
-                  ? 'border-electric-blue text-electric-blue'
-                  : 'border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300'
-              ]"
-            >
-              Avancé
-            </button>
-          </nav>
-        </div>
-      </div>
+      <UITabs v-model="activeTab" :tabs="ticketTabs" />
 
-      <!-- Active Tickets Tab -->
+      <!-- Main Content Area -->
       <div v-if="activeTab === 'active'" class="space-y-6">
-        <!-- Quick Actions Bar -->
-        <div class="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center mb-6">
-          <div class="flex gap-3">
-            <button
-              @click="activeTab = 'create'"
-              class="px-4 py-2 bg-electric-blue hover:bg-electric-blue-dark text-black rounded-lg
-                     transition-colors font-medium flex items-center gap-2"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-              </svg>
-              Nouveau ticket
-            </button>
-            <button
-              @click="showKeyboardShortcuts"
-              class="px-4 py-2 bg-glass-bg-light border border-border-primary rounded-lg
-                     text-gray-300 hover:text-white hover:bg-glass-bg transition-colors flex items-center gap-2 text-sm"
-              title="Raccourcis clavier"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-              Aide
-            </button>
-          </div>
-
-          <!-- Simple actions for active tab -->
-          <div class="flex gap-2 text-sm text-gray-400">
-            <span>{{ filteredTickets.length }} tickets actifs</span>
-          </div>
-        </div>
-
-        <!-- Callback Reminders -->
-        <CallbackReminder
-          :tickets="tickets"
-          @update-ticket="handleTicketUpdate"
-          @snooze-callback="handleSnoozeCallback"
-        />
-
-        <!-- Bulk Actions -->
-        <BulkActions
-          :tickets="filteredTickets"
-          :selected-tickets="selectedTickets"
-          :total-tickets="filteredTickets.length"
-          @update-selection="selectedTickets = $event"
-          @bulk-status-change="handleBulkStatusChange"
-          @bulk-priority-change="handleBulkPriorityChange"
-          @bulk-delete="handleBulkDelete"
-          @export-tickets="exportTickets"
-          @toggle-selection-mode="selectionMode = $event"
-        />
-
-        <!-- Active Tickets Grid -->
-        <div v-if="filteredTickets.length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          <div
-            v-for="ticket in filteredTickets"
-            :key="ticket.id"
-            class="relative"
-          >
-            <!-- Selection Checkbox -->
-            <div
-              v-if="selectionMode"
-              class="absolute top-2 left-2 z-10"
-            >
-              <input
-                type="checkbox"
-                :checked="selectedTickets.includes(ticket.id)"
-                @change="toggleTicketSelection(ticket.id)"
-                class="w-4 h-4 text-electric-blue bg-glass-bg border-border-primary rounded
-                       focus:ring-electric-blue focus:ring-2"
-              >
-            </div>
-
-            <TicketCard
-              :ticket="ticket"
-              @edit="editTicket"
-              @delete="deleteTicket"
-              @status-change="handleStatusChange"
-            />
-          </div>
-        </div>
-
-        <!-- Empty State for Active Tickets -->
-        <div v-if="filteredTickets.length === 0" class="text-center py-12">
-          <GlassCard variant="glass" class="max-w-md mx-auto">
-            <div class="mb-4 flex justify-center">
-              <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-              </svg>
-            </div>
-            <h3 class="text-xl font-semibold text-white mb-2">Aucun ticket actif trouvé</h3>
-            <p class="text-gray-300 mb-4">
-              {{ searchQuery ? 'Essayez avec d\'autres mots-clés' : 'Créez votre premier ticket pour commencer' }}
-            </p>
-            <button
-              @click="activeTab = 'create'"
-              class="px-6 py-2 bg-electric-blue hover:bg-electric-blue-dark text-black rounded-full
-                     transition-all duration-200 font-medium hover-lift"
-            >
-              Créer un ticket
-            </button>
-          </GlassCard>
-        </div>
-      </div>
-
-      <!-- Create Ticket Tab -->
-      <div v-if="activeTab === 'create'" class="space-y-6">
-        <div class="max-w-4xl mx-auto">
-
-          <!-- Tab Header -->
-          <div class="mb-8">
-            <h2 class="text-2xl font-bold text-white mb-2">Créer un Nouveau Ticket</h2>
-            <p class="text-gray-400">Utilisez les modèles rapides ou créez un ticket personnalisé</p>
-          </div>
-
-          <!-- Quick Add Presets -->
-          <QuickAdd
-            :tickets="tickets"
-            @create-ticket="(ticket) => { createTicket(ticket); activeTab = 'active'; }"
-          />
-
-          <!-- Divider -->
-          <div class="relative my-8">
-            <div class="absolute inset-0 flex items-center">
-              <div class="w-full border-t border-border-primary"></div>
-            </div>
-            <div class="relative flex justify-center text-sm">
-              <span class="bg-dark-bg px-4 text-gray-400">ou</span>
-            </div>
-          </div>
-
-          <!-- Advanced Creation -->
-          <GlassCard>
-            <div class="flex items-center justify-between mb-6">
-              <h3 class="text-lg font-semibold text-white">Création Avancée</h3>
-              <div class="text-sm text-gray-400">Contrôle total sur les détails</div>
-            </div>
-
-            <button
-              @click="showNewTicketModal = true"
-              class="w-full px-6 py-4 bg-glass-bg-light hover:bg-glass-bg border border-border-primary
-                     rounded-lg text-white transition-all duration-200 flex items-center justify-center gap-3
-                     hover:border-electric-blue group"
-            >
-              <svg class="w-5 h-5 text-gray-400 group-hover:text-electric-blue transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-              </svg>
-              <div class="text-left">
-                <div class="font-medium">Créer un ticket complet</div>
-                <div class="text-sm text-gray-400">Tous les champs, pièces jointes, échéances...</div>
-              </div>
-            </button>
-          </GlassCard>
-
-          <!-- Quick Actions -->
-          <div class="mt-8 text-center">
-            <button
-              @click="activeTab = 'active'"
-              class="px-4 py-2 text-gray-400 hover:text-white transition-colors text-sm"
-            >
-              ← Retour aux tickets actifs
-            </button>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- Completed Tickets Tab -->
-      <div v-if="activeTab === 'completed'" class="space-y-6">
-        <!-- Completed tickets actions -->
-        <div class="flex justify-between items-center mb-6">
-          <h3 class="text-xl font-semibold text-white flex items-center gap-2">
-            <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            Tâches Terminées
-          </h3>
-          <button
-            v-if="completedTickets.length > 0"
-            @click="clearCompletedTasks"
-            class="px-4 py-2 bg-red-600/20 text-red-400 border border-red-600/30 rounded-lg
-                   hover:bg-red-600/30 transition-colors text-sm"
-          >
-            Supprimer tout
-          </button>
-        </div>
-
-        <!-- Completed Tickets Grid -->
-        <div v-if="completedTickets.length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          <TicketCard
-            v-for="ticket in completedTickets"
-            :key="ticket.id"
-            :ticket="ticket"
-            @edit="editTicket"
-            @delete="deleteTicket"
-            @status-change="handleStatusChange"
-          />
-        </div>
-
-        <!-- Empty State for Completed Tickets -->
-        <div v-if="completedTickets.length === 0" class="text-center py-12">
-          <GlassCard variant="glass" class="max-w-md mx-auto">
-            <div class="mb-4 flex justify-center">
-              <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-            </div>
-            <h3 class="text-xl font-semibold text-white mb-2">Aucune tâche terminée</h3>
-            <p class="text-gray-300">Terminez des tickets pour les voir apparaître ici.</p>
-          </GlassCard>
-        </div>
-      </div>
-
-      <!-- Advanced Tab (complex features and filtering) -->
-      <div v-if="activeTab === 'advanced'" class="space-y-6">
-
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
 
-          <!-- Left Sidebar: Advanced Controls -->
+          <!-- Left Sidebar: Controls -->
           <div class="lg:col-span-1 space-y-6">
+            
+            <!-- Quick Add -->
+            <QuickAdd
+              :tickets="tickets"
+              @create-ticket="createTicket"
+            />
 
-          <!-- Quick Add -->
-          <QuickAdd
-            :tickets="tickets"
-            @create-ticket="createTicket"
-          />
+            <UIGlassCard>
+              <h3 class="section-title mb-4">Création Avancée</h3>
+              <UIButton
+                @click="showNewTicketModal = true"
+                variant="secondary"
+                size="lg"
+                icon="plus"
+                block
+              >
+                Nouveau ticket complet
+              </UIButton>
+            </UIGlassCard>
 
-          <!-- Traditional Add -->
-          <GlassCard>
-            <h3 class="section-title mb-4">Création Avancée</h3>
-            <button
-              @click="showNewTicketModal = true"
-              class="w-full px-4 py-3 bg-glass-bg hover:bg-glass-bg-light text-white border border-border-primary rounded-lg
-                     transition-all duration-200 font-medium hover-lift flex items-center justify-center gap-2"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-              </svg>
-              Formulaire complet
-            </button>
-          </GlassCard>
-
-          <!-- Filters -->
-          <GlassCard>
-            <h3 class="section-title mb-4">Filtres</h3>
-            <div class="space-y-3">
-
-              <!-- Status Filter -->
-              <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">Statut</label>
-                <select
+            <!-- Filters -->
+            <UIGlassCard>
+              <h3 class="section-title mb-4">Filtres</h3>
+              <div class="space-y-3">
+                <!-- Status Filter -->
+                <UISelect
                   v-model="filters.status"
-                  class="w-full px-3 py-2 bg-glass-bg-light border border-border-primary rounded-lg
-                         text-white focus:ring-2 focus:ring-electric-blue focus:border-electric-blue"
-                >
-                  <option value="all">Tous les statuts</option>
-                  <option value="todo">À faire</option>
-                  <option value="in-progress">En cours</option>
-                  <option value="waiting">En attente</option>
-                </select>
-              </div>
+                  label="Statut"
+                  :options="[
+                    { value: 'all', label: 'Tous les statuts' },
+                    { value: 'todo', label: 'À faire' },
+                    { value: 'in-progress', label: 'En cours' },
+                    { value: 'waiting', label: 'En attente' },
+                  ]"
+                />
 
-              <!-- Priority Filter -->
-              <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">Priorité</label>
-                <select
+                <!-- Priority Filter -->
+                <UISelect
                   v-model="filters.priority"
-                  class="w-full px-3 py-2 bg-glass-bg-light border border-border-primary rounded-lg
-                         text-white focus:ring-2 focus:ring-electric-blue focus:border-electric-blue"
-                >
-                  <option value="all">Toutes priorités</option>
-                  <option value="low">Faible</option>
-                  <option value="medium">Moyenne</option>
-                  <option value="high">Élevée</option>
-                  <option value="urgent">Urgente</option>
-                </select>
-              </div>
+                  label="Priorité"
+                  :options="[
+                    { value: 'all', label: 'Toutes priorités' },
+                    { value: 'low', label: 'Faible' },
+                    { value: 'medium', label: 'Moyenne' },
+                    { value: 'high', label: 'Élevée' },
+                    { value: 'urgent', label: 'Urgente' },
+                  ]"
+                />
 
-              <!-- Customer Filter -->
-              <div>
-                <label class="block text-sm font-medium text-gray-300 mb-2">Client</label>
-                <input
+                <!-- Customer Filter -->
+                <UIInput
                   v-model="filters.customer"
-                  type="text"
+                  label="Client"
                   placeholder="Filtrer par client..."
-                  class="w-full px-3 py-2 bg-glass-bg-light border border-border-primary rounded-lg
-                         text-white placeholder-gray-400 focus:ring-2 focus:ring-electric-blue focus:border-electric-blue"
+                />
+
+                <!-- Clear Filters -->
+                <UIButton
+                  @click="clearFilters"
+                  variant="ghost"
+                  size="sm"
+                  block
                 >
+                  Réinitialiser
+                </UIButton>
               </div>
-
-              <!-- Clear Filters -->
-              <button
-                @click="clearFilters"
-                class="w-full px-3 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg
-                       transition-all duration-200 text-sm"
-              >
-                Réinitialiser
-              </button>
-
-            </div>
-          </GlassCard>
-
-        </div>
-
-        <!-- Main Content: Tickets List -->
-        <div class="lg:col-span-3">
-
-          <!-- Callback Reminders -->
-          <CallbackReminder
-            :tickets="tickets"
-            @update-ticket="handleTicketUpdate"
-            @snooze-callback="handleSnoozeCallback"
-          />
-
-          <!-- Search Bar -->
-          <div class="mb-6">
-            <div class="relative">
-              <input
+                          </UIGlassCard>
+                        </div>
+          <!-- Main Content: Tickets List -->
+          <div class="lg:col-span-3 space-y-6">
+            
+            <!-- Search and Sort -->
+            <div class="flex flex-col sm:flex-row gap-4">
+              <UIInput
                 v-model="searchQuery"
-                type="text"
-                placeholder="Rechercher un ticket..."
-                class="w-full px-4 py-3 pl-10 bg-glass-bg-light backdrop-blur-sm border border-border-primary
-                       rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2
-                       focus:ring-electric-blue focus:border-electric-blue transition-all duration-200"
-              >
-              <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
-                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-              </svg>
+                placeholder="Rechercher dans les tickets..."
+                icon-leading="search"
+                class="flex-grow"
+              />
+              <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 text-sm text-gray-400">
+                  <span>Afficher:</span>
+                  <UISelect
+                    v-model="itemsPerPage"
+                    :options="[
+                      { value: 12, label: '12' },
+                      { value: 24, label: '24' },
+                      { value: 48, label: '48' },
+                      { value: 96, label: '96' },
+                    ]"
+                  />
+                </div>
+                <UISelect
+                  v-model="sortBy"
+                  :options="[
+                    { value: 'dueDate', label: 'Trier par échéance' },
+                    { value: 'priority', label: 'Trier par priorité' },
+                    { value: 'createdAt', label: 'Trier par date de création' },
+                    { value: 'title', label: 'Trier par titre' },
+                    { value: 'status', label: 'Trier par statut' },
+                  ]"
+                />
+                <button
+                  @click="toggleSortOrder"
+                  class="px-3 py-2 bg-glass-bg-light border border-border-primary rounded-full
+                         text-white hover:bg-glass-bg transition-colors flex items-center gap-2 text-sm"
+                >
+                  <svg class="w-4 h-4" :class="{ 'rotate-180': sortOrder === 'desc' }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+                  </svg>
+                </button>
+              </div>
             </div>
-          </div>
 
-          <!-- Sorting Controls -->
-          <div class="flex flex-col sm:flex-row gap-4 mb-6">
-            <div class="flex-1">
-              <select
-                v-model="sortBy"
-                class="w-full px-4 py-2 bg-glass-bg-light border border-border-primary rounded-lg
-                       text-white text-sm focus:ring-2 focus:ring-electric-blue focus:border-electric-blue"
-              >
-                <option value="dueDate">Trier par échéance</option>
-                <option value="priority">Trier par priorité</option>
-                <option value="createdAt">Trier par date de création</option>
-                <option value="title">Trier par titre</option>
-                <option value="status">Trier par statut</option>
-              </select>
-            </div>
-            <button
-              @click="toggleSortOrder"
-              class="px-4 py-2 bg-glass-bg-light border border-border-primary rounded-lg
-                     text-white hover:bg-glass-bg transition-colors flex items-center gap-2 text-sm"
-            >
-              <svg class="w-4 h-4" :class="{ 'rotate-180': sortOrder === 'desc' }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
-              </svg>
-              {{ sortOrder === 'asc' ? 'Croissant' : 'Décroissant' }}
-            </button>
-            <button
-              @click="showKeyboardShortcuts"
-              class="px-4 py-2 bg-glass-bg-light border border-border-primary rounded-lg
-                     text-gray-300 hover:text-white hover:bg-glass-bg transition-colors flex items-center gap-2 text-sm"
-              title="Raccourcis clavier"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-              Aide
-            </button>
-          </div>
+            <!-- Callback Reminders -->
+            <CallbackReminder
+              :tickets="tickets"
+              @update-ticket="handleTicketUpdate"
+              @snooze-callback="handleSnoozeCallback"
+            />
 
-          <!-- Bulk Actions -->
-          <BulkActions
-            :tickets="filteredTickets"
-            :selected-tickets="selectedTickets"
-            :total-tickets="filteredTickets.length"
-            @update-selection="selectedTickets = $event"
-            @bulk-status-change="handleBulkStatusChange"
-            @bulk-priority-change="handleBulkPriorityChange"
-            @bulk-delete="handleBulkDelete"
-            @export-tickets="exportTickets"
-            @toggle-selection-mode="selectionMode = $event"
-          />
+            <!-- Bulk Actions -->
+            <BulkActions
+              :tickets="filteredTickets"
+              :selected-tickets="selectedTickets"
+              :total-tickets="filteredTickets.length"
+              @update-selection="selectedTickets = $event"
+              @bulk-status-change="handleBulkStatusChange"
+              @bulk-priority-change="handleBulkPriorityChange"
+              @bulk-delete="handleBulkDelete"
+              @export-tickets="exportTickets"
+              @toggle-selection-mode="selectionMode = $event"
+            />
 
-          <!-- Tickets Grid -->
-          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <div
-              v-for="ticket in filteredTickets"
-              :key="ticket.id"
-              class="relative"
-            >
-              <!-- Selection Checkbox -->
+            <!-- Active Tickets Grid -->
+            <div v-if="paginatedActiveTickets.length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               <div
-                v-if="selectionMode"
-                class="absolute -top-2 -left-2 z-10"
+                v-for="ticket in paginatedActiveTickets"
+                :key="ticket.id"
+                class="relative"
               >
-                <label class="flex items-center cursor-pointer">
+                <!-- Selection Checkbox -->
+                <div
+                  v-if="selectionMode"
+                  class="absolute top-2 left-2 z-10"
+                >
                   <input
                     type="checkbox"
-                    :value="ticket.id"
                     :checked="selectedTickets.includes(ticket.id)"
                     @change="toggleTicketSelection(ticket.id)"
-                    class="w-5 h-5 text-electric-blue bg-glass-bg border-border-primary rounded
+                    class="w-4 h-4 text-electric-blue bg-glass-bg border-border-primary rounded
                            focus:ring-electric-blue focus:ring-2"
                   >
-                </label>
-              </div>
+                </div>
 
-              <TicketCard
-                :ticket="ticket"
-                @edit="editTicket"
-                @delete="deleteTicket"
-                @status-change="updateTicketStatus"
-              />
-            </div>
-          </div>
-
-          <!-- Empty State -->
-          <div v-if="filteredTickets.length === 0" class="text-center py-12">
-            <GlassCard variant="glass" class="max-w-md mx-auto">
-              <div class="mb-4 flex justify-center">
-                <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                </svg>
-              </div>
-              <h3 class="text-xl font-semibold text-white mb-2">Aucun ticket trouvé</h3>
-              <p class="text-gray-300 mb-4">
-                {{ searchQuery ? 'Essayez avec d\'autres mots-clés' : 'Créez votre premier ticket pour commencer' }}
-              </p>
-              <button
-                @click="showNewTicketModal = true"
-                class="px-6 py-2 bg-electric-blue hover:bg-electric-blue-dark text-black rounded-full
-                       transition-all duration-200 font-medium hover-lift"
-              >
-                Créer un ticket
-              </button>
-            </GlassCard>
-          </div>
-
-          <!-- Completed Tasks Section -->
-          <div v-if="completedTickets.length > 0" class="mt-12">
-            <div class="flex items-center justify-between mb-6">
-              <h3 class="text-xl font-semibold text-white flex items-center gap-2">
-                <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                Tâches Terminées
-                <span class="text-sm text-gray-400">({{ completedTickets.length }})</span>
-              </h3>
-              <button
-                @click="showCompletedTasks = !showCompletedTasks"
-                class="px-3 py-1 text-sm text-gray-400 hover:text-white transition-colors"
-              >
-                {{ showCompletedTasks ? 'Masquer' : 'Afficher' }}
-              </button>
-            </div>
-
-            <div v-if="showCompletedTasks" class="space-y-4">
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <TicketCard
-                  v-for="ticket in completedTickets"
-                  :key="ticket.id"
                   :ticket="ticket"
                   @edit="editTicket"
                   @delete="deleteTicket"
                   @status-change="handleStatusChange"
                 />
               </div>
+            </div>
 
-              <!-- Completed Tasks Actions -->
-              <div class="mt-6 text-center">
-                <button
-                  @click="clearCompletedTasks"
-                  class="px-4 py-2 bg-red-600/20 text-red-400 border border-red-600/30 rounded-lg
-                         hover:bg-red-600/30 transition-colors text-sm"
+            <!-- Pagination for Active Tickets -->
+            <UIPagination
+              v-if="filteredTickets.length > itemsPerPage"
+              :current-page="activeCurrentPage"
+              :total-items="filteredTickets.length"
+              :items-per-page="itemsPerPage"
+              @page-change="activeCurrentPage = $event"
+              class="mt-6"
+            />
+
+            <!-- Empty State for Active Tickets -->
+            <div v-if="filteredTickets.length === 0" class="text-center py-12">
+              <UIGlassCard class="max-w-md mx-auto">
+                <div class="mb-4 flex justify-center">
+                  <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                  </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-white mb-2">Aucun ticket actif trouvé</h3>
+                <p class="text-gray-300 mb-4">
+                  {{ searchQuery || filters.status !== 'all' || filters.priority !== 'all' || filters.customer ? 'Essayez avec d\'autres filtres' : 'Créez votre premier ticket pour commencer' }}
+                </p>
+                <UIButton
+                  @click="showNewTicketModal = true"
+                  variant="primary"
+                  size="lg"
                 >
-                  Supprimer toutes les tâches terminées
-                </button>
-              </div>
+                  Créer un ticket
+                </UIButton>
+              </UIGlassCard>
             </div>
           </div>
-
         </div>
-
       </div>
 
+      <!-- Completed Tickets Tab -->
+      <div v-if="activeTab === 'completed'" class="space-y-6">
+        <!-- Controls -->
+        <div class="flex flex-col md:flex-row gap-4 justify-between">
+          <UIInput
+            v-model="completedSearchQuery"
+            placeholder="Rechercher dans les terminés..."
+            icon-leading="search"
+            class="flex-grow"
+          />
+          <div class="flex items-center gap-4 flex-wrap">
+            <div class="flex items-center gap-2 text-sm text-gray-400">
+              <span>Afficher:</span>
+              <UISelect
+                v-model="itemsPerPage"
+                :options="[
+                  { value: 12, label: '12' },
+                  { value: 24, label: '24' },
+                  { value: 48, label: '48' },
+                  { value: 96, label: '96' },
+                ]"
+              />
+            </div>
+            <UISelect
+              v-model="completedFilters.priority"
+              :options="[
+                { value: 'all', label: 'Toutes priorités' },
+                { value: 'low', label: 'Faible' },
+                { value: 'medium', label: 'Moyenne' },
+                { value: 'high', label: 'Élevée' },
+                { value: 'urgent', label: 'Urgente' },
+              ]"
+            />
+            <UIInput
+              v-model="completedFilters.customer"
+              placeholder="Filtrer par client..."
+            />
+            <UIButton @click="clearCompletedFilters" variant="ghost" size="sm">Réinitialiser</UIButton>
+          </div>
+        </div>
+
+        <!-- Completed Tickets Table -->
+        <div v-if="paginatedCompletedTickets.length > 0" class="bg-glass-bg/50 border border-border-primary rounded-lg overflow-hidden">
+          <table class="min-w-full divide-y divide-border-primary">
+            <thead class="bg-glass-bg/30">
+              <tr>
+                <th @click="toggleCompletedSort('title')" class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Ticket</th>
+                <th @click="toggleCompletedSort('customer')" class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Client</th>
+                <th @click="toggleCompletedSort('priority')" class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Priorité</th>
+                <th @click="toggleCompletedSort('completedAt')" class="cursor-pointer px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Terminé le</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border-primary">
+              <tr v-for="ticket in paginatedCompletedTickets" :key="ticket.id" class="hover:bg-glass-bg">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-medium text-white">{{ ticket.title }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ ticket.customer }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" :class="getPriorityClass(ticket.priority)">
+                    {{ ticket.priority }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ formatDate(ticket.completedAt) }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <UIButton @click="editTicket(ticket.id)" variant="ghost" size="sm">Détails</UIButton>
+                  <UIButton @click="deleteTicket(ticket.id)" variant="danger" size="sm" class="ml-4">Supprimer</UIButton>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination for Completed Tickets -->
+        <UIPagination
+          v-if="completedTickets.length > itemsPerPage"
+          :current-page="completedCurrentPage"
+          :total-items="completedTickets.length"
+          :items-per-page="itemsPerPage"
+          @page-change="completedCurrentPage = $event"
+          class="mt-6"
+        />
+
+        <!-- Empty State for Completed Tickets -->
+        <div v-if="completedTickets.length === 0" class="text-center py-12">
+          <UIGlassCard class="max-w-md mx-auto">
+            <div class="mb-4 flex justify-center">
+              <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <h3 class="text-xl font-semibold text-white mb-2">Aucune tâche terminée trouvée</h3>
+            <p class="text-gray-300">{{ completedSearchQuery || completedFilters.priority !== 'all' || completedFilters.customer ? 'Essayez avec d\'autres filtres' : 'Aucune tâche n\'a été marquée comme terminée pour le moment.' }}</p>
+          </UIGlassCard>
+        </div>
       </div>
 
       <!-- Keyboard Shortcuts Hint -->
@@ -651,7 +371,7 @@
     <!-- Keyboard Shortcuts -->
     <KeyboardShortcuts
       ref="keyboardShortcutsRef"
-      @new-ticket="activeTab = 'create'"
+      @new-ticket="showNewTicketModal = true"
       @toggle-search="focusSearch"
       @export-data="() => exportTickets()"
       @toggle-selection="toggleSelectionMode"
@@ -673,10 +393,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 
 // Components
-import GlassCard from '@/components/ui/GlassCard.vue'
+import { UIGlassCard, UIInput, UISelect, UIButton, UITabs, UIContainer, UISection } from '@/components/ui';
 import ToolHeader from '@/components/ui/ToolHeader.vue'
 import TicketCard from './TicketingSystem/TicketCard.vue'
 import NewTicketModal from './TicketingSystem/NewTicketModal.vue'
@@ -685,6 +405,7 @@ import CallbackReminder from './TicketingSystem/CallbackReminder.vue'
 import BulkActions from './TicketingSystem/BulkActions.vue'
 import QuickAdd from './TicketingSystem/QuickAdd.vue'
 import KeyboardShortcuts from './TicketingSystem/KeyboardShortcuts.vue'
+import UIPagination from '@/components/ui/UIPagination.vue'
 
 // Reactive data
 const tickets = ref([])
@@ -697,10 +418,14 @@ const sortOrder = ref('asc') // asc, desc
 const selectedTickets = ref([])
 const selectionMode = ref(false)
 const keyboardShortcutsRef = ref(null)
-const showCompletedTasks = ref(false)
-const activeTab = ref('active') // 'active', 'create', 'completed', 'advanced'
+const activeTab = ref('active') // 'active', 'completed'
 const feedbackMessage = ref('')
 const showFeedback = ref(false)
+
+// Pagination state
+const activeCurrentPage = ref(1)
+const completedCurrentPage = ref(1)
+const itemsPerPage = ref(12)
 
 // Filters
 const filters = ref({
@@ -708,6 +433,15 @@ const filters = ref({
   priority: 'all',
   customer: ''
 })
+
+// Completed Tickets Filters & Sort
+const completedSearchQuery = ref('')
+const completedFilters = ref({
+  priority: 'all',
+  customer: ''
+})
+const completedSortBy = ref('completedAt')
+const completedSortOrder = ref('desc')
 
 // Demo data
 const sampleTickets = [
@@ -735,6 +469,15 @@ const sampleTickets = [
   }
 ]
 
+// Priority classes helper
+const priorityClasses = {
+  low: 'bg-green-600/20 text-green-300 border-green-500/30',
+  medium: 'bg-yellow-600/20 text-yellow-300 border-yellow-500/30',
+  high: 'bg-orange-600/20 text-orange-300 border-orange-500/30',
+  urgent: 'bg-red-600/20 text-red-300 border-red-500/30',
+}
+const getPriorityClass = (priority) => priorityClasses[priority] || ''
+
 // Computed properties
 const filteredTickets = computed(() => {
   // Exclude completed tickets from main list
@@ -746,7 +489,7 @@ const filteredTickets = computed(() => {
     filtered = filtered.filter(ticket =>
       ticket.title.toLowerCase().includes(query) ||
       ticket.description.toLowerCase().includes(query) ||
-      ticket.customer.toLowerCase().includes(query)
+      (ticket.customer && ticket.customer.toLowerCase().includes(query))
     )
   }
 
@@ -764,7 +507,7 @@ const filteredTickets = computed(() => {
   if (filters.value.customer.trim()) {
     const customerQuery = filters.value.customer.toLowerCase()
     filtered = filtered.filter(ticket =>
-      ticket.customer.toLowerCase().includes(customerQuery)
+      ticket.customer && ticket.customer.toLowerCase().includes(customerQuery)
     )
   }
 
@@ -803,19 +546,85 @@ const filteredTickets = computed(() => {
         return 0
     }
 
-    if (aVal < bVal) return sortOrder.value === 'asc' ? -1 : 1
-    if (aVal > bVal) return sortOrder.value === 'asc' ? 1 : -1
-    return 0
-  })
+    if (aVal < bVal) return sortOrder.value === 'asc' ? -1 : 1;
+    if (aVal > bVal) return sortOrder.value === 'asc' ? 1 : -1;
+    return 0;
+  });
 
-  return filtered
+  return filtered;
+});
+
+const paginatedActiveTickets = computed(() => {
+  const start = (activeCurrentPage.value - 1) * itemsPerPage.value
+  const end = start + itemsPerPage.value
+  return filteredTickets.value.slice(start, end)
 })
 
 const completedTickets = computed(() => {
-  return tickets.value
-    .filter(ticket => ticket.status === 'completed')
-    .sort((a, b) => new Date(b.completedAt || b.createdAt) - new Date(a.completedAt || a.createdAt))
-})
+  let filtered = tickets.value.filter(ticket => ticket.status === 'completed')
+
+  // Search filter
+  if (completedSearchQuery.value.trim()) {
+    const query = completedSearchQuery.value.toLowerCase()
+    filtered = filtered.filter(ticket =>
+      ticket.title.toLowerCase().includes(query) ||
+      (ticket.description && ticket.description.toLowerCase().includes(query)) ||
+      (ticket.customer && ticket.customer.toLowerCase().includes(query))
+    )
+  }
+
+  // Priority filter
+  if (completedFilters.value.priority !== 'all') {
+    filtered = filtered.filter(ticket => ticket.priority === completedFilters.value.priority)
+  }
+
+  // Customer filter
+  if (completedFilters.value.customer.trim()) {
+    const customerQuery = completedFilters.value.customer.toLowerCase()
+    filtered = filtered.filter(ticket =>
+      ticket.customer && ticket.customer.toLowerCase().includes(customerQuery)
+    )
+  }
+
+  // Sort tickets
+  filtered.sort((a, b) => {
+    let aVal, bVal
+
+    switch (completedSortBy.value) {
+      case 'priority':
+        const priorityOrder = { urgent: 4, high: 3, medium: 2, low: 1 }
+        aVal = priorityOrder[a.priority] || 0
+        bVal = priorityOrder[b.priority] || 0
+        break
+      case 'completedAt':
+        aVal = new Date(a.completedAt || 0).getTime()
+        bVal = new Date(b.completedAt || 0).getTime()
+        break
+      case 'title':
+        aVal = a.title.toLowerCase()
+        bVal = b.title.toLowerCase()
+        break
+      case 'customer':
+        aVal = a.customer?.toLowerCase() || ''
+        bVal = b.customer?.toLowerCase() || ''
+        break
+      default:
+        return 0
+    }
+
+    if (aVal < bVal) return completedSortOrder.value === 'asc' ? -1 : 1;
+    if (aVal > bVal) return completedSortOrder.value === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  return filtered;
+});
+
+const paginatedCompletedTickets = computed(() => {
+  const start = (completedCurrentPage.value - 1) * itemsPerPage.value
+  const end = start + itemsPerPage.value
+  return completedTickets.value.slice(start, end)
+});
 
 // Stats computed
 const activeTicketsCount = computed(() =>
@@ -831,12 +640,52 @@ const urgentTickets = computed(() =>
   tickets.value.filter(t => t.priority === 'urgent').length
 )
 
+const ticketTabs = computed(() => [
+  { value: 'active', label: 'Tickets Actifs', badge: activeTicketsCount.value },
+  { value: 'completed', label: 'Terminés', badge: completedTickets.value.length },
+])
+
+// Watchers for pagination
+watch([searchQuery, filters], () => {
+  activeCurrentPage.value = 1
+}, { deep: true })
+
+watch([completedSearchQuery, completedFilters], () => {
+  completedCurrentPage.value = 1
+}, { deep: true })
+
+watch(itemsPerPage, () => {
+  activeCurrentPage.value = 1;
+  completedCurrentPage.value = 1;
+});
+
 // Methods
 const clearFilters = () => {
   filters.value.status = 'all'
   filters.value.priority = 'all'
   filters.value.customer = ''
   searchQuery.value = ''
+}
+
+const clearCompletedFilters = () => {
+  completedFilters.value.priority = 'all'
+  completedFilters.value.customer = ''
+  completedSearchQuery.value = ''
+}
+
+const toggleCompletedSort = (field) => {
+  if (completedSortBy.value === field) {
+    completedSortOrder.value = completedSortOrder.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    completedSortBy.value = field
+    completedSortOrder.value = 'asc'
+  }
+}
+
+const formatDate = (dateString) => {
+  if (!dateString) return 'N/A'
+  const date = new Date(dateString)
+  return date.toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })
 }
 
 const createTicket = (ticketData) => {
@@ -848,12 +697,18 @@ const createTicket = (ticketData) => {
   }
   tickets.value.unshift(newTicket)
   saveTickets()
+  showNewTicketModal.value = false
+  showFeedback.value = true
+  feedbackMessage.value = `Ticket "${newTicket.title}" créé avec succès.`
+  setTimeout(() => {
+    showFeedback.value = false
+  }, 3000)
 }
 
 const editTicket = (ticketId) => {
   const ticket = tickets.value.find(t => t.id === ticketId)
   if (ticket) {
-    editingTicket.value = ticket
+    editingTicket.value = { ...ticket }
     showEditTicketModal.value = true
   }
 }
@@ -868,7 +723,13 @@ const saveTicketEdit = (updatedTicket) => {
   if (index !== -1) {
     tickets.value[index] = updatedTicket
     saveTickets()
+    showFeedback.value = true
+    feedbackMessage.value = 'Ticket mis à jour avec succès.'
+    setTimeout(() => {
+      showFeedback.value = false
+    }, 3000)
   }
+  closeEditModal()
 }
 
 const toggleSortOrder = () => {
@@ -901,6 +762,9 @@ const handleBulkStatusChange = (ticketIds, newStatus) => {
   })
   saveTickets()
   selectedTickets.value = []
+  showFeedback.value = true
+  feedbackMessage.value = `${ticketIds.length} ticket(s) mis à jour.`
+  setTimeout(() => { showFeedback.value = false }, 3000)
 }
 
 const handleBulkPriorityChange = (ticketIds, newPriority) => {
@@ -913,12 +777,19 @@ const handleBulkPriorityChange = (ticketIds, newPriority) => {
   })
   saveTickets()
   selectedTickets.value = []
+  showFeedback.value = true
+  feedbackMessage.value = `${ticketIds.length} ticket(s) mis à jour.`
+  setTimeout(() => { showFeedback.value = false }, 3000)
 }
 
 const handleBulkDelete = (ticketIds) => {
   tickets.value = tickets.value.filter(t => !ticketIds.includes(t.id))
   saveTickets()
+  const count = ticketIds.length
   selectedTickets.value = []
+  showFeedback.value = true
+  feedbackMessage.value = `${count} ticket${count > 1 ? 's' : ''} supprimé${count > 1 ? 's' : ''}.`
+  setTimeout(() => { showFeedback.value = false }, 3000)
 }
 
 const clearCompletedTasks = () => {
@@ -1005,8 +876,14 @@ const toggleSelectionMode = () => {
 
 const deleteTicket = (ticketId) => {
   if (confirm('Êtes-vous sûr de vouloir supprimer ce ticket ?')) {
+    const ticket = tickets.value.find(t => t.id === ticketId)
     tickets.value = tickets.value.filter(t => t.id !== ticketId)
     saveTickets()
+    if (ticket) {
+      showFeedback.value = true
+      feedbackMessage.value = `Ticket "${ticket.title}" supprimé.`
+      setTimeout(() => { showFeedback.value = false }, 3000)
+    }
   }
 }
 
@@ -1027,7 +904,8 @@ const loadTickets = () => {
   const saved = localStorage.getItem('ui-tools-tickets')
   if (saved) {
     tickets.value = JSON.parse(saved)
-  } else {
+  }
+  else {
     tickets.value = [...sampleTickets]
     saveTickets()
   }

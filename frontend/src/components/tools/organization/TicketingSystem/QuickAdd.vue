@@ -1,6 +1,6 @@
 <template>
   <GlassCard>
-    <h3 class="section-title mb-4">Ajout Rapide</h3>
+    <h3 class="section-title mb-4">Ajout Rapide de Rappel</h3>
 
     <!-- Quick Add Presets -->
     <div class="grid grid-cols-1 gap-2 mb-4">
@@ -12,7 +12,7 @@
                rounded-lg transition-all duration-200 group"
       >
         <div class="flex items-start gap-3">
-          <div :class="['flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center', preset.bgColor]">
+          <div :class="['flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center']" :style="{ backgroundColor: preset.bgColor }">
             <svg class="w-4 h-4" :class="preset.iconColor" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="preset.icon"/>
             </svg>
@@ -34,7 +34,7 @@
           id="quick-add-title-input"
           v-model="quickTitle"
           type="text"
-          placeholder="Nouveau ticket rapide..."
+          placeholder="Nouveau rappel..."
           class="w-full px-3 py-2 bg-glass-bg border border-border-primary rounded-lg
                  text-white placeholder-gray-400 text-sm focus:ring-2 focus:ring-electric-blue
                  focus:border-electric-blue transition-all duration-200"
@@ -91,9 +91,19 @@
               </div>
             </div>
           </div>
+          <input
+            v-model="quickPhone"
+            type="tel"
+            placeholder="Téléphone..."
+            class="w-32 px-3 py-2 bg-glass-bg border border-border-primary rounded-lg
+                   text-white placeholder-gray-400 text-sm focus:ring-2 focus:ring-electric-blue
+                   focus:border-electric-blue transition-all duration-200"
+          >
+        </div>
+        <div class="flex gap-2">
           <select
             v-model="quickPriority"
-            class="px-3 py-2 bg-glass-bg border border-border-primary rounded-lg
+            class="flex-1 px-3 py-2 bg-glass-bg border border-border-primary rounded-lg
                    text-white text-sm focus:ring-2 focus:ring-electric-blue focus:border-electric-blue"
           >
             <option value="medium">Moyenne</option>
@@ -101,10 +111,6 @@
             <option value="high">Élevée</option>
             <option value="urgent">Urgente</option>
           </select>
-        </div>
-
-        <!-- Date Picker Row -->
-        <div class="flex gap-2">
           <input
             v-model="quickDueDate"
             type="date"
@@ -149,8 +155,9 @@ const emit = defineEmits(['create-ticket'])
 // Local state
 const quickTitle = ref('')
 const quickCustomer = ref('')
+const quickPhone = ref('')
 const quickPriority = ref('medium')
-const quickType = ref('task')
+const quickType = ref('callback')
 const quickDueDate = ref('')
 
 // Autocomplete state
@@ -171,7 +178,7 @@ const presets = [
       return today.toISOString().split('T')[0]
     },
     icon: 'M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z',
-    bgColor: 'bg-red-600/20',
+    bgColor: 'var(--accent-red-alpha-20)',
     iconColor: 'text-red-400'
   },
   {
@@ -182,7 +189,7 @@ const presets = [
     priority: 'high',
     dueDate: () => new Date().toISOString().split('T')[0],
     icon: 'M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z',
-    bgColor: 'bg-orange-600/20',
+    bgColor: 'var(--accent-orange-alpha-20)',
     iconColor: 'text-orange-400'
   },
   {
@@ -197,34 +204,8 @@ const presets = [
       return tomorrow.toISOString().split('T')[0]
     },
     icon: 'M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z',
-    bgColor: 'bg-electric-blue/20',
+    bgColor: 'var(--electric-blue-alpha-20)',
     iconColor: 'text-electric-blue'
-  },
-  {
-    id: 'task-urgent',
-    title: 'Tâche Urgente',
-    description: 'Tâche à faire immédiatement',
-    type: 'task',
-    priority: 'urgent',
-    dueDate: () => new Date().toISOString().split('T')[0],
-    icon: 'M9 5H7a2 2 0 00-2 2v11a2 2 0 002 2h2m0-13h10a2 2 0 012 2v11a2 2 0 01-2 2H9m0-13v13',
-    bgColor: 'bg-red-600/20',
-    iconColor: 'text-red-400'
-  },
-  {
-    id: 'followup',
-    title: 'Suivi Client',
-    description: 'Faire un point avec le client',
-    type: 'callback',
-    priority: 'low',
-    dueDate: () => {
-      const nextWeek = new Date()
-      nextWeek.setDate(nextWeek.getDate() + 7)
-      return nextWeek.toISOString().split('T')[0]
-    },
-    icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
-    bgColor: 'bg-gray-600/20',
-    iconColor: 'text-gray-400'
   }
 ]
 
@@ -290,7 +271,7 @@ const quickCreate = () => {
   const ticketData = {
     title: quickTitle.value.trim(),
     customer: quickCustomer.value.trim(),
-    description: '',
+    description: `Numéro de téléphone: ${quickPhone.value}`,
     type: quickType.value,
     priority: quickPriority.value,
     dueDate: quickDueDate.value || null
@@ -301,8 +282,9 @@ const quickCreate = () => {
   // Reset form
   quickTitle.value = ''
   quickCustomer.value = ''
+  quickPhone.value = ''
   quickPriority.value = 'medium'
-  quickType.value = 'task'
+  quickType.value = 'callback'
   quickDueDate.value = ''
 }
 </script>
