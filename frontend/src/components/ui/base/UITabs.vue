@@ -410,7 +410,7 @@ defineExpose({
 
 /* Underline variant */
 .ui-tabs--underline .tab--underline {
-  color: var(--text-tertiary);
+  color: var(--text-primary);
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
 }
@@ -503,7 +503,7 @@ defineExpose({
   font-size: var(--text-xs);
   font-weight: var(--font-semibold);
   line-height: 1;
-  background: var(--glass-bg-dark);
+  background: transparent;
   color: var(--text-tertiary);
   border: 1px solid var(--border-primary);
   transition: var(--transition-default);
