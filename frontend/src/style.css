@@ -31,6 +31,10 @@
   --accent-yellow: #FFE66D;
   --accent-purple: #daa8e6;
 
+  --accent-red-alpha-20: rgba(255, 107, 107, 0.2);
+  --accent-orange: #EA580C;
+  --accent-orange-alpha-20: rgba(234, 88, 12, 0.2);
+
   /* ================================
      SEMANTIC COLOR SYSTEM
      ================================ */
@@ -165,6 +169,7 @@
   --duration-slow: 500ms;
   --duration-slower: 750ms;
   --duration-slowest: 1000ms;
+  --duration-ultra-slow: 8000ms;
 
   /* Easing Functions */
   --easing-linear: linear;

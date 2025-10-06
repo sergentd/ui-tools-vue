@@ -1,99 +1,96 @@
 <template>
-  <div class="palette-generator min-h-screen">
-    <!-- Main content with container -->
-    <div class="container mx-auto px-6 max-w-7xl pt-0 pb-8">
-      <!-- Header inside container -->
-      <div class="tool-header-wrapper">
-        <ToolHeader
-          title="Générateur de Palette"
-          description="Créez, ajustez et exportez vos palettes de couleurs avec l'accessibilité à l'esprit"
-          icon="palette-generator"
-          category="theming"
-          status="Migré vers Vue"
-          :show-badges="true"
-        />
-      </div>
+  <div class="min-h-screen bg-primary">
+    <!-- Tool Header -->
+    <ToolHeader
+      title="Générateur de Palette"
+      description="Créez, ajustez et exportez vos palettes de couleurs avec l'accessibilité à l'esprit"
+      icon="palette-generator"
+      category="theming"
+      :show-badges="true"
+    />
 
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 space-y-8">
+      <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
+
         <!-- Generation Controls -->
-        <div class="lg:col-span-1 space-y-6">
-          <!-- Color Generation -->
-          <div class="control-section">
-            <h3 class="section-title">Génération par couleur</h3>
-            <div class="section-content">
-              <ColorGeneration
-                :base-color="paletteState.baseColor"
-                :generation-mode="paletteState.generationMode"
-                @update:base-color="paletteState.baseColor = $event"
-                @update:generation-mode="paletteState.generationMode = $event"
-                @generate="generatePalette"
-              />
-            </div>
-          </div>
+        <div class="xl:col-span-1 space-y-6">
+          <!-- Generation Methods with Tabs -->
+          <UISection title="Méthodes de Génération" variant="glass">
+            <UITabs
+              v-model="activeTab"
+              :tabs="generationTabs"
+              variant="soft"
+              size="sm"
+              value-key="id"
+              label-key="label"
+            >
+              <!-- Color Generation Tab -->
+              <template #tab-color>
+                <ColorGeneration
+                  :base-color="paletteState.baseColor"
+                  :generation-mode="paletteState.generationMode"
+                  @update:base-color="paletteState.baseColor = $event"
+                  @update:generation-mode="paletteState.generationMode = $event"
+                  @generate="generatePalette"
+                />
+              </template>
 
-          <!-- Image Extraction -->
-          <div class="control-section">
-            <h3 class="section-title">Extraction depuis une image</h3>
-            <div class="section-content">
-              <ImageExtraction
-                @colors-extracted="handleImageExtraction"
-              />
-            </div>
-          </div>
+              <!-- Image Extraction Tab -->
+              <template #tab-image>
+                <ImageExtraction
+                  @colors-extracted="handleImageExtraction"
+                />
+              </template>
 
-          <!-- Manual Addition -->
-          <div class="control-section">
-            <h3 class="section-title">Ajouter manuellement</h3>
-            <div class="section-content">
-              <ManualColorInput
-                @colors-updated="handleManualColors"
-              />
-            </div>
-          </div>
+              <!-- Manual Addition Tab -->
+              <template #tab-manual>
+                <ManualColorInput
+                  @colors-updated="handleManualColors"
+                />
+              </template>
+            </UITabs>
+          </UISection>
         </div>
 
         <!-- Main Palette Area -->
-        <div class="lg:col-span-2 space-y-6">
-          <!-- Palette Header -->
-          <div class="main-section">
-            <div class="palette-header">
-              <div class="flex justify-between items-center flex-wrap gap-4">
-                <input
-                  v-model="paletteState.paletteName"
-                  type="text"
-                  placeholder="Nom de la palette"
-                  class="palette-name-input"
+        <div class="xl:col-span-2 space-y-6">
+          <UISection title="Palette" variant="glass">
+            <template #actions>
+              <div class="flex gap-2">
+                <UIButton
+                  variant="secondary"
+                  size="sm"
+                  @click="savePalette"
                 >
-                <div class="flex gap-2 flex-wrap">
-                  <button
-                    @click="savePalette"
-                    class="btn btn-secondary"
+                  Sauvegarder
+                </UIButton>
+                <div class="relative">
+                  <UIButton
+                    variant="primary"
+                    size="sm"
+                    @click="showExportMenu = !showExportMenu"
                   >
-                    Sauvegarder
-                  </button>
-                  <div class="relative">
-                    <button
-                      @click="showExportMenu = !showExportMenu"
-                      class="btn btn-primary"
-                    >
-                      Exporter
-                    </button>
-                    <div
-                      v-if="showExportMenu"
-                      class="export-menu"
-                      @click.stop
-                    >
-                      <button @click.stop="exportPalette('json')">en JSON</button>
-                      <button @click.stop="exportPalette('css')">en CSS</button>
-                      <button @click.stop="exportPalette('scss')">en SCSS</button>
-                    </div>
+                    Exporter
+                  </UIButton>
+                  <div
+                    v-if="showExportMenu"
+                    class="export-menu"
+                    @click.stop
+                  >
+                    <button @click.stop="exportPalette('json')">en JSON</button>
+                    <button @click.stop="exportPalette('css')">en CSS</button>
+                    <button @click.stop="exportPalette('scss')">en SCSS</button>
                   </div>
                 </div>
               </div>
-            </div>
+            </template>
 
-            <!-- Color Palette Display -->
-            <div class="palette-content">
+            <div class="space-y-4">
+              <UIInput
+                v-model="paletteState.paletteName"
+                placeholder="Nom de la palette"
+              />
               <PaletteDisplay
                 :colors="paletteState.colors"
                 :palette-name="paletteState.paletteName"
@@ -102,20 +99,17 @@
                 @palette-name-updated="paletteState.paletteName = $event"
               />
             </div>
-          </div>
+          </UISection>
         </div>
 
         <!-- Saved Palettes -->
-        <div class="lg:col-span-1">
-          <div class="control-section">
-            <h3 class="section-title">Palettes sauvegardées</h3>
-            <div class="section-content">
-              <SavedPalettes
-                ref="savedPalettesRef"
-                @palette-loaded="handlePaletteLoad"
-              />
-            </div>
-          </div>
+        <div class="xl:col-span-1 space-y-6">
+          <UISection title="Palettes sauvegardées" variant="glass">
+            <SavedPalettes
+              ref="savedPalettesRef"
+              @palette-loaded="handlePaletteLoad"
+            />
+          </UISection>
         </div>
       </div>
     </div>
@@ -131,10 +125,8 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-
-// Components
+import { UISection, UIButton, UIInput, UITabs } from '@/components/ui'
 import ToolHeader from '@/components/ui/ToolHeader.vue'
-import GlassCard from '@/components/ui/GlassCard.vue'
 import ColorGeneration from './PaletteGenerator/ColorGeneration.vue'
 import ImageExtraction from './PaletteGenerator/ImageExtraction.vue'
 import ManualColorInput from './PaletteGenerator/ManualColorInput.vue'
@@ -149,113 +141,145 @@ const paletteState = reactive({
   colors: []
 })
 
-const showExportMenu = ref(false)
+const activeTab = ref('color')
+const generationTabs = [
+  { id: 'color', label: 'Couleur' },
+  { id: 'image', label: 'Image' },
+  { id: 'manual', label: 'Manuel' }
+]
+
 const savedPalettesRef = ref(null)
-let nextColorId = 1
+const showExportMenu = ref(false)
 
-// Load saved palettes on mount
-onMounted(() => {
-  // Add some default colors
-  if (paletteState.colors.length === 0) {
-    paletteState.colors = ['#3D5A80']
-  }
-})
-
-// Methods
-
+// Color generation functions
 const generatePalette = () => {
   const mode = paletteState.generationMode
-  const baseHex = paletteState.baseColor
-  let newColors = []
+  const base = paletteState.baseColor
 
-  if (mode === 'monochromatic') {
-    newColors = [
-      adjustBrightness(baseHex, -30),
-      adjustBrightness(baseHex, -15),
-      baseHex,
-      adjustBrightness(baseHex, 15),
-      adjustBrightness(baseHex, 30)
-    ]
-  } else if (mode === 'analogous') {
-    newColors = [
-      shiftHue(baseHex, -60),
-      shiftHue(baseHex, -30),
-      baseHex,
-      shiftHue(baseHex, 30),
-      shiftHue(baseHex, 60)
-    ]
-  } else if (mode === 'complementary') {
-    const compHex = shiftHue(baseHex, 180)
-    newColors = [
-      adjustBrightness(baseHex, -20),
-      baseHex,
-      adjustBrightness(baseHex, 20),
-      compHex,
-      adjustBrightness(compHex, 20)
-    ]
-  } else if (mode === 'triadic') {
-    const t1 = shiftHue(baseHex, 120)
-    const t2 = shiftHue(baseHex, 240)
-    newColors = [
-      adjustBrightness(baseHex, -15),
-      baseHex,
-      t1,
-      t2,
-      adjustBrightness(baseHex, 15)
-    ]
+  switch(mode) {
+    case 'monochromatic':
+      paletteState.colors = generateMonochromatic(base)
+      break
+    case 'analogous':
+      paletteState.colors = generateAnalogous(base)
+      break
+    case 'complementary':
+      paletteState.colors = generateComplementary(base)
+      break
+    case 'triadic':
+      paletteState.colors = generateTriadic(base)
+      break
+    case 'tetradic':
+      paletteState.colors = generateTetradic(base)
+      break
+    default:
+      paletteState.colors = generateMonochromatic(base)
   }
+}
 
-  paletteState.colors = newColors
+const generateMonochromatic = (base) => {
+  return [
+    adjustBrightness(base, -40),
+    adjustBrightness(base, -20),
+    base,
+    adjustBrightness(base, 20),
+    adjustBrightness(base, 40)
+  ]
+}
+
+const generateAnalogous = (base) => {
+  return [
+    shiftHue(base, -30),
+    shiftHue(base, -15),
+    base,
+    shiftHue(base, 15),
+    shiftHue(base, 30)
+  ]
+}
+
+const generateComplementary = (base) => {
+  const complement = shiftHue(base, 180)
+  return [
+    adjustBrightness(base, -20),
+    base,
+    adjustBrightness(base, 20),
+    adjustBrightness(complement, -20),
+    complement
+  ]
+}
+
+const generateTriadic = (base) => {
+  return [
+    base,
+    shiftHue(base, 120),
+    shiftHue(base, 240),
+    adjustBrightness(base, 20),
+    adjustBrightness(shiftHue(base, 120), 20)
+  ]
+}
+
+const generateTetradic = (base) => {
+  return [
+    base,
+    shiftHue(base, 90),
+    shiftHue(base, 180),
+    shiftHue(base, 270),
+    adjustBrightness(base, 20)
+  ]
+}
+
+// Event handlers
+const handleImageExtraction = (colors) => {
+  paletteState.colors = colors
 }
 
 const handleManualColors = (colors) => {
   paletteState.colors = colors
 }
 
-const handlePaletteSave = (palette) => {
-  if (savedPalettesRef.value) {
-    savedPalettesRef.value.addPalette(palette)
-  }
-}
-
 const handlePaletteLoad = (colors) => {
   paletteState.colors = colors
 }
 
-
-const handleImageExtraction = (colors) => {
-  paletteState.colors = colors
-  paletteState.paletteName = "Palette d'image"
-}
-
+// Save/Export functions
 const savePalette = () => {
-  if (!paletteState.paletteName.trim() || paletteState.colors.length === 0) return
+  if (!paletteState.paletteName || paletteState.colors.length === 0) {
+    alert('Veuillez nommer la palette et ajouter au moins une couleur')
+    return
+  }
 
   const paletteData = {
     name: paletteState.paletteName,
-    colors: paletteState.colors,
-    timestamp: new Date().toISOString()
+    colors: paletteState.colors
   }
 
-  if (savedPalettesRef.value) {
-    savedPalettesRef.value.addPalette(paletteData)
-  }
+  // Add palette via the SavedPalettes component
+  savedPalettesRef.value?.addPalette(paletteData)
+
+  // Clear the current palette name for next creation
+  paletteState.paletteName = ''
 }
 
 const exportPalette = (format) => {
+  if (paletteState.colors.length === 0) {
+    alert('Aucune couleur à exporter')
+    return
+  }
+
   const paletteData = {
-    name: paletteState.paletteName || 'Palette sans nom',
-    colors: paletteState.colors,
-    timestamp: new Date().toISOString()
+    name: paletteState.paletteName || 'Palette',
+    colors: paletteState.colors
   }
 
   if (format === 'json') {
+    const json = JSON.stringify(paletteData, null, 2)
     const filename = sanitizeForFilename(paletteData.name) + '.json'
-    downloadFile(filename, JSON.stringify(paletteData, null, 2), 'application/json')
+    downloadFile(filename, json, 'application/json')
   } else if (format === 'css') {
-    let css = ':root {\n'
+    let css = `:root {\n`
     paletteData.colors.forEach((color, index) => {
-      css += `  --color-${index + 1}: ${color};\n`
+      const varName = sanitizeForCss(paletteData.name) + '-' + (index + 1)
+      css += `  --color-${varName}: ${color};\n`
     })
     css += '}'
     const filename = sanitizeForFilename(paletteData.name) + '.css'
@@ -356,148 +380,14 @@ const shiftHue = (hex, degrees) => {
 </script>
 
 <style scoped>
-.palette-generator {
-  min-height: 100vh;
-}
-
-.palette-generator::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 40% 60%, rgba(0, 212, 255, 0.03) 0%, transparent 50%);
-  z-index: -1;
-  pointer-events: none;
-}
-
-.container {
-  max-width: 1400px;
-}
-
-.control-section {
-  background: var(--glass-bg-light);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--border-primary);
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-.section-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-primary);
-  padding: 20px 24px 16px;
-  margin: 0;
-  border-bottom: 1px solid var(--border-primary);
-}
-
-.section-content {
-  padding: 24px;
-}
-
-.main-section {
-  background: var(--glass-bg-light);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--border-primary);
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-.palette-header {
-  padding: 20px 24px;
-  border-bottom: 1px solid var(--border-primary);
-}
-
-.palette-content {
-  padding: 24px;
-}
-
-.palette-name-input {
-  background: var(--glass-bg-light);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--border-primary);
-  color: var(--text-primary);
-  padding: 12px 16px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 500;
-  flex: 1;
-  min-width: 200px;
-  transition: all 0.3s ease;
-}
-
-.palette-name-input::placeholder {
-  color: var(--text-secondary);
-}
-
-.palette-name-input:focus {
-  outline: none;
-  border-color: var(--electric-blue);
-  box-shadow: 0 0 0 2px rgba(var(--electric-blue-rgb), 0.3);
-  background: var(--glass-bg-medium);
-}
-
-.btn {
-  background: var(--glass-bg-light);
-  backdrop-filter: blur(10px);
-  color: var(--text-primary);
-  border: 1px solid var(--border-primary);
-  padding: 12px 20px;
-  border-radius: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 14px;
-  position: relative;
-  overflow: hidden;
-}
-
-.btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-  border-color: var(--electric-blue);
-  background: var(--glass-bg-medium);
-}
-
-.btn-primary {
-  background: var(--electric-blue);
-  color: #000000;
-  border-color: var(--electric-blue);
-}
-
-.btn-primary:hover {
-  background: var(--electric-blue-dark);
-  color: #000000;
-  border-color: var(--electric-blue-dark);
-  box-shadow: 0 8px 25px rgba(var(--electric-blue-rgb), 0.4);
-}
-
-.btn-secondary {
-  background: var(--glass-bg-medium);
-  color: var(--text-primary);
-  border-color: var(--border-secondary);
-}
-
-.btn-secondary:hover {
-  background: var(--glass-bg-light);
-  border-color: var(--electric-blue);
-  box-shadow: 0 8px 25px rgba(var(--electric-blue-rgb), 0.2);
-}
-
 .export-menu {
   position: absolute;
   right: 0;
-  top: 100%;
-  margin-top: 8px;
-  background: #1a1a1a;
+  top: calc(100% + var(--space-2));
+  background: var(--bg-secondary);
   border: 2px solid var(--electric-blue);
-  border-radius: 8px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
   z-index: 20;
   min-width: 140px;
   overflow: hidden;
@@ -506,27 +396,19 @@ const shiftHue = (hex, degrees) => {
 .export-menu button {
   display: block;
   width: 100%;
-  padding: 12px 16px;
+  padding: var(--space-3) var(--space-4);
   background: none;
   border: none;
-  color: white;
-  font-size: 14px;
-  font-weight: 500;
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
   text-align: left;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: var(--duration-fast) var(--easing-ease);
 }
 
 .export-menu button:hover {
   background: var(--electric-blue);
-  color: #000000;
-}
-
-.tool-header-wrapper {
-  margin-bottom: 0;
-}
-
-.tool-header-wrapper :deep(.tool-header) {
-  margin-bottom: 0;
+  color: var(--text-inverse);
 }
 </style>
