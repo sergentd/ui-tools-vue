@@ -369,6 +369,44 @@
       <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
 
+    <!-- Book Icon -->
+    <g v-else-if="name === 'book'">
+      <path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5A2.5 2.5 0 004 17V5a2 2 0 012-2h10a2 2 0 012 2v14M4 19.5A2.5 2.5 0 016.5 22H20v-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M9 7h6M9 11h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </g>
+
+    <!-- Palette Icon -->
+    <g v-else-if="name === 'palette'">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c.9 0 1.3-.7 1.3-1.5 0-.4-.1-.7-.3-1-.2-.3-.3-.5-.3-.9 0-.6.4-1 1-1h1.5c3.6 0 6.5-2.9 6.5-6.5C22 6.48 17.52 2 12 2z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+      <circle cx="6.5" cy="11.5" r="1.5" :fill="primaryColor"/>
+      <circle cx="9.5" cy="7.5" r="1.5" :fill="secondaryColor"/>
+      <circle cx="14.5" cy="7.5" r="1.5" :fill="accentColor"/>
+      <circle cx="17.5" cy="11.5" r="1.5" :fill="accentRed"/>
+    </g>
+
+    <!-- Cog/Settings Icon -->
+    <g v-else-if="name === 'cog' || name === 'settings-gear'">
+      <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="2" fill="none"/>
+      <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="2" fill="none"/>
+    </g>
+
+    <!-- Wrench/Tool Icon -->
+    <g v-else-if="name === 'wrench' || name === 'tool'">
+      <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- Alert/Warning Icon -->
+    <g v-else-if="name === 'alert' || name === 'warning'">
+      <path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="12" cy="17" r="0.5" :fill="accentRed"/>
+    </g>
+
+    <!-- Lightbulb/Idea Icon -->
+    <g v-else-if="name === 'lightbulb' || name === 'idea'">
+      <path d="M9 21h6M12 3a6 6 0 00-4 10.472V17a1 1 0 001 1h6a1 1 0 001-1v-3.528A6 6 0 0012 3z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="12" cy="9" r="2" :fill="primaryColor"/>
+    </g>
+
     <!-- Star (filled) -->
     <g v-else-if="name === 'star-filled'">
       <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="currentColor"/>

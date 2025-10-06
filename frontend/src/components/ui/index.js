@@ -18,6 +18,7 @@ export { default as UIButton } from './base/UIButton.vue'
 export { default as UIGlassCard } from './base/UIGlassCard.vue'
 export { default as UISection } from './base/UISection.vue'
 export { default as UIContainer } from './base/UIContainer.vue'
+export { default as UITabs } from './base/UITabs.vue'
 export { default as UIInput } from './forms/UIInput.vue'
 export { default as UISelect } from './forms/UISelect.vue'
 
