@@ -65,24 +65,14 @@
                 >
                   Sauvegarder
                 </UIButton>
-                <div class="relative">
-                  <UIButton
-                    variant="primary"
-                    size="sm"
-                    @click="showExportMenu = !showExportMenu"
-                  >
-                    Exporter
-                  </UIButton>
-                  <div
-                    v-if="showExportMenu"
-                    class="export-menu"
-                    @click.stop
-                  >
-                    <button @click.stop="exportPalette('json')">en JSON</button>
-                    <button @click.stop="exportPalette('css')">en CSS</button>
-                    <button @click.stop="exportPalette('scss')">en SCSS</button>
-                  </div>
-                </div>
+                <UIButton
+                  ref="exportButtonRef"
+                  variant="secondary"
+                  size="sm"
+                  @click="toggleExportMenu"
+                >
+                  Exporter
+                </UIButton>
               </div>
             </template>
 
@@ -94,7 +84,6 @@
               <PaletteDisplay
                 :colors="paletteState.colors"
                 :palette-name="paletteState.paletteName"
-                @palette-saved="handlePaletteSave"
                 @colors-updated="paletteState.colors = $event"
                 @palette-name-updated="paletteState.paletteName = $event"
               />
@@ -114,12 +103,24 @@
       </div>
     </div>
 
-    <!-- Click outside to close export menu -->
-    <div
-      v-if="showExportMenu"
-      class="fixed inset-0 z-10"
-      @click="showExportMenu = false"
-    ></div>
+    <!-- Export menu - teleported to body to avoid nesting issues -->
+    <Teleport to="body">
+      <div
+        v-if="showExportMenu"
+        class="fixed inset-0 z-10"
+        @click="showExportMenu = false"
+      >
+        <div
+          class="export-menu-floating"
+          :style="exportMenuPosition"
+          @click.stop
+        >
+          <button @click="exportPalette('json')">en JSON</button>
+          <button @click="exportPalette('css')">en CSS</button>
+          <button @click="exportPalette('scss')">en SCSS</button>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -150,6 +151,8 @@ const generationTabs = [
 
 const savedPalettesRef = ref(null)
 const showExportMenu = ref(false)
+const exportButtonRef = ref(null)
+const exportMenuPosition = ref({})
 
 // Color generation functions
 const generatePalette = () => {
@@ -239,6 +242,20 @@ const handleManualColors = (colors) => {
 
 const handlePaletteLoad = (colors) => {
   paletteState.colors = colors
+}
+
+const toggleExportMenu = () => {
+  if (!showExportMenu.value && exportButtonRef.value) {
+    const button = exportButtonRef.value.$el || exportButtonRef.value
+    const rect = button.getBoundingClientRect()
+    exportMenuPosition.value = {
+      position: 'fixed',
+      top: `${rect.bottom + 8}px`,
+      right: `${window.innerWidth - rect.right}px`,
+      zIndex: 30
+    }
+  }
+  showExportMenu.value = !showExportMenu.value
 }
 
 // Save/Export functions
@@ -380,20 +397,16 @@ const shiftHue = (hex, degrees) => {
 </script>
 
 <style scoped>
-.export-menu {
-  position: absolute;
-  right: 0;
-  top: calc(100% + var(--space-2));
+.export-menu-floating {
   background: var(--bg-secondary);
   border: 2px solid var(--electric-blue);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-xl);
-  z-index: 20;
   min-width: 140px;
   overflow: hidden;
 }
 
-.export-menu button {
+.export-menu-floating button {
   display: block;
   width: 100%;
   padding: var(--space-3) var(--space-4);
@@ -407,7 +420,7 @@ const shiftHue = (hex, degrees) => {
   transition: var(--duration-fast) var(--easing-ease);
 }
 
-.export-menu button:hover {
+.export-menu-floating button:hover {
   background: var(--electric-blue);
   color: var(--text-inverse);
 }
