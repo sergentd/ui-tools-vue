@@ -124,7 +124,7 @@ const currentYear = computed(() => new Date().getFullYear())
   background: var(--glass-dark);
   backdrop-filter: blur(var(--blur-md));
   border-top: 1px solid var(--border-primary);
-  margin-top: auto;
+  margin-top: var(--space-xl);
 }
 
 .footer-content {
